@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import CategorySection from './categorySection/CategorySection';
 
 // Dummy product data
 const products = [
@@ -28,29 +29,10 @@ const products = [
 const HomeScreen = () => {
   const navigation = useNavigation();
 
-  const renderItem = ({item}) => (
-    <TouchableOpacity
-      style={styles.productContainer}
-      onPress={() => {
-        console.log('item: ', item);
-        navigation.navigate('ProductDetailsScreen', {product: item});
-      }}>
-      <Image source={item.image} style={styles.productImage} />
-      <Text style={styles.productTitle}>{item.title}</Text>
-      <Text style={styles.productPrice}>{item.price}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Home</Text>
-      <FlatList
-        data={products}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-        numColumns={2}
-        contentContainerStyle={styles.productList}
-      />
+      <CategorySection />
     </View>
   );
 };
@@ -59,6 +41,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 24,
