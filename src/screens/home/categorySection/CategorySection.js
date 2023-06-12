@@ -9,10 +9,14 @@ import {
   FlatList,
   Animated,
   LayoutAnimation,
+  ActivityIndicator,
 } from 'react-native';
 
 const CategorySection = () => {
   const navigation = useNavigation();
+
+  const [isLoading, setIsLoading] = useState(true);
+  console.log('isLoading: ', isLoading);
 
   const [categoriesData, setCategoriesData] = useState([]);
   const [expandedItem, setExpandedItem] = useState(null);
@@ -27,18 +31,26 @@ const CategorySection = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     async function getCategories() {
-      // You can await here
-      const response = await axios.get(
-        'https://glue.de.faas-suite-prod.cloud.spryker.toys/category-trees',
-      );
-      if (response.status === 200) {
-        setCategoriesData(
-          response.data.data[0]?.attributes?.categoryNodesStorage,
+      try {
+        const response = await axios.get(
+          'https://glue.de.faas-suite-prod.cloud.spryker.toys/category-trees',
         );
+        if (response.status === 200) {
+          setCategoriesData(
+            response.data.data[0]?.attributes?.categoryNodesStorage,
+          );
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.log('An error occurred while fetching categories:', error);
+        setIsLoading(false);
       }
-      // ...
     }
+
     getCategories();
   }, []); // Or [] if effect doesn't need props or state
 
@@ -99,7 +111,25 @@ const CategorySection = () => {
         renderItem={renderCategory}
         keyExtractor={item => item.nodeId.toString()}
         contentContainerStyle={styles.flatListContainer}
+        ListEmptyComponent={
+          isLoading ? <ActivityIndicator /> : <Text>EMPTY LIST</Text>
+        }
       />
+      {/* {!isLoading ? (
+        <>
+          <FlatList
+            data={categoriesData}
+            renderItem={renderCategory}
+            keyExtractor={item => item.nodeId.toString()}
+            contentContainerStyle={styles.flatListContainer}
+            ListEmptyComponent={<ActivityIndicator />}
+          />
+        </>
+      ) : (
+        <>
+          <ActivityIndicator />
+        </>
+      )} */}
     </View>
   );
 };
