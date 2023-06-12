@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -11,6 +12,8 @@ import {
 } from 'react-native';
 
 const CategorySection = () => {
+  const navigation = useNavigation();
+
   const [categoriesData, setCategoriesData] = useState([]);
   const [expandedItem, setExpandedItem] = useState(null);
   const animation = useRef(new Animated.Value(0)).current;
@@ -43,7 +46,11 @@ const CategorySection = () => {
     return (
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={() => console.log('id: ', item?.nodeId)}>
+        onPress={() => {
+          navigation.navigate('ProductsListScreen', {
+            nodeId: item?.nodeId,
+          });
+        }}>
         <Text style={styles.expandedText}>{item?.name}</Text>
       </TouchableOpacity>
     );
@@ -61,7 +68,13 @@ const CategorySection = () => {
     return (
       <TouchableOpacity
         style={styles.item}
-        onPress={() => handleItemPress(item.nodeId)}
+        onPress={() => {
+          if (item?.children?.length === 0) {
+            navigation.navigate('ProductsListScreen', {nodeId: item?.nodeId});
+            return;
+          }
+          handleItemPress(item.nodeId);
+        }}
         activeOpacity={0.8}>
         <Text style={styles.itemText}>{item.name}</Text>
         {expandedItem === item.nodeId && (
@@ -85,7 +98,7 @@ const CategorySection = () => {
         data={categoriesData}
         renderItem={renderCategory}
         keyExtractor={item => item.nodeId.toString()}
-        contentContainerStyle={styles.row}
+        contentContainerStyle={styles.flatListContainer}
       />
     </View>
   );
@@ -96,8 +109,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  row: {
-    flex: 1,
+  flatListContainer: {
+    flexGrow: 1,
   },
   item: {
     margin: 8,
