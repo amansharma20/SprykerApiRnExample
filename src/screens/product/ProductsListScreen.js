@@ -14,7 +14,6 @@ export default function ProductsListScreen(props) {
 
   const [isSubCategoryLoading, setIsSubCategoryLoading] = useState(true);
   const [categoryProductsData, setCategoryProductsData] = useState([]);
-  console.log('categoryProductsData: ', categoryProductsData);
 
   const renderItem = ({item}) => {
     return (

@@ -16,7 +16,6 @@ const CategorySection = () => {
   const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = useState(true);
-  console.log('isLoading: ', isLoading);
 
   const [categoriesData, setCategoriesData] = useState([]);
   const [expandedItem, setExpandedItem] = useState(null);
