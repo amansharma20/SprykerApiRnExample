@@ -26,15 +26,15 @@ const ProductListScreen = props => {
       );
       const result = await resp.json();
       setProducts(result?.data[0]?.attributes?.abstractProducts);
-      console.warn('result---', result?.data[0]?.attributes?.abstractProducts);
+      console.log('result---', result?.data[0]?.attributes?.abstractProducts);
     };
     getProducts();
   }, [nodeId]);
-  console.warn('first', products);
+  console.log('first', products);
 
   const navigation = useNavigation();
   const renderItem = ({item}) => (
-    // console.warn(item.images[0]?.externalUrlSmall)
+    // console.log(item.images[0]?.externalUrlSmall)
     <View style={styles.productContainer}>
       <Image
         source={{uri: item?.images[0]?.externalUrlSmall}}

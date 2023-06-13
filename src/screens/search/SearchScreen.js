@@ -34,7 +34,7 @@ const SearchScreen = () => {
       },
     );
     const result = await resp.json();
-    console.warn(
+    console.log(
       result?.data[0]?.attributes?.abstractProducts,
       'result based on search',
     );
@@ -51,7 +51,7 @@ const SearchScreen = () => {
     <TouchableOpacity
       style={styles.productContainer}
       // onPress={() => {
-      //   console.warn('item: ', item);
+      //   console.log('item: ', item);
       //   navigation.navigate('ProductDetailsScreen', {product: item});
       // }}
     >
