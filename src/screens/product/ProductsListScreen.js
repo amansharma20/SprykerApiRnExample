@@ -35,7 +35,11 @@ const ProductListScreen = props => {
   const navigation = useNavigation();
   const renderItem = ({item}) => (
     // console.warn(item.images[0]?.externalUrlSmall)
-    <View style={styles.productContainer}>
+    <TouchableOpacity style={styles.productContainer} onPress={() => {
+      navigation.navigate('ProductDetailsScreen', {
+        product: item,
+      });
+    }}>
       <Image
         source={{uri: item?.images[0]?.externalUrlSmall}}
         style={styles.productImage}
@@ -55,7 +59,7 @@ const ProductListScreen = props => {
           <Text style={{color: 'white'}}>Add</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
   return (
     <View style={styles.container}>
