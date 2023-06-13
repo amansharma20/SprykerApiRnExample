@@ -1,6 +1,8 @@
 import React, {useRef} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import StackNavigator from './StackNavigator';
+import {ThemeProvider} from '@shopify/restyle';
+import {lightTheme} from '@atoms';
 
 export default function ApplicationNavigator() {
   const routeNameRef = useRef('');
@@ -22,7 +24,9 @@ export default function ApplicationNavigator() {
         // Save the current route name for later comparison
         routeNameRef.current = currentRouteName;
       }}>
-      <StackNavigator />
+      <ThemeProvider theme={lightTheme}>
+        <StackNavigator />
+      </ThemeProvider>
     </NavigationContainer>
   );
 }
