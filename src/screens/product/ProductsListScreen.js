@@ -1,107 +1,120 @@
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
-  FlatList,
-  TouchableOpacity,
   StyleSheet,
+  FlatList,
   Image,
+  TouchableOpacity,
+  Button,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
 
-export default function ProductsListScreen(props) {
+const ProductListScreen = props => {
   const {nodeId} = props.route.params;
-
-  const [isSubCategoryLoading, setIsSubCategoryLoading] = useState(true);
-  const [categoryProductsData, setCategoryProductsData] = useState([]);
-
-  const renderItem = ({item}) => {
-    return (
-      <TouchableOpacity>
-        <View style={styles.container}>
-          <Image
-            source={{uri: item.images[0]?.externalUrlSmall}}
-            style={styles.image}
-          />
-          <Text style={styles.name}>{item?.name}</Text>
-          <Text style={styles.price}>
-            {item.prices[0]?.currency?.symbol}
-            {item?.prices[0]?.grossAmount}
-          </Text>
-          <Text style={styles.price}>{item.abstractName}</Text>
-          {/* <Text style={styles.description}>{product.description}</Text> */}
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
+  const [products, setProducts] = useState([]);
   useEffect(() => {
-    setIsSubCategoryLoading(true);
-    async function getCategoryProducts() {
-      try {
-        const response = await axios.get(
-          `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search?category=${nodeId}`,
-        );
-        if (response.status === 200) {
-          setCategoryProductsData(
-            response.data.data[0]?.attributes?.abstractProducts,
-          );
-          setIsSubCategoryLoading(false);
-        } else {
-          setIsSubCategoryLoading(false);
-        }
-      } catch (error) {
-        console.log('An error occurred while fetching categories:', error);
-        setIsSubCategoryLoading(false);
-      }
-    }
+    const getProducts = async () => {
+      const resp = await fetch(
+        `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search?category=${nodeId}`,
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+        },
+      );
+      const result = await resp.json();
+      setProducts(result?.data[0]?.attributes?.abstractProducts);
+      console.warn('result---', result?.data[0]?.attributes?.abstractProducts);
+    };
+    getProducts();
+  }, [nodeId]);
+  console.warn('first', products);
 
-    getCategoryProducts();
-  }, [nodeId]); // Or [] if effect doesn't need props or state
+  const navigation = useNavigation();
+  const renderItem = ({item}) => (
+    // console.warn(item.images[0]?.externalUrlSmall)
+    <View style={styles.productContainer}>
+      <Image
+        source={{uri: item?.images[0]?.externalUrlSmall}}
+        style={styles.productImage}
+      />
+      <Text style={styles.productTitle}>{item.abstractName}</Text>
 
+      <View
+        style={{
+          flex: 2,
+          flexDirection: 'row',
+          marginLeft: 20,
+          justifyContent: 'space-between',
+          width: '80%',
+        }}>
+        <Text style={styles.productPrice}>$ {item.price}</Text>
+        <TouchableOpacity style={styles.roundButton2}>
+          <Text style={{color: 'white'}}>Add</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
   return (
-    <View>
+    <View style={styles.container}>
+      <Text style={styles.title}>All Products</Text>
       <FlatList
-        data={categoryProductsData}
+        data={products}
         renderItem={renderItem}
-        // key={item?.id}
+        numColumns={2}
+        contentContainerStyle={styles.productList}
       />
     </View>
   );
-}
-
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f2f2f2',
-    paddingHorizontal: 20,
+    padding: 16,
   },
-  image: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
-    borderRadius: 10,
-    resizeMode: 'contain',
-  },
-  name: {
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-    textAlign: 'center',
+    marginBottom: 16,
   },
-  price: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#666',
-    textAlign: 'center',
+  productList: {
+    justifyContent: 'space-between',
   },
-  description: {
+  productContainer: {
+    flex: 0.5,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  productImage: {
+    width: 150,
+    height: 150,
+    marginBottom: 8,
+  },
+  productTitle: {
     fontSize: 16,
-    color: '#666',
+    fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 4,
+  },
+  productPrice: {
+    fontSize: 14,
+    color: 'gray',
+    textAlign: 'center',
+  },
+  button: {
+    borderRadius: 14,
+  },
+  roundButton2: {
+    width: 60,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    backgroundColor: 'red',
+    color: 'white',
   },
 });
+
+export default ProductListScreen;
