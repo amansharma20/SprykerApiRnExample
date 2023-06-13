@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, {useState} from 'react';
-=======
-import React, { useState } from 'react';
->>>>>>> origin/productlist
 import {
   View,
   TextInput,
@@ -14,17 +10,10 @@ import {
 
 // Dummy product data
 const allProducts = [
-<<<<<<< HEAD
   {id: 1, title: 'Product 1'},
   {id: 2, title: 'Product 2'},
   {id: 3, title: 'Product 3'},
   {id: 4, title: 'Product 4'},
-=======
-  { id: 1, title: 'Product 1' },
-  { id: 2, title: 'Product 2' },
-  { id: 3, title: 'Product 3' },
-  { id: 4, title: 'Product 4' },
->>>>>>> origin/productlist
   // Add more products here
 ];
 
@@ -39,11 +28,7 @@ const SearchScreen = () => {
     setSearchResults(filteredResults);
   };
 
-<<<<<<< HEAD
   const renderProductItem = ({item}) => (
-=======
-  const renderProductItem = ({ item }) => (
->>>>>>> origin/productlist
     <Text style={styles.productItem}>{item.title}</Text>
   );
 
