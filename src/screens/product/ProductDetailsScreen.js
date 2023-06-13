@@ -12,6 +12,7 @@ import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 // };
 
 const ProductDetailsScreen = props => {
+  console.log('product: ', product);
   const product = props.route.params.product;
   return (
     <View style={styles.container}>

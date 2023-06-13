@@ -15,8 +15,8 @@ export default function StackNavigator() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        // keyboardHidesTabBar: true,
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        keyboardHidesTabBar: true,
       }}>
       <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
       <Stack.Screen
