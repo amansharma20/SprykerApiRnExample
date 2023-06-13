@@ -63,7 +63,18 @@ const ProductListScreen = props => {
   );
   return (
     <View style={styles.container}>
+      <View style={styles.row}>
+      <TouchableOpacity
+        style={styles.registerButton1}
+        onPress={() => navigation.goBack()}
+      >
+        <Image
+          style={styles.logo}
+          source={require("../../assets/images/backButton.png")}
+        />
+      </TouchableOpacity>
       <Text style={styles.title}>All Products</Text>
+      </View>
       <FlatList
         data={products}
         renderItem={renderItem}
@@ -90,6 +101,15 @@ const styles = StyleSheet.create({
     flex: 0.5,
     alignItems: 'center',
     marginBottom: 16,
+  }, registerButton1: {
+    width: "20%",
+    paddingHorizontal: 16,
+    alignItems: "center",
+    borderRadius: 16,
+  },
+  logo: {
+    height: 30,
+    resizeMode: "contain",
   },
   productImage: {
     width: 150,
@@ -101,6 +121,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 4,
+  },
+  row:{
+    display:'flex',
+    flexDirection:"row"
   },
   productPrice: {
     fontSize: 14,
