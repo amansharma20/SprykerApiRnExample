@@ -62,8 +62,10 @@ const CategorySection = () => {
           navigation.navigate('ProductsListScreen', {
             nodeId: item?.nodeId,
           });
-        }}>
+        }}
+        style={styles.subCategoryItem}>
         <Text style={styles.expandedText}>{item?.name}</Text>
+        <Text style={styles.expandedText}>➜</Text>
       </TouchableOpacity>
     );
   };
@@ -88,7 +90,20 @@ const CategorySection = () => {
           handleItemPress(item.nodeId);
         }}
         activeOpacity={0.8}>
-        <Text style={styles.itemText}>{item.name}</Text>
+        <View style={styles.itemContainer}>
+          <Text style={styles.itemText}>
+            {item.name}{' '}
+            {item?.children?.length !== 0 ? (
+              <>
+                <Text>({item?.children?.length})</Text>
+              </>
+            ) : (
+              <></>
+            )}
+          </Text>
+          <Text>{expandedItem === item.nodeId ? '-' : '+'}</Text>
+        </View>
+
         {expandedItem === item.nodeId && (
           <>
             <Animated.View style={[styles.expandedView, {expandStyle}]}>
@@ -137,21 +152,20 @@ const CategorySection = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
   },
   flatListContainer: {
     flexGrow: 1,
   },
   item: {
-    margin: 8,
+    marginVertical: 8,
     padding: 16,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#ffffff',
     borderRadius: 8,
   },
+  itemContainer: {justifyContent: 'space-between', flexDirection: 'row'},
   itemText: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 8,
   },
   expandedView: {
     marginTop: 8,
@@ -161,7 +175,16 @@ const styles = StyleSheet.create({
   },
   expandedText: {
     fontSize: 14,
-    color: '#333333',
+    color: '#000',
+    fontWeight: '600',
+  },
+  subCategoryItem: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginVertical: 8,
+    padding: 8,
+    backgroundColor: '#ffffff',
+    borderRadius: 4,
   },
 });
 
