@@ -40,7 +40,7 @@ const ProductListScreen = () => {
             <View style={{ flex: 2, flexDirection: "row", marginLeft: 20, justifyContent: "space-between", width: "80%" }}>
                 <Text style={styles.productPrice}>$ {item.price}</Text>
                 <TouchableOpacity
-                    style={styles.roundButton2}>
+                    style={styles.addToCart}>
                     <Text style={{ color: "white" }}>Add</Text>
                 </TouchableOpacity>
             </View>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     button: {
         borderRadius: 14,
     },
-    roundButton2: {
+    addToCart: {
         width: 60,
         height: 30,
         justifyContent: 'center',
