@@ -6,60 +6,75 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  Button,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 const ProductListScreen = props => {
   const {nodeId} = props.route.params;
   const [products, setProducts] = useState([]);
-  useEffect(() => {
-    const getProducts = async () => {
-      const resp = await fetch(
-        `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search?category=${nodeId}`,
-        {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-          },
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageOffset, setPageOffset] = useState(0);
+  const getProducts = async () => {
+    console.log('node Id', nodeId);
+    setIsLoading(true);
+    const resp = await fetch(
+      `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search?category=${nodeId}&page[offset]=${pageOffset}&page[limit]=12`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
         },
-      );
-      const result = await resp.json();
-      setProducts(result?.data[0]?.attributes?.abstractProducts);
-      console.log('result---', result?.data[0]?.attributes?.abstractProducts);
-    };
+      },
+    );
+    const result = await resp.json();
+    setProducts([
+      ...products,
+      ...result?.data[0]?.attributes?.abstractProducts,
+    ]);
+    setPageOffset(pageOffset + 12);
+    setIsLoading(false);
+    setLastPage(result?.data[0]?.attributes?.pagination.maxPage);
+    setCurrentPage(result?.data[0]?.attributes?.pagination.currentPage);
+    console.log('maxPage---', result?.data[0]?.attributes?.pagination.maxPage);
+    console.log(
+      'currentPage---',
+      result?.data[0]?.attributes?.pagination.currentPage,
+    );
+  };
+  useEffect(() => {
     getProducts();
   }, [nodeId]);
-  console.log('first', products);
+
+  const loadMore = () => {
+    if (currentPage <= lastPage) {
+      getProducts();
+    }
+  };
 
   const navigation = useNavigation();
   const renderItem = ({item}) => (
-    // console.warn(item.images[0]?.externalUrlSmall)
-    <TouchableOpacity
-      style={styles.productContainer}
-      onPress={() => {
-        navigation.navigate('ProductDetailsScreen', {
-          product: item,
-        });
-      }}>
-      {/* <View style={styles.productContainer}> */}
-      <Image
-        source={{uri: item?.images[0]?.externalUrlSmall}}
-        style={styles.productImage}
-      />
-      <Text style={styles.productTitle}>{item.abstractName}</Text>
-      <View
-        style={{
-          flex: 2,
-          flexDirection: 'row',
-          marginLeft: 20,
-          justifyContent: 'space-between',
-          width: '80%',
-        }}>
-        <Text style={styles.productPrice}>$ {item.price}</Text>
-        <TouchableOpacity style={styles.roundButton2}>
-          <Text style={{color: 'white'}}>Add</Text>
-        </TouchableOpacity>
+    <TouchableOpacity>
+      <View style={styles.productContainer}>
+        <Image
+          source={{uri: item?.images[0]?.externalUrlSmall}}
+          style={styles.productImage}
+        />
+        <Text style={styles.productTitle}>{item.abstractName}</Text>
+        <View
+          style={{
+            flex: 2,
+            flexDirection: 'row',
+            marginLeft: 20,
+            justifyContent: 'space-between',
+            width: '80%',
+          }}>
+          <Text style={styles.productPrice}>$ {item.price}</Text>
+          <TouchableOpacity style={styles.roundButton2}>
+            <Text style={{color: 'white'}}>Add</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableOpacity>
   );
