@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 // Dummy product data
 const allProducts = [
@@ -22,6 +23,7 @@ const allProducts = [
 const SearchScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const navigation = useNavigation();
 
   const handleSearch = async () => {
     const resp = await fetch(
@@ -34,7 +36,7 @@ const SearchScreen = () => {
       },
     );
     const result = await resp.json();
-    console.warn(
+    console.log(
       result?.data[0]?.attributes?.abstractProducts,
       'result based on search',
     );
@@ -50,10 +52,10 @@ const SearchScreen = () => {
     // <Text style={styles.productItem}>{item.abstractName}</Text>
     <TouchableOpacity
       style={styles.productContainer}
-      // onPress={() => {
-      //   console.warn('item: ', item);
-      //   navigation.navigate('ProductDetailsScreen', {product: item});
-      // }}
+      onPress={() => {
+        console.warn('item: ', item);
+        navigation.navigate('ProductDetailsScreen', {product: item});
+      }}
       >
       {/* <Image
         source={item?.images[0]?.externalUrlSmall}
@@ -71,8 +73,9 @@ const SearchScreen = () => {
         placeholder="Search products..."
         value={searchText}
         onChangeText={setSearchText}
+        onChange={handleSearch}
       />
-      <Button title="Search" onPress={handleSearch} />
+      {/* <Button title="Search" onPress={handleSearch} /> */}
       {searchResults.length === 0 && (
         <FlatList
           data={allProducts}
