@@ -12,6 +12,8 @@ import {useNavigation} from '@react-navigation/native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import axios from 'axios';
 import {useEffect, useState, useMemo} from 'react';
+import {theme} from '@atoms';
+
 const ProductDetailsScreen = props => {
   const navigation = useNavigation();
   const [productData, setProductData] = useState(null);
@@ -51,12 +53,10 @@ const ProductDetailsScreen = props => {
   );
 
   const [selectedId, setSelectedId] = useState();
-  
+
   if (!productData) {
     return <Text>Loading...</Text>;
   }
-
-  
 
   console.log('------', selectedVarient, 'productData');
 
@@ -83,7 +83,7 @@ const ProductDetailsScreen = props => {
         </TouchableOpacity>
         <Text style={styles.headerText}> {productData?.attributes?.name}</Text>
         <TouchableOpacity
-          style={styles.registerButton1}
+          style={[styles.registerButton1, {backgroundColor: 'green'}]}
           onPress={() => navigation.navigate('CartScreen')}>
           <Text style={styles.headerText}>Cart </Text>
         </TouchableOpacity>
@@ -163,9 +163,10 @@ const ProductDetailsScreen = props => {
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
-    marginTop: -30,
+    // height: '100%',
+    flex: 1,
     paddingHorizontal: 20,
+    backgroundColor: theme.colors.background,
   },
   backImage: {
     marginVertical: 1,
@@ -177,14 +178,11 @@ const styles = StyleSheet.create({
     color: '#B99C6B',
   },
   details: {
-    widht: 400,
+    // widht: 400,
   },
   productDetails: {
-    display: 'flex',
     flex: 1,
     justifyContent: 'center',
-    width: '100%',
-    height: '100%',
     alignItems: 'center',
   },
   registerButton1: {
@@ -201,7 +199,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: -32,
   },
   row: {
     width: '50%',

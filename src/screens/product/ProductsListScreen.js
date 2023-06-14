@@ -54,30 +54,36 @@ const ProductListScreen = props => {
   };
 
   const navigation = useNavigation();
+
   const renderItem = ({item}) => (
-    <TouchableOpacity>
-      <View style={styles.productContainer}>
-        <Image
-          source={{uri: item?.images[0]?.externalUrlSmall}}
-          style={styles.productImage}
-        />
-        <Text style={styles.productTitle}>{item.abstractName}</Text>
-        <View
-          style={{
-            flex: 2,
-            flexDirection: 'row',
-            marginLeft: 20,
-            justifyContent: 'space-between',
-            width: '80%',
-          }}>
-          <Text style={styles.productPrice}>$ {item.price}</Text>
-          <TouchableOpacity style={styles.roundButton2}>
-            <Text style={{color: 'white'}}>Add</Text>
-          </TouchableOpacity>
-        </View>
+    <TouchableOpacity
+      style={styles.productContainer}
+      onPress={() => {
+        navigation.navigate('ProductDetailsScreen', {
+          product: item,
+        });
+      }}>
+      <Image
+        source={{uri: item?.images[0]?.externalUrlSmall}}
+        style={styles.productImage}
+      />
+      <Text style={styles.productTitle}>{item.abstractName}</Text>
+      <View
+        style={{
+          flex: 2,
+          flexDirection: 'row',
+          marginLeft: 20,
+          justifyContent: 'space-between',
+          width: '80%',
+        }}>
+        <Text style={styles.productPrice}>$ {item.price}</Text>
+        <TouchableOpacity style={styles.roundButton2}>
+          <Text style={{color: 'white'}}>Add</Text>
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
+
   return (
     <View style={styles.container}>
       <View style={styles.row}>
