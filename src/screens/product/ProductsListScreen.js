@@ -35,19 +35,19 @@ const ProductListScreen = props => {
   const navigation = useNavigation();
   const renderItem = ({item}) => (
     // console.warn(item.images[0]?.externalUrlSmall)
-    <TouchableOpacity style={styles.productContainer} onPress={() => {
-      navigation.navigate('ProductDetailsScreen', {
-        product: item,
-      });
-    }}>
-    // console.log(item.images[0]?.externalUrlSmall)
-    {/* <View style={styles.productContainer}> */}
+    <TouchableOpacity
+      style={styles.productContainer}
+      onPress={() => {
+        navigation.navigate('ProductDetailsScreen', {
+          product: item,
+        });
+      }}>
+      {/* <View style={styles.productContainer}> */}
       <Image
         source={{uri: item?.images[0]?.externalUrlSmall}}
         style={styles.productImage}
       />
       <Text style={styles.productTitle}>{item.abstractName}</Text>
-
       <View
         style={{
           flex: 2,
@@ -66,16 +66,15 @@ const ProductListScreen = props => {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-      <TouchableOpacity
-        style={styles.registerButton1}
-        onPress={() => navigation.goBack()}
-      >
-        <Image
-          style={styles.logo}
-          source={require("../../assets/images/backButton.png")}
-        />
-      </TouchableOpacity>
-      <Text style={styles.title}>All Products</Text>
+        <TouchableOpacity
+          style={styles.registerButton1}
+          onPress={() => navigation.goBack()}>
+          <Image
+            style={styles.logo}
+            source={require('../../assets/images/backButton.png')}
+          />
+        </TouchableOpacity>
+        <Text style={styles.title}>All Products</Text>
       </View>
       <FlatList
         data={products}
@@ -103,15 +102,16 @@ const styles = StyleSheet.create({
     flex: 0.5,
     alignItems: 'center',
     marginBottom: 16,
-  }, registerButton1: {
-    width: "20%",
+  },
+  registerButton1: {
+    width: '20%',
     paddingHorizontal: 16,
-    alignItems: "center",
+    alignItems: 'center',
     borderRadius: 16,
   },
   logo: {
     height: 30,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   productImage: {
     width: 150,
@@ -124,9 +124,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 4,
   },
-  row:{
-    display:'flex',
-    flexDirection:"row"
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
   },
   productPrice: {
     fontSize: 14,
