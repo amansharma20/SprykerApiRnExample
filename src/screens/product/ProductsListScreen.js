@@ -34,14 +34,20 @@ const ProductListScreen = props => {
 
   const navigation = useNavigation();
   const renderItem = ({item}) => (
-    // console.log(item.images[0]?.externalUrlSmall)
-    <View style={styles.productContainer}>
+    // console.warn(item.images[0]?.externalUrlSmall)
+    <TouchableOpacity
+      style={styles.productContainer}
+      onPress={() => {
+        navigation.navigate('ProductDetailsScreen', {
+          product: item,
+        });
+      }}>
+      {/* <View style={styles.productContainer}> */}
       <Image
         source={{uri: item?.images[0]?.externalUrlSmall}}
         style={styles.productImage}
       />
       <Text style={styles.productTitle}>{item.abstractName}</Text>
-
       <View
         style={{
           flex: 2,
@@ -55,11 +61,21 @@ const ProductListScreen = props => {
           <Text style={{color: 'white'}}>Add</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>All Products</Text>
+      <View style={styles.row}>
+        <TouchableOpacity
+          style={styles.registerButton1}
+          onPress={() => navigation.goBack()}>
+          <Image
+            style={styles.logo}
+            source={require('../../assets/images/backButton.png')}
+          />
+        </TouchableOpacity>
+        <Text style={styles.title}>All Products</Text>
+      </View>
       <FlatList
         data={products}
         renderItem={renderItem}
@@ -87,6 +103,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
+  registerButton1: {
+    width: '20%',
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    borderRadius: 16,
+  },
+  logo: {
+    height: 30,
+    resizeMode: 'contain',
+  },
   productImage: {
     width: 150,
     height: 150,
@@ -97,6 +123,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 4,
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
   },
   productPrice: {
     fontSize: 14,
