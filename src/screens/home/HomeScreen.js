@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import CategorySection from './categorySection/CategorySection';
+import {Text} from '@atoms';
 
 const HomeScreen = () => {
   return (

@@ -28,6 +28,7 @@ const ProductListScreen = props => {
         headers: {
           Accept: 'application/json',
         },
+<<<<<<< HEAD
       },
     );
     const result = await resp.json();
@@ -51,6 +52,20 @@ const ProductListScreen = props => {
 
   const navigation = useNavigation();
   const renderItem = ({ item }) => (
+=======
+      );
+      const result = await resp.json();
+      setProducts(result?.data[0]?.attributes?.abstractProducts);
+      console.log('result---', result?.data[0]?.attributes?.abstractProducts);
+    };
+    getProducts();
+  }, [nodeId]);
+  console.log('first', products);
+
+  const navigation = useNavigation();
+  const renderItem = ({item}) => (
+    // console.log(item.images[0]?.externalUrlSmall)
+>>>>>>> aa67e8e7e6de52e34300ff75c09a130827d1555a
     <View style={styles.productContainer}>
       <Image
         source={{ uri: item?.images[0]?.externalUrlSmall }}
