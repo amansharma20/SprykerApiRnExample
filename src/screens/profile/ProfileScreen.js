@@ -1,10 +1,78 @@
 import React from 'react';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
+import {FlatList, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 
 export default function ProfileScreen() {
+  const navigation = useNavigation();
+  const {isUserLoggedIn} = useIsUserLoggedIn();
+
+  const dataArray = [
+    {
+      name: 'Profile',
+      onPress: function () {
+        isUserLoggedIn
+          ? navigation.navigate('PersonalDetailsScreen')
+          : navigation.navigate('LoginScreen', {
+              redirectToScreen: 'PersonalDetailsScreen',
+            });
+      },
+    },
+    {
+      name: 'Contact Us',
+      onPress: function () {},
+    },
+    {
+      name: 'Feedback',
+      onPress: function () {},
+    },
+    {
+      name: 'Language',
+      onPress: function () {},
+    },
+  ];
+
+  const renderItem = ({item}) => {
+    return (
+      <TouchableOpacity
+        style={[styles.itemContainer]}
+        onPress={() => {
+          item.onPress();
+        }}>
+        <Box flexDirection="row" alignItems="center">
+          <Text variant="regular18" style={{paddingLeft: 10}}>
+            {item.name}
+          </Text>
+        </Box>
+        <Box>
+          <Text>→</Text>
+        </Box>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <Box backgroundColor="background" flex={1}>
-      <Text>ProfileScreen</Text>
+      <Box>
+        <FlatList
+          data={dataArray}
+          renderItem={renderItem}
+          key={Math.random()}
+        />
+      </Box>
     </Box>
   );
 }
+
+const styles = StyleSheet.create({
+  itemContainer: {
+    flexDirection: 'row',
+    height: 64,
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: theme.colors.border,
+    marginHorizontal: theme.spacing.paddingHorizontal,
+    justifyContent: 'space-between',
+  },
+});

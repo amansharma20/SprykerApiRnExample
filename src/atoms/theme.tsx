@@ -32,6 +32,7 @@ export const theme = createTheme({
     snowy: '#F1F1F1',
     grey: '#7C7C7C',
     inputGrey: '#F5F5F5',
+    red: 'red',
     ...globalPallete,
   },
   spacing: {
@@ -231,6 +232,7 @@ export const theme = createTheme({
       fontSize: 24,
       // fontFamily: FONT.PrimaryBold,
       color: 'darkText',
+      // fontWeight: '700',
     },
     bold14LightBlack: {
       fontSize: 14,

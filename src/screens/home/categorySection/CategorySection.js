@@ -11,6 +11,7 @@ import {
   LayoutAnimation,
   ActivityIndicator,
 } from 'react-native';
+import {commonApi} from '../../../api/CommanAPI';
 
 const CategorySection = () => {
   const navigation = useNavigation();
@@ -33,12 +34,10 @@ const CategorySection = () => {
     setIsLoading(true);
     async function getCategories() {
       try {
-        const response = await axios.get(
-          'https://glue.de.faas-suite-prod.cloud.spryker.toys/category-trees',
-        );
-        if (response.status === 200) {
+        const response = await commonApi.get('category-trees');
+        if (response.data.status === 200) {
           setCategoriesData(
-            response.data.data[0]?.attributes?.categoryNodesStorage,
+            response.data.data.data[0]?.attributes?.categoryNodesStorage,
           );
           setIsLoading(false);
         } else {
@@ -64,7 +63,7 @@ const CategorySection = () => {
         }}
         style={styles.subCategoryItem}>
         <Text style={styles.expandedText}>{item?.name}</Text>
-        <Text style={styles.expandedText}>➜</Text>
+        <Text style={styles.expandedText}>→</Text>
       </TouchableOpacity>
     );
   };
