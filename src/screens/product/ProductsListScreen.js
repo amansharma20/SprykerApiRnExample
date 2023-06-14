@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,38 +8,56 @@ import {
   TouchableOpacity,
   Button,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const ProductListScreen = props => {
-  const {nodeId} = props.route.params;
+  const { nodeId } = props.route.params;
   const [products, setProducts] = useState([]);
+  const [currentPageOffset, setCurrentPageOffset] = useState(0);
+  const [lastOffset, setLastOffset] = useState(0);
   useEffect(() => {
     const getProducts = async () => {
-      const resp = await fetch(
-        `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search?category=${nodeId}`,
-        {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
+      try {
+        const resp = await fetch(
+          `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search?category=${nodeId}&page[offset]=${currentPageOffset}&page[limit]=12`,
+          {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
           },
-        },
-      );
-      const result = await resp.json();
-      setProducts(result?.data[0]?.attributes?.abstractProducts);
-      console.warn('result---', result?.data[0]?.attributes?.abstractProducts);
+        );
+        console.warn(resp);
+        const result = await resp.json();
+
+        if (result?.data && result.data.length > 0 && result.data[0].attributes?.abstractProducts) {
+          setProducts([...products, result?.data[0]?.attributes?.abstractProducts]);
+          console.warn('result---', result?.data[0]?.attributes?.abstractProducts);
+        } else {
+          setProducts([result?.data[0]?.attributes?.abstractProducts]);
+        }
+        if (result?.links?.last) {
+          console.warn('last---', result.links.last);
+        }
+      } catch (error) {
+        console.warn("something error");
+      }
     };
     getProducts();
-  }, [nodeId]);
+  }, [nodeId, currentPageOffset]);
   console.warn('first', products);
 
   const navigation = useNavigation();
-  const renderItem = ({item}) => (
+  const loadMoreItem = () => {
+    setCurrentPageOffset(currentPageOffset + 12);
+  };
+  const renderItem = ({ item }) => (
     // console.warn(item.images[0]?.externalUrlSmall)
     <View style={styles.productContainer}>
-      <Image
-        source={{uri: item?.images[0]?.externalUrlSmall}}
+      {/* <Image
+        source={{ uri: item?.images[0]?.externalUrlSmall }}
         style={styles.productImage}
-      />
+      /> */}
       <Text style={styles.productTitle}>{item.abstractName}</Text>
 
       <View
@@ -52,7 +70,7 @@ const ProductListScreen = props => {
         }}>
         <Text style={styles.productPrice}>$ {item.price}</Text>
         <TouchableOpacity style={styles.roundButton2}>
-          <Text style={{color: 'white'}}>Add</Text>
+          <Text style={{ color: 'white' }}>Add</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -65,6 +83,8 @@ const ProductListScreen = props => {
         renderItem={renderItem}
         numColumns={2}
         contentContainerStyle={styles.productList}
+        onEndReached={loadMoreItem}
+        onEndReachedThreshold={0}
       />
     </View>
   );
