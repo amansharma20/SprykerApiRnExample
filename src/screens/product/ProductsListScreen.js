@@ -19,7 +19,7 @@ const ProductListScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [pageOffset, setPageOffset] = useState(0);
   const getProducts = async () => {
-    console.warn("node Id", nodeId);
+    console.log("node Id", nodeId);
     setIsLoading(true);
     const resp = await fetch(
       `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search?category=${nodeId}&page[offset]=${pageOffset}&page[limit]=12`,
@@ -36,8 +36,8 @@ const ProductListScreen = props => {
     setIsLoading(false);
     setLastPage(result?.data[0]?.attributes?.pagination.maxPage);
     setCurrentPage(result?.data[0]?.attributes?.pagination.currentPage);
-    console.warn('maxPage---', result?.data[0]?.attributes?.pagination.maxPage);
-    console.warn('currentPage---', result?.data[0]?.attributes?.pagination.currentPage);
+    console.log('maxPage---', result?.data[0]?.attributes?.pagination.maxPage);
+    console.log('currentPage---', result?.data[0]?.attributes?.pagination.currentPage);
   };
   useEffect(() => {
     getProducts();
@@ -81,7 +81,7 @@ const ProductListScreen = props => {
         onPress={() => navigation.navigate('Home')}
       />
 
-      {isLoading && <ActivityIndicator />}
+
       <FlatList
         data={products}
         renderItem={renderItem}
@@ -89,6 +89,7 @@ const ProductListScreen = props => {
         contentContainerStyle={styles.productList}
         onEndReached={loadMore}
         onEndReachedThreshold={1}
+        ListFooterComponent={isLoading && <ActivityIndicator />}
       />
     </View>
   );
