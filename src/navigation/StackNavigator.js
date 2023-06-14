@@ -1,8 +1,5 @@
 // import * as React from 'react';
-import {
-  CardStyleInterpolators,
-  createStackNavigator,
-} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import ProductDetailsScreen from '../screens/product/ProductDetailsScreen';
 import BottomTabNavigator from './BottomTabNavigator';
@@ -15,7 +12,7 @@ export default function StackNavigator() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         keyboardHidesTabBar: true,
       }}>
       <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
