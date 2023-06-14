@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
   Button,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -13,51 +14,48 @@ import { useNavigation } from '@react-navigation/native';
 const ProductListScreen = props => {
   const { nodeId } = props.route.params;
   const [products, setProducts] = useState([]);
-  const [currentPageOffset, setCurrentPageOffset] = useState(0);
-  const [lastOffset, setLastOffset] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageOffset, setPageOffset] = useState(0);
+  const getProducts = async () => {
+    console.warn("node Id", nodeId);
+    setIsLoading(true);
+    const resp = await fetch(
+      `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search?category=${nodeId}&page[offset]=${pageOffset}&page[limit]=12`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      },
+    );
+    const result = await resp.json();
+    setProducts([...products, ...result?.data[0]?.attributes?.abstractProducts]);
+    setPageOffset(pageOffset + 12);
+    setIsLoading(false);
+    setLastPage(result?.data[0]?.attributes?.pagination.maxPage);
+    setCurrentPage(result?.data[0]?.attributes?.pagination.currentPage);
+    console.warn('maxPage---', result?.data[0]?.attributes?.pagination.maxPage);
+    console.warn('currentPage---', result?.data[0]?.attributes?.pagination.currentPage);
+  };
   useEffect(() => {
-    const getProducts = async () => {
-      try {
-        const resp = await fetch(
-          `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search?category=${nodeId}&page[offset]=${currentPageOffset}&page[limit]=12`,
-          {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-            },
-          },
-        );
-        console.warn(resp);
-        const result = await resp.json();
-
-        if (result?.data && result.data.length > 0 && result.data[0].attributes?.abstractProducts) {
-          setProducts([...products, result?.data[0]?.attributes?.abstractProducts]);
-          console.warn('result---', result?.data[0]?.attributes?.abstractProducts);
-        } else {
-          setProducts([result?.data[0]?.attributes?.abstractProducts]);
-        }
-        if (result?.links?.last) {
-          console.warn('last---', result.links.last);
-        }
-      } catch (error) {
-        console.warn("something error");
-      }
-    };
     getProducts();
-  }, [nodeId, currentPageOffset]);
-  console.warn('first', products);
+  }, [nodeId]);
+
+  const loadMore = () => {
+    if (currentPage <= lastPage) {
+      getProducts();
+    }
+  }
 
   const navigation = useNavigation();
-  const loadMoreItem = () => {
-    setCurrentPageOffset(currentPageOffset + 12);
-  };
   const renderItem = ({ item }) => (
-    // console.warn(item.images[0]?.externalUrlSmall)
     <View style={styles.productContainer}>
-      {/* <Image
+      <Image
         source={{ uri: item?.images[0]?.externalUrlSmall }}
         style={styles.productImage}
-      /> */}
+      />
       <Text style={styles.productTitle}>{item.abstractName}</Text>
 
       <View
@@ -78,13 +76,19 @@ const ProductListScreen = props => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>All Products</Text>
+      <Button
+        title="go back"
+        onPress={() => navigation.navigate('Home')}
+      />
+
+      {isLoading && <ActivityIndicator />}
       <FlatList
         data={products}
         renderItem={renderItem}
         numColumns={2}
         contentContainerStyle={styles.productList}
-        onEndReached={loadMoreItem}
-        onEndReachedThreshold={0}
+        onEndReached={loadMore}
+        onEndReachedThreshold={1}
       />
     </View>
   );
