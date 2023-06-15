@@ -273,6 +273,7 @@ export const theme = createTheme({
       fontSize: 18,
       // fontFamily: FONT.PrimaryBold,
       color: 'darkText',
+      fontWeight: '700'
     },
     bold18LightBlack: {
       fontSize: 18,
