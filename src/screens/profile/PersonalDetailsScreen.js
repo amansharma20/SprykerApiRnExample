@@ -1,31 +1,33 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useContext, useEffect, useState} from 'react';
 import {Box, Text} from '@atoms';
 import {api} from '../../api/SecureAPI';
 import {ActivityIndicator, Button} from 'react-native';
 import {AuthContext} from '../../navigation/StackNavigator';
+import {useDispatch, useSelector} from 'react-redux';
+import {getCustomerDetails} from '../../redux/profileApi/ProfileApiAsyncThunk';
 
 export default function PersonalDetailsScreen() {
   const {signOut} = useContext(AuthContext);
+  const dispatch = useDispatch();
 
-  const [profileData, setProfileData] = useState([]);
+  const profileData = useSelector(
+    state =>
+      state.getCustomerDetailsApiSlice.customerDetails?.data?.data?.[0]
+        ?.attributes || [],
+  );
+
   const [isLoading, setIsLoading] = useState(false);
 
-  const getUserDetails = async () => {
-    setIsLoading(true);
-    const response = await api.get('customers');
-    if (response.data.status === 200) {
-      setProfileData(response.data?.data?.data[0]?.attributes);
-      setIsLoading(false);
-    }
-  };
-
   const onPressLogout = () => {
-    console.log('here');
     signOut();
   };
 
   useEffect(() => {
-    getUserDetails();
+    setIsLoading(true);
+    dispatch(getCustomerDetails('customers')).then(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   return (

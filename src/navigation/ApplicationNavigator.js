@@ -3,6 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import StackNavigator from './StackNavigator';
 import {ThemeProvider} from '@shopify/restyle';
 import {lightTheme} from '@atoms';
+import {Provider} from 'react-redux';
+import RootStore from '../redux/RootStore';
 
 export default function ApplicationNavigator() {
   const routeNameRef = useRef('');
@@ -24,9 +26,11 @@ export default function ApplicationNavigator() {
         // Save the current route name for later comparison
         routeNameRef.current = currentRouteName;
       }}>
-      <ThemeProvider theme={lightTheme}>
-        <StackNavigator />
-      </ThemeProvider>
+      <Provider store={RootStore}>
+        <ThemeProvider theme={lightTheme}>
+          <StackNavigator />
+        </ThemeProvider>
+      </Provider>
     </NavigationContainer>
   );
 }
