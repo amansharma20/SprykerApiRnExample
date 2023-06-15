@@ -12,20 +12,9 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import ProductItem from '../../components/ProductItem';
 
-// Dummy product data
-const allProducts = [
-  {id: 1, title: 'Product 1'},
-  {id: 2, title: 'Product 2'},
-  {id: 3, title: 'Product 3'},
-  {id: 4, title: 'Product 4'},
-  // Add more products here
-];
-
 const SearchScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  console.log('searchResults: ', searchResults);
-  const navigation = useNavigation();
 
   const handleSearch = async () => {
     const resp = await fetch(
@@ -44,10 +33,6 @@ const SearchScreen = () => {
     );
 
     setSearchResults(result?.data[0]?.attributes?.abstractProducts);
-    // const filteredResults = allProducts.filter(product =>
-    //   product.title.toLowerCase().includes(searchText.toLowerCase()),
-    // );
-    // setSearchResults(filteredResults);
   };
 
   const renderProductItem = ({item}) => {
@@ -68,15 +53,6 @@ const SearchScreen = () => {
         onChangeText={setSearchText}
         onChange={handleSearch}
       />
-      {/* <Button title="Search" onPress={handleSearch} /> */}
-      {/* {searchResults.length === 0 && (
-        <FlatList
-          data={allProducts}
-          renderItem={renderProductItem}
-          keyExtractor={item => item.abstractSku}
-          style={styles.resultsContainer}
-        />
-      )} */}
       {searchResults.length > 0 && (
         <FlatList
           data={searchResults}
