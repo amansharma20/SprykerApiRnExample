@@ -32,6 +32,7 @@ export default function LoginScreen(props) {
         response?.data?.data.expires_in.toString(),
       );
       var token = 'Bearer ' + response?.data?.data?.access_token;
+      // var token = 'Bearer ' + response?.data?.data?.refresh_token;
       signIn(token);
       if (redirectToScreen) {
         navigation.replace(redirectToScreen);

@@ -56,6 +56,7 @@ const ProductListScreen = props => {
   const navigation = useNavigation();
 
   const renderItem = ({item}) => (
+    <>
     <TouchableOpacity
       style={styles.productContainer}
       onPress={() => {
@@ -82,6 +83,7 @@ const ProductListScreen = props => {
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
+    </>
   );
 
   return (

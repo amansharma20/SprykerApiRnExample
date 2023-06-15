@@ -7,12 +7,13 @@ import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 export default function ProfileScreen() {
   const navigation = useNavigation();
   const {isUserLoggedIn} = useIsUserLoggedIn();
+  console.log('isUserLoggedIn: ', isUserLoggedIn);
 
   const dataArray = [
     {
       name: 'Profile',
       onPress: function () {
-        isUserLoggedIn
+        !isUserLoggedIn
           ? navigation.navigate('PersonalDetailsScreen')
           : navigation.navigate('LoginScreen', {
               redirectToScreen: 'PersonalDetailsScreen',

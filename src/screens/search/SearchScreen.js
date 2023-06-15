@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import ProductItem from '../../components/ProductItem';
 
 // Dummy product data
 const allProducts = [
@@ -23,6 +24,7 @@ const allProducts = [
 const SearchScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  console.log('searchResults: ', searchResults);
   const navigation = useNavigation();
 
   const handleSearch = async () => {
@@ -48,23 +50,14 @@ const SearchScreen = () => {
     // setSearchResults(filteredResults);
   };
 
-  const renderProductItem = ({item}) =>(
-    // <Text style={styles.productItem}>{item.abstractName}</Text>
-    <TouchableOpacity
-      style={styles.productContainer}
-      onPress={() => {
-        console.warn('item: ', item);
-        navigation.navigate('ProductDetailsScreen', {product: item});
-      }}
-      >
-      {/* <Image
-        source={item?.images[0]?.externalUrlSmall}
-        style={styles.productImage}
-      /> */}
-      <Text style={styles.productTitle}>{item?.abstractName}</Text>
-      <Text style={styles.productPrice}>{item?.price}</Text>
-    </TouchableOpacity>
-  );
+  const renderProductItem = ({item}) => {
+    console.log('item: ', item);
+    return (
+      <>
+        <ProductItem item={item} />
+      </>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -76,20 +69,21 @@ const SearchScreen = () => {
         onChange={handleSearch}
       />
       {/* <Button title="Search" onPress={handleSearch} /> */}
-      {searchResults.length === 0 && (
+      {/* {searchResults.length === 0 && (
         <FlatList
           data={allProducts}
           renderItem={renderProductItem}
           keyExtractor={item => item.abstractSku}
           style={styles.resultsContainer}
         />
-      )}
+      )} */}
       {searchResults.length > 0 && (
         <FlatList
           data={searchResults}
           renderItem={renderProductItem}
           keyExtractor={item => item.abstractSku}
-          style={styles.resultsContainer}
+          numColumns={2}
+          contentContainerStyle={styles.productList}
         />
       )}
     </View>
@@ -111,9 +105,8 @@ const styles = StyleSheet.create({
   resultsContainer: {
     marginTop: 16,
   },
-  productItem: {
-    fontSize: 16,
-    marginBottom: 8,
+  productList: {
+    justifyContent: 'space-between',
   },
 });
 

@@ -58,11 +58,11 @@ export default function PersonalDetailsScreen() {
             <Text>Date Of Birth</Text>
             <Text>{profileData?.dateOfBirth}</Text>
           </Box>
-          <Box>
-            <Button title="Logout" onPress={onPressLogout} />
-          </Box>
         </>
       )}
+      <Box>
+        <Button title="Logout" onPress={onPressLogout} />
+      </Box>
     </Box>
   );
 }
