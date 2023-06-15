@@ -47,6 +47,7 @@ export default function StackNavigator() {
       userToken: null,
     },
   );
+  console.log('state: ', state);
 
   const authContext = useMemo(
     () => ({
@@ -58,7 +59,6 @@ export default function StackNavigator() {
         await Keychain.resetGenericPassword();
         AsyncStorage.removeItem('tokenExpiry');
         RNRestart.Restart();
-        // CommonFunctions.clearAll();
         dispatch({type: 'SIGN_OUT'});
       },
       state: state,
@@ -94,24 +94,24 @@ export default function StackNavigator() {
           name="BottomTabNavigator"
           component={BottomTabNavigator}
         />
-        {state.userToken == null ? (
-          <>
-            <Stack.Screen
-              name="LoginScreen"
-              component={LoginScreen}
-              options={{
-                cardStyleInterpolator:
-                  CardStyleInterpolators.forModalPresentationIOS,
-                headerShown: false,
-                headerShadowVisible: false,
-                // cardStyle: {backgroundColor: 'transparent'},
-                presentation: 'modal',
-              }}
-            />
-          </>
+        {/* {state.userToken == null ? (
+          <> */}
+        <Stack.Screen
+          name="LoginScreen"
+          component={LoginScreen}
+          options={{
+            cardStyleInterpolator:
+              CardStyleInterpolators.forModalPresentationIOS,
+            headerShown: false,
+            headerShadowVisible: false,
+            // cardStyle: {backgroundColor: 'transparent'},
+            presentation: 'modal',
+          }}
+        />
+        {/* </>
         ) : (
           <></>
-        )}
+        )} */}
         <Stack.Screen
           name="ProductDetailsScreen"
           component={ProductDetailsScreen}

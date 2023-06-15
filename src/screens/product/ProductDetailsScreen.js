@@ -12,7 +12,8 @@ import {useNavigation} from '@react-navigation/native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import axios from 'axios';
 import {useEffect, useState, useMemo} from 'react';
-import {theme} from '@atoms';
+import {Box, theme} from '@atoms';
+import CommonHeader from '../../components/CommonHeader/CommonHeader';
 
 const ProductDetailsScreen = props => {
   const navigation = useNavigation();
@@ -59,18 +60,8 @@ const ProductDetailsScreen = props => {
   console.log('------', selectedVarient, 'productData');
 
   return (
-    // <View style={styles.container}>
-    //   <Text style={styles.title}>Product Details</Text>
-    //   <Image source={product.image} style={styles.productImage} />
-    //   <Text style={styles.productTitle}>{product.title}</Text>
-    //   <Text style={styles.productPrice}>{product.price}</Text>
-    //   <Text style={styles.productDescription}>{product.description}</Text>
-    //   <TouchableOpacity style={styles.addToCartButton}>
-    //     <Text style={styles.addToCartButtonText}>Add to Cart</Text>
-    //   </TouchableOpacity>
-    // </View>
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
+      {/* <View style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.registerButton1}
           onPress={() => navigation.goBack()}>
@@ -85,8 +76,15 @@ const ProductDetailsScreen = props => {
           onPress={() => navigation.navigate('CartScreen')}>
           <Text style={styles.headerText}>Cart </Text>
         </TouchableOpacity>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false} style={{height: '100%'}}>
+      </View> */}
+      <Box flexDirection="row">
+        <CommonHeader title={productData?.attributes?.name} />
+      </Box>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: theme.spacing.paddingHorizontal,
+        }}>
         {prodData ? (
           <View style={styles.productDetails}>
             <Image
@@ -163,7 +161,7 @@ const styles = StyleSheet.create({
   container: {
     // height: '100%',
     flex: 1,
-    paddingHorizontal: 20,
+    // paddingHorizontal: 16,
     backgroundColor: theme.colors.background,
   },
   backImage: {

@@ -1,29 +1,10 @@
 import React, {useState} from 'react';
-import {
-  View,
-  TextInput,
-  Button,
-  StyleSheet,
-  FlatList,
-  Text,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-
-// Dummy product data
-const allProducts = [
-  {id: 1, title: 'Product 1'},
-  {id: 2, title: 'Product 2'},
-  {id: 3, title: 'Product 3'},
-  {id: 4, title: 'Product 4'},
-  // Add more products here
-];
+import {View, TextInput, StyleSheet, FlatList} from 'react-native';
+import ProductItem from '../../components/ProductItem';
 
 const SearchScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const navigation = useNavigation();
 
   const handleSearch = async () => {
     const resp = await fetch(
@@ -42,29 +23,16 @@ const SearchScreen = () => {
     );
 
     setSearchResults(result?.data[0]?.attributes?.abstractProducts);
-    // const filteredResults = allProducts.filter(product =>
-    //   product.title.toLowerCase().includes(searchText.toLowerCase()),
-    // );
-    // setSearchResults(filteredResults);
   };
 
-  const renderProductItem = ({item}) =>(
-    // <Text style={styles.productItem}>{item.abstractName}</Text>
-    <TouchableOpacity
-      style={styles.productContainer}
-      onPress={() => {
-        console.warn('item: ', item);
-        navigation.navigate('ProductDetailsScreen', {product: item});
-      }}
-      >
-      {/* <Image
-        source={item?.images[0]?.externalUrlSmall}
-        style={styles.productImage}
-      /> */}
-      <Text style={styles.productTitle}>{item?.abstractName}</Text>
-      <Text style={styles.productPrice}>{item?.price}</Text>
-    </TouchableOpacity>
-  );
+  const renderProductItem = ({item}) => {
+    console.log('item: ', item);
+    return (
+      <>
+        <ProductItem item={item} />
+      </>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -75,21 +43,13 @@ const SearchScreen = () => {
         onChangeText={setSearchText}
         onChange={handleSearch}
       />
-      {/* <Button title="Search" onPress={handleSearch} /> */}
-      {searchResults.length === 0 && (
-        <FlatList
-          data={allProducts}
-          renderItem={renderProductItem}
-          keyExtractor={item => item.abstractSku}
-          style={styles.resultsContainer}
-        />
-      )}
       {searchResults.length > 0 && (
         <FlatList
           data={searchResults}
           renderItem={renderProductItem}
           keyExtractor={item => item.abstractSku}
-          style={styles.resultsContainer}
+          numColumns={2}
+          contentContainerStyle={styles.productList}
         />
       )}
     </View>
@@ -111,9 +71,8 @@ const styles = StyleSheet.create({
   resultsContainer: {
     marginTop: 16,
   },
-  productItem: {
-    fontSize: 16,
-    marginBottom: 8,
+  productList: {
+    justifyContent: 'space-between',
   },
 });
 
