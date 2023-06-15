@@ -1,5 +1,4 @@
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -19,7 +18,8 @@ const CategorySection = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [categoriesData, setCategoriesData] = useState([]);
-  const [expandedItem, setExpandedItem] = useState(null);
+  const firstItem = categoriesData?.[0]?.nodeId || null;
+  const [expandedItem, setExpandedItem] = useState(firstItem);
   const animation = useRef(new Animated.Value(0)).current;
 
   const handleItemPress = nodeId => {
@@ -29,6 +29,10 @@ const CategorySection = () => {
       duration: 200,
     });
   };
+
+  useEffect(() => {
+    setExpandedItem(firstItem);
+  }, [firstItem]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -59,6 +63,7 @@ const CategorySection = () => {
         onPress={() => {
           navigation.navigate('ProductsListScreen', {
             nodeId: item?.nodeId,
+            title: item?.name,
           });
         }}
         style={styles.subCategoryItem}>
