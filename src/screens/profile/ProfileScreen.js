@@ -13,7 +13,7 @@ export default function ProfileScreen() {
     {
       name: 'Profile',
       onPress: function () {
-        !isUserLoggedIn
+        isUserLoggedIn
           ? navigation.navigate('PersonalDetailsScreen')
           : navigation.navigate('LoginScreen', {
               redirectToScreen: 'PersonalDetailsScreen',

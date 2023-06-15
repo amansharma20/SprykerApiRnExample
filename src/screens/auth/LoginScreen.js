@@ -29,7 +29,8 @@ export default function LoginScreen(props) {
     if (response.data?.status === 200) {
       await AsyncStorage.setItem(
         'tokenExpiry',
-        response?.data?.data.expires_in.toString(),
+        // response?.data?.data.expires_in.toString(),
+        response?.data?.data.access_token,
       );
       var token = 'Bearer ' + response?.data?.data?.access_token;
       // var token = 'Bearer ' + response?.data?.data?.refresh_token;

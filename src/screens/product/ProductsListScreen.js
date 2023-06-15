@@ -6,7 +6,7 @@ import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {theme} from '../../atoms/theme';
 
 const ProductListScreen = props => {
-  const {nodeId} = props.route.params;
+  const {nodeId, title} = props.route.params;
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
@@ -39,6 +39,7 @@ const ProductListScreen = props => {
       result?.data[0]?.attributes?.pagination.currentPage,
     );
   };
+
   useEffect(() => {
     getProducts();
   }, [nodeId]);
@@ -59,7 +60,7 @@ const ProductListScreen = props => {
 
   return (
     <View style={styles.container}>
-      <CommonHeader title={'All Products'} />
+      <CommonHeader title={title || 'All Products'} />
       <FlatList
         data={products}
         renderItem={renderItem}
