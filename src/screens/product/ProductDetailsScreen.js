@@ -18,6 +18,7 @@ const ProductDetailsScreen = props => {
   const navigation = useNavigation();
   const [productData, setProductData] = useState(null);
   const [selectedVarient, setSelectedVarient] = useState(null);
+  const [variationData, setVariationData] = useState(null);
   const prodData = props.route.params.product;
   console.log('product: ', prodData);
 
@@ -28,6 +29,8 @@ const ProductDetailsScreen = props => {
           `https://glue.de.faas-suite-prod.cloud.spryker.toys/abstract-products/${prodData?.abstractSku}`,
         );
         setProductData(response.data?.data);
+        console.log(response.data?.data);
+        setVariationData();
       } catch (error) {
         console.error('Error fetching product data:', error);
       }
@@ -36,23 +39,18 @@ const ProductDetailsScreen = props => {
     fetchProductData();
   }, [prodData]);
 
-  const radioButtons = useMemo(
-    () => [
-      {
-        id: '1', // acts as primary key, should be unique and non-empty string
-        label: 'Option 1',
-        value: 'option1',
-      },
-      {
-        id: '2',
-        label: 'Option 2',
-        value: 'option2',
-      },
-    ],
-    [],
-  );
-
-  const [selectedId, setSelectedId] = useState();
+  const radioButtons = [
+    {
+      id: '1', // acts as primary key, should be unique and non-empty string
+      label: 'Option 1',
+      value: 'option1',
+    },
+    {
+      id: '2',
+      label: 'Option 2',
+      value: 'option2',
+    },
+  ];
 
   if (!productData) {
     return <Text>Loading...</Text>;
@@ -134,8 +132,8 @@ const ProductDetailsScreen = props => {
                 </Picker> */}
                 <RadioGroup
                   radioButtons={radioButtons}
-                  onPress={setSelectedId}
-                  selectedId={selectedId}
+                  onPress={setSelectedVarient}
+                  selectedId={selectedVarient}
                 />
               </View>
             </View>
