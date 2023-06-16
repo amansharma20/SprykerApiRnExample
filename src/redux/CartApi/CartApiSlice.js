@@ -2,7 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import {getCustomerCartItems} from './CartApiAsyncThunk';
 
 const initialState = {
-  customerCartItems: [],
+  customerCart: [],
   status: 'idle',
   error: null,
 };
