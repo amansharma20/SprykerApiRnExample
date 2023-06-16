@@ -7,196 +7,257 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  FlatList,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
+import {commonApi} from '../../api/CommanAPI';
+import {api} from '../../api/SecureAPI';
 import {useNavigation} from '@react-navigation/native';
-import RadioGroup from 'react-native-radio-buttons-group';
 import axios from 'axios';
-import {useEffect, useState, useMemo} from 'react';
+import {useEffect, useState} from 'react';
 import {Box, theme} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 
 const ProductDetailsScreen = props => {
   const navigation = useNavigation();
-  const [productData, setProductData] = useState(null);
-  const [selectedVarient, setSelectedVarient] = useState(null);
-  const prodData = props.route.params.product;
-  console.log('product: ', prodData);
+  const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
+  const [productData, setProductData] = useState();
+  const [variationData, setVariationData] = useState();
+  const [variationIdData, setVariationIdData] = useState();
+  const [prodData, setProdData] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const propData = props.route.params.product;
 
   useEffect(() => {
+    setProdData(propData);
     const fetchProductData = async () => {
-      try {
-        const response = await axios.get(
-          `https://glue.de.faas-suite-prod.cloud.spryker.toys/abstract-products/${prodData?.abstractSku}`,
+      const response = await commonApi.get(
+        `abstract-products/${propData?.abstractSku}`,
+        '',
+      );
+      if (response.data?.status === 200) {
+        setProductData(response?.data?.data?.data);
+        setVariationIdData(
+          response?.data?.data?.data?.attributes?.attributeMap
+            ?.product_concrete_ids,
         );
-        setProductData(response.data?.data);
-      } catch (error) {
-        console.error('Error fetching product data:', error);
+      } else {
+        setIsLoading(false);
       }
     };
 
     fetchProductData();
-  }, [prodData]);
+  }, [propData]);
 
-  const radioButtons = useMemo(
-    () => [
-      {
-        id: '1', // acts as primary key, should be unique and non-empty string
-        label: 'Option 1',
-        value: 'option1',
-      },
-      {
-        id: '2',
-        label: 'Option 2',
-        value: 'option2',
-      },
-    ],
-    [],
-  );
-
-  const [selectedId, setSelectedId] = useState();
+  useEffect(() => {
+    var tempVar = [];
+    const handlerfunction = async () => {
+      if (productData) {
+        Object.keys(
+          productData?.attributes?.attributeMap?.attribute_variant_map,
+        )?.map((item, index) => {
+          tempVar.push({
+            id: index,
+            title: Object.keys(
+              productData?.attributes?.attributeMap?.attribute_variant_map[
+                item
+              ],
+            ).map(item1 => {
+              return productData?.attributes?.attributeMap
+                ?.attribute_variant_map[item][item1];
+            }),
+          });
+        });
+        setVariationData(tempVar);
+      }
+    };
+    handlerfunction();
+  }, [productData]);
+  const AddtoCartHandler = async () => {
+    if (variationData && variationData[1]) {
+      if (selectedId) {
+        var productSkuId = '';
+        await variationIdData?.map((item, index) => {
+          if (index == selectedId) {
+            productSkuId = item;
+          }
+        });
+      } else {
+        return alert('select Varint');
+      }
+    } else {
+      productSkuId = variationIdData[0];
+    }
+    if (productSkuId) {
+      const productData = {
+        data: {
+          type: 'items',
+          attributes: {
+            sku: productSkuId,
+            quantity: 1,
+            salesUnit: {
+              id: 0,
+              amount: 0,
+            },
+            productOptions: [null],
+          },
+        },
+      };
+      setIsLoading(true);
+      const response = await api.post(
+        `carts/${cartId}/items`,
+        productData,
+        isLoading,
+      );
+      if (response.data?.status === 201) {
+        setIsLoading(false);
+        alert('added to cart');
+      } else {
+        console.log('response:---------- ', response);
+        setIsLoading(false);
+      }
+    }
+  };
 
   if (!productData) {
     return <Text>Loading...</Text>;
   }
+  const Item = ({item, onPress, backgroundColor, textColor}) => (
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.item, {backgroundColor}]}>
+      <Text style={[styles.title, {color: textColor}]}>{item.title}</Text>
+    </TouchableOpacity>
+  );
 
-  console.log('------', selectedVarient, 'productData');
+  const renderItem = ({item}) => {
+    const backgroundColor = item.id == selectedId ? '#825D24' : '#FFF';
+    const color = item.id == selectedId ? 'white' : 'black';
+
+    return (
+      <Item
+        item={item}
+        onPress={() => setSelectedId(item.id.toString())}
+        backgroundColor={backgroundColor}
+        textColor={color}
+      />
+    );
+  };
 
   return (
-    <View style={styles.container}>
-      {/* <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={styles.registerButton1}
-          onPress={() => navigation.goBack()}>
-          <Image
-            style={styles.logo}
-            source={require('../../assets/images/backButton.png')}
-          />
-        </TouchableOpacity>
-        <Text style={styles.headerText}> {productData?.attributes?.name}</Text>
-        <TouchableOpacity
-          style={[styles.registerButton1, {backgroundColor: 'green'}]}
-          onPress={() => navigation.navigate('CartScreen')}>
-          <Text style={styles.headerText}>Cart </Text>
-        </TouchableOpacity>
-      </View> */}
-      <Box flexDirection="row">
-        <CommonHeader title={productData?.attributes?.name} />
-      </Box>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingHorizontal: theme.spacing.paddingHorizontal,
-        }}>
-        {prodData ? (
-          <View style={styles.productDetails}>
-            <Image
-              style={styles.backImage}
-              source={{
-                uri: prodData?.images[0].externalUrlLarge,
-              }}
-            />
-            <View style={styles.details}>
-              <View style={styles.row}>
-                <View>
-                  <Text>Product Id: </Text>
-                  <Text>Price: </Text>
-                  {Object.keys(productData?.attributes?.attributes)?.map(
-                    (item, index) => {
-                      return <Text key={index}>{item}</Text>;
-                    },
-                  )}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container2}>
+        <Box flexDirection="row">
+          <CommonHeader title={productData?.attributes?.name} />
+        </Box>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingHorizontal: theme.spacing.paddingHorizontal,
+          }}>
+          {prodData && productData ? (
+            <View style={styles.productDetails}>
+              <Image
+                style={styles.backImage}
+                source={{
+                  uri: prodData?.images[0]?.externalUrlLarge,
+                }}
+              />
+              <View style={styles.details}>
+                <View style={styles.row}>
+                  <View>
+                    <Text>Product Id: </Text>
+                    <Text>Price: </Text>
+                    {Object.keys(productData?.attributes?.attributes)?.map(
+                      (item, index) => {
+                        return <Text key={index}>{item}</Text>;
+                      },
+                    )}
+                  </View>
+                  <View>
+                    <Text>: {prodData?.abstractSku}</Text>
+                    <Text>
+                      : $ {prodData?.price} {prodData?.currency}
+                    </Text>
+                    {Object.keys(productData?.attributes?.attributes)?.map(
+                      (item, index) => {
+                        return (
+                          <Text key={index}>
+                            : {productData?.attributes?.attributes[item]}
+                          </Text>
+                        );
+                      },
+                    )}
+                  </View>
                 </View>
                 <View>
-                  <Text>: {prodData?.abstractSku}</Text>
-                  <Text style={styles.highlite}>
-                    : $ {prodData?.price} {prodData?.currency}
+                  <Text>Choose Variation : </Text>
+                  {variationData && variationData[1] && (
+                    <FlatList
+                      data={variationData}
+                      renderItem={({item}) => renderItem({item})}
+                      keyExtractor={item => item.id}
+                      extraData={selectedId}
+                    />
+                  )}
+                </View>
+              </View>
+              {!isLoading ? (
+                <TouchableOpacity
+                  style={styles.cartButton}
+                  onPress={e => AddtoCartHandler(e)}>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontWeight: '500',
+                    }}>
+                    Add To Cart
                   </Text>
-                  {Object.keys(productData?.attributes?.attributes)?.map(
-                    (item, index) => {
-                      return (
-                        <Text key={index}>
-                          : {productData?.attributes?.attributes[item]}
-                        </Text>
-                      );
-                    },
-                  )}
-                </View>
-              </View>
-              <View>
-                {/* <Picker
-                  selectedValue={selectedVarient}
-                  onValueChange={e => setSelectedVarient(e.target.value)}>
-                  <Picker.Item label="Option 1" value="option1" />
-                  <Picker.Item label="Option 2" value="option2" />
-                  <Picker.Item label="Option 3" value="option3" />
-                </Picker> */}
-                <RadioGroup
-                  radioButtons={radioButtons}
-                  onPress={setSelectedId}
-                  selectedId={selectedId}
-                />
-              </View>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.cartButton}
+                  // onPress={e => AddtoCartHandler(e)}
+                >
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontWeight: '500',
+                    }}>
+                    Loading ...
+                  </Text>
+                </TouchableOpacity>
+              )}
+              <Text style={styles.description}>Description : </Text>
+              <Text>{productData?.attributes?.description}</Text>
             </View>
-            <TouchableOpacity style={styles.cartButton}>
-              <Text
-                style={{
-                  color: '#fff',
-                  fontWeight: '500',
-                }}>
-                Add To Cart
-              </Text>
-            </TouchableOpacity>
-            <Text style={styles.description}>Description : </Text>
-            <Text style={styles.highlite}>
-              {productData?.attributes?.description}
-            </Text>
-          </View>
-        ) : (
-          <ActivityIndicator size="large" color="#0064FD" />
-        )}
-      </ScrollView>
-    </View>
+          ) : (
+            <ActivityIndicator size="large" color="#0064FD" />
+          )}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // height: '100%',
-    flex: 1,
-    // paddingHorizontal: 16,
-    backgroundColor: theme.colors.background,
+    marginTop: StatusBar.currentHeight || 0,
   },
   backImage: {
-    marginVertical: 1,
     resizeMode: 'contain',
-    width: 470,
-    height: 300,
+    width: 270,
+    height: 150,
   },
-  highlite: {
-    color: '#B99C6B',
+  item: {
+    padding: 10,
+    marginVertical: 8,
+    marginHorizontal: 30,
   },
-  details: {
-    // widht: 400,
-  },
-  productDetails: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  registerButton1: {
-    width: '20%',
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    borderRadius: 16,
-  },
-  logo: {
-    height: 30,
-    resizeMode: 'contain',
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  title: {
+    fontSize: 32,
   },
   row: {
     width: '50%',
@@ -205,62 +266,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     display: 'flex',
   },
-  headerText: {
-    fontWeight: '700',
-    fontSize: 28,
-    marginRight: 60,
-  },
-  description: {
-    fontWeight: '700',
-    fontSize: 16,
-    marginVertical: 10,
-  },
-  dropdownHeading: {
-    fontWeight: '700',
-    fontSize: 16,
-    marginVertical: 20,
-  },
-  inputField: {
-    borderRadius: 16,
-    borderColor: '#0064FD',
-    padding: 10,
-    backgroundColor: '#FAFAFA',
-    marginTop: 5,
-    borderWidth: 1.5,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconInput: {
-    marginHorizontal: 12,
-  },
-  registerButton: {
-    width: '100%',
-    marginTop: 10,
-    backgroundColor: 'white',
-    padding: 10,
-    alignItems: 'center',
-    borderRadius: 16,
-    display: 'flex',
-    flexDirection: 'row',
-  },
   cartButton: {
     width: '100%',
     marginVertical: 10,
-    marginBottom: '20%',
     backgroundColor: 'gray',
     padding: 16,
     alignItems: 'center',
     borderRadius: 8,
-  },
-  signupContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#B8B8B8',
-    position: 'absolute',
-    bottom: 70,
-    paddingTop: 15,
   },
 });
 
