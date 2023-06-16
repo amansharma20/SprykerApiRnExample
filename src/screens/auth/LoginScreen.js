@@ -8,7 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 
 export default function LoginScreen(props) {
   const {signIn} = useContext(AuthContext);
-  const {redirectToScreen} = props.route.params;
+  const redirectToScreen = props?.route?.params?.redirectToScreen;
 
   const navigation = useNavigation();
 

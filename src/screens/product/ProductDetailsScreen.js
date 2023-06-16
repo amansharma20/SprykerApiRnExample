@@ -18,9 +18,12 @@ import axios from 'axios';
 import {useEffect, useState} from 'react';
 import {Box, theme} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
+import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 
 const ProductDetailsScreen = props => {
   const navigation = useNavigation();
+  const {isUserLoggedIn} = useIsUserLoggedIn();
+  console.log('isUserLoggedIn', isUserLoggedIn);
   const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
   const [productData, setProductData] = useState();
   const [variationData, setVariationData] = useState();
@@ -75,7 +78,8 @@ const ProductDetailsScreen = props => {
     };
     handlerfunction();
   }, [productData]);
-  const AddtoCartHandler = async () => {
+
+  const addToCartHandler = async () => {
     if (variationData && variationData[1]) {
       if (selectedId) {
         var productSkuId = '';
@@ -115,10 +119,18 @@ const ProductDetailsScreen = props => {
         setIsLoading(false);
         alert('added to cart');
       } else {
-        console.log('response:---------- ', response);
+        console.log(
+          'response:---------- ',
+          response.data.data.errors?.[0]?.detail,
+        );
+        alert('error', response.data.data.errors?.[0]?.detail);
         setIsLoading(false);
       }
     }
+  };
+
+  const onPressAddToCart = () => {
+    isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
   };
 
   if (!productData) {
@@ -207,7 +219,8 @@ const ProductDetailsScreen = props => {
               {!isLoading ? (
                 <TouchableOpacity
                   style={styles.cartButton}
-                  onPress={e => AddtoCartHandler(e)}>
+                  // onPress={e => addToCartHandler(e)}
+                  onPress={onPressAddToCart}>
                   <Text
                     style={{
                       color: '#fff',
@@ -219,7 +232,7 @@ const ProductDetailsScreen = props => {
               ) : (
                 <TouchableOpacity
                   style={styles.cartButton}
-                  // onPress={e => AddtoCartHandler(e)}
+                  // onPress={e => addToCartHandler(e)}
                 >
                   <Text
                     style={{
