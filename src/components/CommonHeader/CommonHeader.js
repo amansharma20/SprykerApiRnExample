@@ -26,7 +26,7 @@ const CommonHeader = ({title, onPress, ...props}) => {
 
   useEffect(() => {
     var count = 0;
-    cartItemsData.included.map(item => {
+    cartItemsData?.included?.map(item => {
       count += item.attributes.quantity;
     });
     setTotalQuantity(count);
