@@ -8,9 +8,10 @@ export const getProductDetails = createAsyncThunk(
       const response = await commonApi.get(endpoint);
       const existingItems =
         thunkAPI.getState().getProductDetailsAliSlice?.productDetails || [];
-      const updatedItems = [...existingItems, response.data.data];
-      console.log(updatedItems);
-      return updatedItems;
+      console.log('existingItems: ', existingItems);
+      // const updatedItems = [...existingItems, response.data.data];
+      // console.log(updatedItems);
+      return existingItems;
     } catch (error) {
       return error;
     }

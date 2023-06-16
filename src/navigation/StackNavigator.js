@@ -46,8 +46,6 @@ export default function StackNavigator() {
       const token = await AsyncStorage.getItem('tokenExpiry');
       if (token) {
         var decoded = jwt_decode(token);
-        console.log('decoded: ', decoded);
-        console.log(decoded);
         var tokenExpiryDate = new Date(0);
         tokenExpiryDate.setUTCSeconds(decoded.exp);
         var currentDate = new Date();

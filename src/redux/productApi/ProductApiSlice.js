@@ -1,7 +1,10 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {getProductDetails} from './ProductApiAsyncThunk';
+
 const initialState = {
   productDetails: [],
+  status: 'idle',
+  error: null,
 };
 
 const getProductDetailsAliSlice = createSlice({

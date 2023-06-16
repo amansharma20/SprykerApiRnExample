@@ -6,16 +6,7 @@ export const getCustomerCartItems = createAsyncThunk(
   async (endpoint, thunkAPI) => {
     try {
       const response = await api.get(endpoint);
-      console.log('response-data123: ', response.data.data.included);
-      var cartItem = response.data.data.included;
-      var newCartItems = [];
-      cartItem.map(item => {
-        newCartItems.push({
-          sku: item.attributes.sku,
-          quantity: item.attributes.quantity,
-        });
-      });
-      return newCartItems;
+      return response.data;
     } catch (error) {
       return error;
     }
