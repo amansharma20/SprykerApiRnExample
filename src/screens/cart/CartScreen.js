@@ -104,7 +104,7 @@ const CartScreen = () => {
   // );
 
   return (
-    <Box flex={1}>
+    <Box flex={1} backgroundColor='white'>
       <CommonHeader title={'Your Cart'} />
       <Box paddingHorizontal="paddingHorizontal">
         <FlatList
