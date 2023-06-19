@@ -1,10 +1,10 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {getCustomerCartItems} from './CartApiAsyncThunk';
 import {api} from '../../api/SecureAPI';
+import produce from 'immer';
 
 const initialState = {
   customerCart: [],
-  customerCartProductDetails: [],
   status: 'idle',
   error: null,
 };
@@ -26,23 +26,7 @@ const getCustomerCartItemsAliSlice = createSlice({
           quantity: item.attributes.quantity,
         });
       });
-      // here
-      let myArray = [];
-      if (newCartItems) {
-        newCartItems.forEach(async item => {
-          try {
-            const response = await api
-              .get(`concrete-products/${item?.sku}`)
-              .then(res => {
-                myArray.push(res.data.data.data);
-              });
-          } catch (error) {
-            console.log(error);
-          }
-        });
-      }
       state.customerCart = newCartItems;
-      state.customerCartProductDetails = myArray;
     });
     builder.addCase(getCustomerCartItems.rejected, (state, action) => {
       state.status = 'rejected';
