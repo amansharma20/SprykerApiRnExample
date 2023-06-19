@@ -1,7 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {getCustomerCartItems} from './CartApiAsyncThunk';
-import {api} from '../../api/SecureAPI';
-import produce from 'immer';
 
 const initialState = {
   customerCart: [],

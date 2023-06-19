@@ -11,7 +11,7 @@ export default function PersonalDetailsScreen() {
   const {signOut} = useContext(AuthContext);
   const dispatch = useDispatch();
 
-  const profileData = useSelector(
+  const profileDataAttributes = useSelector(
     state =>
       state.getCustomerDetailsApiSlice.customerDetails?.data?.data?.[0]
         ?.attributes || [],
@@ -38,27 +38,27 @@ export default function PersonalDetailsScreen() {
         <>
           <Box flexDirection="row" justifyContent="space-between">
             <Text>First Name</Text>
-            <Text>{profileData?.firstName}</Text>
+            <Text>{profileDataAttributes?.firstName}</Text>
           </Box>
           <Box flexDirection="row" justifyContent="space-between">
             <Text>Last Name</Text>
-            <Text>{profileData?.lastName}</Text>
+            <Text>{profileDataAttributes?.lastName}</Text>
           </Box>
           <Box flexDirection="row" justifyContent="space-between">
             <Text>Salutation</Text>
-            <Text>{profileData?.salutation}</Text>
+            <Text>{profileDataAttributes?.salutation}</Text>
           </Box>
           <Box flexDirection="row" justifyContent="space-between">
             <Text>Email</Text>
-            <Text>{profileData?.email}</Text>
+            <Text>{profileDataAttributes?.email}</Text>
           </Box>
           <Box flexDirection="row" justifyContent="space-between">
             <Text>Gender</Text>
-            <Text>{profileData?.gender}</Text>
+            <Text>{profileDataAttributes?.gender}</Text>
           </Box>
           <Box flexDirection="row" justifyContent="space-between">
             <Text>Date Of Birth</Text>
-            <Text>{profileData?.dateOfBirth}</Text>
+            <Text>{profileDataAttributes?.dateOfBirth}</Text>
           </Box>
         </>
       )}

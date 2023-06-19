@@ -1,11 +1,15 @@
-import React, {useState, useEffect} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState, useEffect, useCallback} from 'react';
 import {Image} from 'react-native';
 import {Box, Text} from '@atoms';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
+import {api} from '../../api/SecureAPI';
+import {useFocusEffect} from '@react-navigation/native';
+
 const CartScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
-  console.log('isLoading: ', isLoading);
+  const [productDetails, setProductDetails] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -16,12 +20,42 @@ const CartScreen = () => {
   );
   console.log('customerCartData: ', customerCartData);
 
-  useEffect(() => {
-    setIsLoading(true);
-    dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(() => {
-      setIsLoading(false);
-    });
-  }, []);
+  let customerItemDetailsNew = [];
+
+  const getCartProductDetails = async () => {
+    if (customerCartData.length > 0) {
+      customerCartData?.map(async item => {
+        await api.get(`concrete-products/${item.sku}`).then(res => {
+          if (res.data.status === 200) {
+            const newArray = [...customerItemDetailsNew, res.data.data.data];
+            console.log('newArray: ', newArray);
+            setProductDetails(newArray);
+          }
+        });
+        // console.log('customerItemDetails: ', customerItemDetails);
+      });
+    }
+  };
+
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(() => {
+  //     setIsLoading(false);
+  //     getCartProductDetails();
+  //   });
+  // }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
+        () => {
+          setIsLoading(false);
+          getCartProductDetails();
+        },
+      );
+    }, [customerCartData.length]),
+  );
 
   return (
     <Box flex={1}>

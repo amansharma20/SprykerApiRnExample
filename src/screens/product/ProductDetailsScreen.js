@@ -19,11 +19,13 @@ import {useEffect, useState} from 'react';
 import {Box, theme} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
+import {useDispatch} from 'react-redux';
+import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 
 const ProductDetailsScreen = props => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const {isUserLoggedIn} = useIsUserLoggedIn();
-  console.log('isUserLoggedIn', isUserLoggedIn);
   const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
   const [productData, setProductData] = useState();
   const [variationData, setVariationData] = useState();
@@ -116,8 +118,14 @@ const ProductDetailsScreen = props => {
         isLoading,
       );
       if (response.data?.status === 201) {
-        setIsLoading(false);
-        alert('added to cart');
+        dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
+          res => {
+            if (res.data.status === 200) {
+              setIsLoading(false);
+              alert('added to cart');
+            }
+          },
+        );
       } else {
         console.log(
           'response:---------- ',
