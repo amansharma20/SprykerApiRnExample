@@ -26,7 +26,8 @@ const ProductDetailsScreen = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {isUserLoggedIn} = useIsUserLoggedIn();
-  const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
+  // const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
+  const cartId = '2d0daf14-f500-5ea7-9425-7f6254ef5ae0';
   const [productData, setProductData] = useState();
   const [variationData, setVariationData] = useState();
   const [variationIdData, setVariationIdData] = useState();
@@ -117,10 +118,12 @@ const ProductDetailsScreen = props => {
         productData,
         isLoading,
       );
+      console.log('response: ', response);
       if (response.data?.status === 201) {
         dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
           res => {
-            if (res.data.status === 200) {
+            console.log('res: ', res);
+            if (res.payload.status === 200) {
               setIsLoading(false);
               alert('added to cart');
             }
