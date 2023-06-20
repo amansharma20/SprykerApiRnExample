@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PersonalDetailsScreen from '../screens/profile/PersonalDetailsScreen';
 import {Alert, AppState} from 'react-native';
 import jwt_decode from 'jwt-decode';
+import CheckoutScreen from '../screens/checkout/CheckoutScreen';
 
 export const AuthContext = React.createContext();
 
@@ -171,11 +172,11 @@ export default function StackNavigator() {
           name="ProductsListScreen"
           component={ProductsListScreen}
         />
-
         <Stack.Screen
           name="PersonalDetailsScreen"
           component={PersonalDetailsScreen}
         />
+        <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />
       </Stack.Navigator>
     </AuthContext.Provider>
   );

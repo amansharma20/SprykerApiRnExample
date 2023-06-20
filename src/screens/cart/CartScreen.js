@@ -1,14 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
-import {FlatList} from 'react-native';
+import {Button, FlatList} from 'react-native';
 import {Box} from '@atoms';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {api} from '../../api/SecureAPI';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import CartItem from './CartItem';
+import {useNavigation} from '@react-navigation/native';
 
 const CartScreen = () => {
+  const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [productDetails, setProductDetails] = useState([]);
 
@@ -18,14 +20,15 @@ const CartScreen = () => {
   const cartId = '2d0daf14-f500-5ea7-9425-7f6254ef5ae0';
 
   const customerCartData = useSelector(
-    state => state.getCustomerCartItemsAliSlice?.customerCart || [{}],
+    state => state.getCustomerCartItemsAliSlice?.customerCart || [],
   );
+  console.log('customerCartData: ', customerCartData);
 
-  let customerItemDetailsNew = [];
+  // let customerItemDetailsNew = [];
 
-  function isKeyUnique(array, key) {
-    return array.every(obj => obj.key !== key);
-  }
+  // function isKeyUnique(array, key) {
+  //   return array.every(obj => obj.key !== key);
+  // }
 
   // const getCartProductDetails = async () => {
   //   if (customerCartData.length > 0) {
@@ -64,7 +67,7 @@ const CartScreen = () => {
   return (
     <Box flex={1} backgroundColor="white">
       <CommonHeader title={'Your Cart'} />
-      <Box paddingHorizontal="paddingHorizontal">
+      <Box flex={1} paddingHorizontal="paddingHorizontal">
         <FlatList
           data={customerCartData}
           renderItem={item => {
@@ -72,6 +75,16 @@ const CartScreen = () => {
           }}
           contentContainerStyle={{paddingBottom: 100}}
         />
+        {customerCartData?.length !== 0 ? (
+          <>
+            <Button
+              title="Proceed to Checkout"
+              onPress={() => navigation.navigate('CheckoutScreen')}
+            />
+          </>
+        ) : (
+          <></>
+        )}
       </Box>
     </Box>
   );

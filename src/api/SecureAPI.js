@@ -43,7 +43,6 @@ const get = async (endPoint, data, loading) => {
 const post = async (endPoint, data, loading) => {
   let userToken = await Keychain.getGenericPassword();
   let token = userToken.password;
-  console.log('token: ', token);
   if (loading) {
     console.log('loading: ', loading);
   }
