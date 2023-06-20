@@ -14,7 +14,6 @@ import {
 import {commonApi} from '../../api/CommanAPI';
 import {api} from '../../api/SecureAPI';
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
 import {useEffect, useState} from 'react';
 import {Box, theme} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
