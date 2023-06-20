@@ -89,15 +89,17 @@ const Delete = async (endPoint, data, loading) => {
     console.log('loading: ', loading);
   }
   try {
+    // console.log(applicationProperties.baseUrl + endPoint);
+    // return false;
     let response = await axios.delete(
       applicationProperties.baseUrl + endPoint,
-      data,
       {
         headers: {
           Authorization: token,
         },
         validateStatus: () => true,
       },
+      data,
     );
 
     if (response.data !== undefined && response.data.status) {

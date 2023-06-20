@@ -26,7 +26,8 @@ const ProductDetailsScreen = props => {
   const dispatch = useDispatch();
   const {isUserLoggedIn} = useIsUserLoggedIn();
   // const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
-  const cartId = '2d0daf14-f500-5ea7-9425-7f6254ef5ae0';
+  const cartId = 'a25265da-ec75-5854-bf07-c5b35d09e6ad';
+
   const [productData, setProductData] = useState();
   const [variationData, setVariationData] = useState();
   const [variationIdData, setVariationIdData] = useState();
