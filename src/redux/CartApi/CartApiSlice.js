@@ -17,11 +17,10 @@ const getCustomerCartItemsAliSlice = createSlice({
     builder.addCase(getCustomerCartItems.fulfilled, (state, action) => {
       state.status = 'success';
       const cartItem = action.payload.data.included;
-      // console.log('cartItem', cartItem);
       const newCartItems = [];
-      // console.log('cartItem', cartItem);
-      console.log('my map fun', cartItem);
+      console.log('my cart item', cartItem);
       cartItem.map(item => {
+        // console.log('my map fun', item.attributes.quantity);
         newCartItems.push({
           sku: item.attributes.sku,
           quantity: item.attributes.quantity,

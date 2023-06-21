@@ -5,6 +5,7 @@ import {TouchableOpacity, Image} from 'react-native';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {ActivityIndicator} from 'react-native';
 import {useDispatch} from 'react-redux';
+import CartItemQuantity from './CartItemQuantity';
 
 const CartItem = ({item}) => {
   const dispatch = useDispatch();
@@ -17,7 +18,8 @@ const CartItem = ({item}) => {
 
   // const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
   // const cartId = '2d0daf14-f500-5ea7-9425-7f6254ef5ae0';
-  const cartId = 'a25265da-ec75-5854-bf07-c5b35d09e6ad';
+
+  const cartId = 'cdb36660-2eb0-5808-a2d8-74bdec08ca19';
   useEffect(() => {
     const getProductDetails = async () => {
       if (cartItem) {
@@ -84,13 +86,16 @@ const CartItem = ({item}) => {
           />
         </Box>
 
-        <Box width={'50%'} marginLeft="s8">
+        <Box width={'40%'} marginLeft="s8">
           <Text>{attributes?.name}</Text>
         </Box>
-        <Box width={'20%'} alignItems="flex-end">
-          <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
-            <Text>Remove Item</Text>
-          </TouchableOpacity>
+        <Box width={'30%'} alignItems="flex-end">
+          <Box flexDirection="row">
+            <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
+              <Text>Remove Item</Text>
+            </TouchableOpacity>
+          </Box>
+          <CartItemQuantity cartItem={cartItem} />
         </Box>
       </Box>
     </Box>
