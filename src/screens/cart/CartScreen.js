@@ -25,7 +25,7 @@ const CartScreen = () => {
   );
 
   useEffect(() => {
-    if (customerCartData) {
+    if (customerCartData && cartId) {
       let tempArr = [];
       customerCartData?.map(item => {
         tempArr.push(item.itemId);
@@ -35,10 +35,14 @@ const CartScreen = () => {
   }, [customerCartData, cartId]);
 
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(() => {
-      setIsLoading(false);
-    });
+    if (cartId) {
+      setIsLoading(true);
+      dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
+        () => {
+          setIsLoading(false);
+        },
+      );
+    }
   }, [dispatch, cartId]);
 
   useEffect(() => {
