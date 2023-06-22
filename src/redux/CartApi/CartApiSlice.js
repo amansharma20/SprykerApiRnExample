@@ -18,7 +18,7 @@ const getCustomerCartItemsAliSlice = createSlice({
       state.status = 'success';
       const cartItem = action.payload.data.included;
       const newCartItems = [];
-      console.log('my cart item', cartItem);
+      // console.log('my cart item', cartItem);
       cartItem.map(item => {
         // console.log('my map fun', item.attributes.quantity);
         newCartItems.push({

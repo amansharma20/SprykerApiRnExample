@@ -6,6 +6,7 @@ import {getCheckoutData} from '../../redux/checkoutDataApi/CheckoutApiAsyncThunk
 import CommonOptionsSelector from '../../components/CommonOptionsSelector/CommonOptionsSelector';
 import {ActivityIndicator, Button} from 'react-native';
 import {api} from '../../api/SecureAPI';
+import RNRestart from 'react-native-restart';
 
 const CheckoutScreen = props => {
   const dispatch = useDispatch();
@@ -119,8 +120,12 @@ const CheckoutScreen = props => {
   const orderConfirm = async () => {
     try {
       const response = await api.post('checkout', JSON.stringify(orderData));
-      console.log('response: ', response);
       if (response.data.status === 201) {
+        dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
+          () => {},
+        );
+        RNRestart.Restart();
+
         alert('Order placed successfully');
       }
     } catch (error) {
@@ -153,7 +158,6 @@ const CheckoutScreen = props => {
         data: data,
       }),
     ).then(res => {
-      console.log('res?.included: ', res?.included);
       let tempArr = [];
       res?.included?.map(item => {
         tempArr.push(item.id);

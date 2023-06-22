@@ -20,13 +20,16 @@ import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 import {useDispatch} from 'react-redux';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
-
+import {useSelector} from 'react-redux';
 const ProductDetailsScreen = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {isUserLoggedIn} = useIsUserLoggedIn();
   // const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
-  const cartId = 'cdb36660-2eb0-5808-a2d8-74bdec08ca19';
+  // const cartId = 'cdb36660-2eb0-5808-a2d8-74bdec08ca19';
+  const customerCart = useSelector(
+    state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
+  );
 
   const [productData, setProductData] = useState();
   const [variationData, setVariationData] = useState();
@@ -114,21 +117,21 @@ const ProductDetailsScreen = props => {
       };
       setIsLoading(true);
       const response = await api.post(
-        `carts/${cartId}/items`,
+        `carts/${customerCart.id}/items`,
         productData,
         isLoading,
       );
       console.log('response: ', response);
       if (response.data?.status === 201) {
-        dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
-          res => {
-            console.log('res: ', res);
-            if (res.payload.status === 200) {
-              setIsLoading(false);
-              alert('added to cart');
-            }
-          },
-        );
+        dispatch(
+          getCustomerCartItems(`carts/${customerCart.id}?include=items`),
+        ).then(res => {
+          console.log('res: ', res);
+          if (res.payload.status === 200) {
+            setIsLoading(false);
+            alert('added to cart');
+          }
+        });
       } else {
         console.log(
           'response:---------- ',

@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 
-import { View, StyleSheet, FlatList } from 'react-native';
+import {View, StyleSheet, FlatList} from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 import ProductItem from '../../components/ProductItem';
 
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
-
-import { theme } from '../../atoms/theme';
+import {theme} from '../../atoms/theme';
 
 const ProductListScreen = props => {
-  const { nodeId, title } = props.route.params;
+  const {nodeId, title} = props.route.params;
 
   const [products, setProducts] = useState([]);
 
@@ -77,7 +76,7 @@ const ProductListScreen = props => {
 
   const navigation = useNavigation();
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({item}) => (
     <>
       <ProductItem item={item} />
     </>
@@ -86,7 +85,6 @@ const ProductListScreen = props => {
   return (
     <View style={styles.container}>
       <CommonHeader title={title || 'All Products'} />
-
       <FlatList
         data={products}
         renderItem={renderItem}
@@ -100,21 +98,17 @@ const ProductListScreen = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     backgroundColor: theme.colors.background,
-
     // padding: 16,
   },
 
   productList: {
     // justifyContent: 'space-between',
-
     paddingHorizontal: 16,
   },
 
   row: {
     display: 'flex',
-
     flexDirection: 'row',
   },
 });

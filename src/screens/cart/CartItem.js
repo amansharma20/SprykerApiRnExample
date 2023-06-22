@@ -4,14 +4,13 @@ import {Box, Text} from '@atoms';
 import {TouchableOpacity, Image} from 'react-native';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {ActivityIndicator} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import CartItemQuantity from './CartItemQuantity';
 
 const CartItem = ({item}) => {
   const dispatch = useDispatch();
 
   const cartItem = item?.item;
-  // console.log(cartItem);
   const [attributes, setAttributes] = useState([]);
   const [productImage, setProductImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +18,11 @@ const CartItem = ({item}) => {
   // const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
   // const cartId = '2d0daf14-f500-5ea7-9425-7f6254ef5ae0';
 
-  const cartId = 'cdb36660-2eb0-5808-a2d8-74bdec08ca19';
+  // const cartId = 'cdb36660-2eb0-5808-a2d8-74bdec08ca19';
+  const customerCart = useSelector(
+    state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
+  );
+
   useEffect(() => {
     const getProductDetails = async () => {
       if (cartItem) {
@@ -43,11 +46,6 @@ const CartItem = ({item}) => {
           if (productImageResponse) {
             setProductImage(productImageResponse);
           }
-          // console.log(
-          //   'res',
-          //   res?.data?.data?.data[0]?.attributes?.imageSets[0]?.images[0]
-          //     ?.externalUrlSmall,
-          // );
         });
     };
     getProductImage();
@@ -56,14 +54,14 @@ const CartItem = ({item}) => {
   const removeItem = async itemId => {
     setIsLoading(true);
     const response = await api
-      .Delete(`carts/${cartId}/items/${itemId}`)
+      .Delete(`carts/${customerCart.id}/items/${itemId}`)
       .then(res => {
         if (res.data.status == 204) {
-          dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
-            () => {
-              setIsLoading(false);
-            },
-          );
+          dispatch(
+            getCustomerCartItems(`carts/${customerCart.id}?include=items`),
+          ).then(() => {
+            setIsLoading(false);
+          });
         }
       });
   };
@@ -95,7 +93,10 @@ const CartItem = ({item}) => {
               <Text>Remove Item</Text>
             </TouchableOpacity>
           </Box>
-          <CartItemQuantity cartItem={cartItem} />
+          <CartItemQuantity
+            cartItem={cartItem}
+            removeItemTrigger={removeItem}
+          />
         </Box>
       </Box>
     </Box>
