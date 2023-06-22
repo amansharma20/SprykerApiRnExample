@@ -15,6 +15,7 @@ import PersonalDetailsScreen from '../screens/profile/PersonalDetailsScreen';
 import {Alert, AppState} from 'react-native';
 import jwt_decode from 'jwt-decode';
 import CheckoutScreen from '../screens/checkout/CheckoutScreen';
+import OrdersScreen from '../screens/orders/OrdersScreen';
 
 export const AuthContext = React.createContext();
 
@@ -177,6 +178,7 @@ export default function StackNavigator() {
           component={PersonalDetailsScreen}
         />
         <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />
+        <Stack.Screen name="OrdersScreen" component={OrdersScreen} />
       </Stack.Navigator>
     </AuthContext.Provider>
   );

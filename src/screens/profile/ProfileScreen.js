@@ -3,6 +3,7 @@ import {Box, Text, theme} from '@atoms';
 import {FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
+import LoginScreen from '../auth/LoginScreen';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -18,6 +19,12 @@ export default function ProfileScreen() {
           : navigation.navigate('LoginScreen', {
               redirectToScreen: 'PersonalDetailsScreen',
             });
+      },
+    },
+    {
+      name: 'Your Orders',
+      onPress: function () {
+        navigation.navigate('OrdersScreen');
       },
     },
     {
@@ -55,13 +62,21 @@ export default function ProfileScreen() {
 
   return (
     <Box backgroundColor="background" flex={1}>
-      <Box>
-        <FlatList
-          data={dataArray}
-          renderItem={renderItem}
-          key={Math.random()}
-        />
-      </Box>
+      {isUserLoggedIn ? (
+        <>
+          <Box flex={1}>
+            <FlatList
+              data={dataArray}
+              renderItem={renderItem}
+              key={Math.random()}
+            />
+          </Box>
+        </>
+      ) : (
+        <>
+          <LoginScreen />
+        </>
+      )}
     </Box>
   );
 }
