@@ -24,7 +24,7 @@ export default function ProfileScreen() {
     {
       name: 'Your Orders',
       onPress: function () {
-        navigation.navigate('OrdersScreen');
+        navigation.navigate('YourOrdersScreen');
       },
     },
     {

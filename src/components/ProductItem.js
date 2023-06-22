@@ -26,9 +26,6 @@ export default function ProductItem({item}) {
           width: '80%',
         }}>
         <Text style={styles.productPrice}>$ {item.price}</Text>
-        <TouchableOpacity style={styles.roundButton2}>
-          <Text style={{color: 'white'}}>Add</Text>
-        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );

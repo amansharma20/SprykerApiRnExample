@@ -114,6 +114,7 @@ const CategorySection = () => {
                 data={item?.children}
                 renderItem={renderSubCategory}
                 keyExtractor={item => item.nodeId.toString()}
+                scrollEnabled={false}
               />
             </Animated.View>
           </>

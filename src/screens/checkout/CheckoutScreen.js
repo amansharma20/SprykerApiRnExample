@@ -4,16 +4,18 @@ import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCheckoutData} from '../../redux/checkoutDataApi/CheckoutApiAsyncThunk';
 import CommonOptionsSelector from '../../components/CommonOptionsSelector/CommonOptionsSelector';
-import {ActivityIndicator, Button} from 'react-native';
+import {ActivityIndicator, Alert, Button, ScrollView} from 'react-native';
 import {api} from '../../api/SecureAPI';
-import RNRestart from 'react-native-restart';
+import {useNavigation} from '@react-navigation/native';
 
 const CheckoutScreen = props => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const cartId = props.route.params?.cartId;
   const cartItemsArray = props.route.params?.cartItemsArray;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isOrderConfirmedLoading, setIsOrderConfirmedLoading] = useState(false);
 
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
   const [selectedShipmentIndex, setSelectedShipmentIndex] = useState(0);
@@ -118,18 +120,43 @@ const CheckoutScreen = props => {
   };
 
   const orderConfirm = async () => {
+    setIsOrderConfirmedLoading(true);
     try {
       const response = await api.post('checkout', JSON.stringify(orderData));
       if (response.data.status === 201) {
-        dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
-          () => {},
-        );
-        RNRestart.Restart();
+        console.log('response: ', response);
+        console.log('response?.data?.data?.data: ', response?.data?.data?.data);
+        Alert.alert('Order Placed Successfully', '', [
+          {
+            text: 'OK',
+            onPress: () =>
+              navigation.replace('OrderDetailsScreen', {
+                checkoutResponse: response?.data?.data?.data,
+              }),
+          },
+        ]);
+        setIsOrderConfirmedLoading(false);
+        // dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
+        //   () => {
+        //     Alert.alert('Order Placed Successfully', [
+        //       {text: 'OK', onPress: () => RNRestart.Restart()},
+        //     ]);
+        //   },
+        // );
+        // RNRestart.Restart();
+      } else {
+        console.log('response: ', response?.data?.data?.errors?.[0]?.detail);
 
-        alert('Order placed successfully');
+        Alert.alert(response?.data?.data?.errors?.[0]?.detail, '', [
+          {
+            text: 'OK',
+            onPress: () => {},
+          },
+        ]);
+        setIsOrderConfirmedLoading(false);
       }
     } catch (error) {
-      setIsLoading(false);
+      console.log('error: ', error);
     }
   };
 
@@ -169,7 +196,7 @@ const CheckoutScreen = props => {
 
   return (
     <Box flex={1} backgroundColor="white">
-      <Box flex={1}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <CommonHeader title={'Checkout'} />
         {!isLoading ? (
           <>
@@ -214,8 +241,16 @@ const CheckoutScreen = props => {
             <ActivityIndicator />
           </>
         )}
-      </Box>
-      <Button title="Continue" onPress={orderConfirm} />
+      </ScrollView>
+      {!isOrderConfirmedLoading ? (
+        <>
+          <Button title="Continue" onPress={orderConfirm} />
+        </>
+      ) : (
+        <>
+          <ActivityIndicator />
+        </>
+      )}
     </Box>
   );
 };

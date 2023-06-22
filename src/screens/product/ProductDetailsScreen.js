@@ -272,6 +272,8 @@ const ProductDetailsScreen = props => {
 const styles = StyleSheet.create({
   container: {
     marginTop: StatusBar.currentHeight || 0,
+    backgroundColor: 'white',
+    flex: 1,
   },
   backImage: {
     resizeMode: 'contain',
