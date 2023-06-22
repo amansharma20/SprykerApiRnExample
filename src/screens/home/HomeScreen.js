@@ -1,9 +1,13 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Image} from 'react-native';
 import CategorySection from './categorySection/CategorySection';
 import {Text} from '@atoms';
-
+import ContentFull from './contentFull/ContentFull';
+import {useSelector, useDispatch} from 'react-redux';
+import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 const HomeScreen = () => {
+  const [blogPageImage, setBlogPageImage] = useState();
+  const dispatch = useDispatch();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -58,22 +62,31 @@ const HomeScreen = () => {
         );
 
         const data = await response.json();
-        console.log('data: ', data);
 
-        // setBlogPageData(data?.data?.blogPage);
-
-        // console.log(data?.data?.blogPage, 'hey ashu');
-      } catch (error) {
-        console.error('Error fetching blog data:', error);
-      }
+        setBlogPageImage(
+          data.data.blogPage?.bannerImagesCollection?.items[0].url,
+        );
+      } catch (error) {}
     };
 
     fetchData();
   }, []);
 
+  useEffect(() => {
+    dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Browse</Text>
+      <Image
+        style={{width: '100%', height: 200, marginTop: '5%'}}
+        source={{
+          uri: blogPageImage,
+        }}
+      />
+      {/* <ContentFull blogPageImage={blogPageImage} /> */}
+
       <CategorySection />
     </View>
   );

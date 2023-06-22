@@ -13,48 +13,48 @@ const CartScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cartItemsArray, setCartItemsArray] = useState([]);
 
-  const [cartId, setCartId] = useState();
-  console.log('cartId: ', cartId);
-
   const dispatch = useDispatch();
 
-  // const cartId = 'a25265da-ec75-5854-bf07-c5b35d09e6ad';
+  // const customerCartId = 'a25265da-ec75-5854-bf07-c5b35d09e6ad';
 
   const customerCartData = useSelector(
     state => state.getCustomerCartItemsAliSlice?.customerCart || [],
   );
 
   useEffect(() => {
-    if (customerCartData && cartId) {
+    if (customerCartData && customerCartId) {
       let tempArr = [];
       customerCartData?.map(item => {
         tempArr.push(item.itemId);
       });
       setCartItemsArray(tempArr);
     }
-  }, [customerCartData, cartId]);
+  }, [customerCartData, customerCartId]);
 
   useEffect(() => {
-    if (cartId) {
+    if (customerCartId) {
       setIsLoading(true);
-      dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
-        () => {
-          setIsLoading(false);
-        },
-      );
+      dispatch(
+        getCustomerCartItems(`carts/${customerCartId}?include=items`),
+      ).then(() => {
+        setIsLoading(false);
+      });
     }
-  }, [dispatch, cartId]);
+  }, [dispatch, customerCartId]);
 
-  useEffect(() => {
-    const getCarts = async () => {
-      const response = await api.get('carts');
-      if (response?.data?.status === 200) {
-        setCartId(response?.data.data.data?.[1]?.id);
-      }
-    };
-    getCarts();
-  }, []);
-
+  // useEffect(() => {
+  //   const getCarts = async () => {
+  //     const response = await api.get('carts');
+  //     if (response?.data?.status === 200) {
+  //       setCartId(response?.data.data.data?.[1]?.id);
+  //     }
+  //   };
+  //   getCarts();
+  // }, []);
+  const customerCartId = useSelector(
+    state =>
+      state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
+  );
   return (
     <Box flex={1} backgroundColor="white">
       <CommonHeader title={'Your Cart'} />
@@ -72,7 +72,7 @@ const CartScreen = () => {
               title="Proceed to Checkout"
               onPress={() =>
                 navigation.navigate('CheckoutScreen', {
-                  cartId: cartId,
+                  cartId: customerCartId,
                   cartItemsArray: cartItemsArray,
                 })
               }
