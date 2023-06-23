@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/no-unstable-nested-components */
 import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, Button, FlatList} from 'react-native';
 import {Box, Text} from '@atoms';
@@ -6,11 +8,14 @@ import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import CartItem from './CartItem';
 import {useNavigation} from '@react-navigation/native';
+import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
+import LoginScreen from '../auth/LoginScreen';
 
 const CartScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [cartItemsArray, setCartItemsArray] = useState([]);
+  const {isUserLoggedIn} = useIsUserLoggedIn();
 
   const dispatch = useDispatch();
 
@@ -22,7 +27,14 @@ const CartScreen = () => {
   const customerCartData = useSelector(
     state => state.getCustomerCartItemsAliSlice?.customerCart || [],
   );
-  console.log('customerCartData: ', customerCartData.length);
+
+  const ListEmptyComponent = () => {
+    return (
+      <Box flex={1} justifyContent="center">
+        <Text textAlign="center">No Items in cart.</Text>
+      </Box>
+    );
+  };
 
   useEffect(() => {
     if (customerCartData.length !== 0 && customerCartId) {
@@ -49,44 +61,46 @@ const CartScreen = () => {
 
   return (
     <Box flex={1} backgroundColor="white">
-      <CommonHeader title={'Your Cart'} />
-      {isLoading ? (
+      {isUserLoggedIn ? (
         <>
-          <ActivityIndicator />
+          <CommonHeader title={'Your Cart'} />
+          {isLoading ? (
+            <>
+              <ActivityIndicator />
+            </>
+          ) : (
+            <>
+              <Box flex={1} paddingHorizontal="paddingHorizontal">
+                <FlatList
+                  data={customerCartData}
+                  renderItem={item => {
+                    return <CartItem item={item} />;
+                  }}
+                  contentContainerStyle={{paddingBottom: 100}}
+                  ListEmptyComponent={ListEmptyComponent}
+                />
+                {customerCartData?.length !== 0 ? (
+                  <>
+                    <Button
+                      title="Proceed to Checkout"
+                      onPress={() =>
+                        navigation.navigate('CheckoutScreen', {
+                          cartId: customerCartId,
+                          cartItemsArray: cartItemsArray,
+                        })
+                      }
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
+              </Box>
+            </>
+          )}
         </>
       ) : (
         <>
-          <Box flex={1} paddingHorizontal="paddingHorizontal">
-            <FlatList
-              data={customerCartData}
-              renderItem={item => {
-                return <CartItem item={item} />;
-              }}
-              contentContainerStyle={{paddingBottom: 100}}
-              ListEmptyComponent={() => {
-                return (
-                  <Box flex={1}>
-                    <Text>text</Text>
-                  </Box>
-                );
-              }}
-            />
-            {customerCartData?.length !== 0 ? (
-              <>
-                <Button
-                  title="Proceed to Checkout"
-                  onPress={() =>
-                    navigation.navigate('CheckoutScreen', {
-                      cartId: customerCartId,
-                      cartItemsArray: cartItemsArray,
-                    })
-                  }
-                />
-              </>
-            ) : (
-              <></>
-            )}
-          </Box>
+          <LoginScreen />
         </>
       )}
     </Box>

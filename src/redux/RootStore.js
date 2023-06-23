@@ -6,6 +6,7 @@ import getCustomerCartItemsAliSlice from './CartApi/CartApiSlice';
 import getCheckoutDataApiSlice from './checkoutDataApi/CheckoutApiSlice';
 import getOrdersDataApiSlice from './ordersApi/OrdersApiSlice';
 import customerCartIdApiSlice from './customerCartIdApi/CustomerCartIdApiSlice';
+import getOrderDetailsDataApiSlice from './orderDetailsApi/OrderDetailsApiSlice';
 
 const allReducers = combineReducers({
   getCustomerDetailsApiSlice,
@@ -13,6 +14,7 @@ const allReducers = combineReducers({
   getCheckoutDataApiSlice,
   customerCartIdApiSlice,
   getOrdersDataApiSlice,
+  getOrderDetailsDataApiSlice,
 });
 
 const store = configureStore({

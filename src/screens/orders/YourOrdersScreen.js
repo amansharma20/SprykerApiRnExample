@@ -16,7 +16,9 @@ const YourOrdersScreen = () => {
     state => state.getOrdersDataApiSlice.ordersData?.data?.data || [],
   );
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item, index}) => {
+    // console.log('index: ', item[0]);
+    // console.log('item: ', item);
     return (
       <TouchableOpacity
         onPress={() =>
@@ -41,7 +43,7 @@ const YourOrdersScreen = () => {
   }, [dispatch]);
 
   return (
-    <Box flex={1}>
+    <Box flex={1} backgroundColor="white">
       <CommonHeader title={'Your Orders'} />
       {!isLoading ? (
         <>
