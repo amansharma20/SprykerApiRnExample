@@ -232,7 +232,7 @@ export const theme = createTheme({
       fontSize: 24,
       // fontFamily: FONT.PrimaryBold,
       color: 'darkText',
-      // fontWeight: '700',
+      fontWeight: '700',
     },
     bold14LightBlack: {
       fontSize: 14,

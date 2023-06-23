@@ -1,11 +1,13 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {api} from '../../api/SecureAPI';
 import {Box, Text} from '@atoms';
 import {TouchableOpacity, Image} from 'react-native';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import CartItemQuantity from './CartItemQuantity';
+import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 
 const CartItem = ({item}) => {
   const dispatch = useDispatch();
@@ -15,10 +17,6 @@ const CartItem = ({item}) => {
   const [productImage, setProductImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
-  // const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
-  // const cartId = '2d0daf14-f500-5ea7-9425-7f6254ef5ae0';
-
-  // const cartId = 'cdb36660-2eb0-5808-a2d8-74bdec08ca19';
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
@@ -36,7 +34,7 @@ const CartItem = ({item}) => {
     };
     getProductDetails();
     // get image
-    getProductImage = async () => {
+    const getProductImage = async () => {
       await api
         .get(`concrete-products/${cartItem?.sku}/concrete-product-image-sets`)
         .then(res => {
@@ -62,45 +60,58 @@ const CartItem = ({item}) => {
           ).then(() => {
             setIsLoading(false);
           });
+          dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
         }
       });
   };
-
   return (
     <Box
       borderRadius={8}
       borderColor="border"
       borderWidth={1}
       mb="s8"
-      padding="s16">
-      {isLoading == true ? <ActivityIndicator /> : ''}
+      padding="s8"
+      backgroundColor="white">
+      {isLoading === true ? <ActivityIndicator /> : ''}
       <Box flexDirection="row">
-        <Box width={'30%'}>
+        <Box alignItems="center" mr="s8">
           <Image
-            style={{width: '100%', height: 70}}
+            style={{height: 120, width: 120, resizeMode: 'contain'}}
             source={{
               uri: productImage,
             }}
           />
-        </Box>
-
-        <Box width={'40%'} marginLeft="s8">
-          <Text>{attributes?.name}</Text>
-        </Box>
-        <Box width={'30%'} alignItems="flex-end">
-          <Box flexDirection="row">
-            <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
-              <Text>Remove Item</Text>
-            </TouchableOpacity>
-          </Box>
           <CartItemQuantity
             cartItem={cartItem}
             removeItemTrigger={removeItem}
           />
         </Box>
+        <Box justifyContent="space-between">
+          <Box>
+            <Box flexDirection="row">
+              <Text>{attributes?.name}</Text>
+            </Box>
+            <Text style={{fontWeight: 'bold', marginTop: 4}}>
+              $ {cartItem.itemPrice}
+            </Text>
+          </Box>
+          <Box mb="s8">
+            <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
+              <Text style={styles.removeItemButton}>Remove Item</Text>
+            </TouchableOpacity>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
 };
+
+const styles = StyleSheet.create({
+  removeItemButton: {
+    color: 'black',
+    borderRadius: 4,
+    fontWeight: 'bold',
+  },
+});
 
 export default CartItem;

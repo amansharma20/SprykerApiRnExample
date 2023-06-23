@@ -6,6 +6,7 @@ export const getCustomerCartItems = createAsyncThunk(
   async (endpoint, thunkAPI) => {
     try {
       const response = await api.get(endpoint);
+
       return response.data;
     } catch (error) {
       return error;

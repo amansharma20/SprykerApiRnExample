@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useState, useEffect} from 'react';
@@ -10,6 +11,7 @@ import CartItem from './CartItem';
 import {useNavigation} from '@react-navigation/native';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 import LoginScreen from '../auth/LoginScreen';
+import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 
 const CartScreen = () => {
   const navigation = useNavigation();
@@ -27,6 +29,11 @@ const CartScreen = () => {
   const customerCartData = useSelector(
     state => state.getCustomerCartItemsAliSlice?.customerCart || [],
   );
+  const customerCart = useSelector(
+    state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
+  );
+
+  const grandTotal = customerCart?.attributes?.totals?.grandTotal;
 
   const ListEmptyComponent = () => {
     return (
@@ -53,11 +60,18 @@ const CartScreen = () => {
       dispatch(
         getCustomerCartItems(`carts/${customerCartId}?include=items`),
       ).then(() => {
-        console.log('HERE');
         setIsLoading(false);
       });
     }
-  }, [dispatch, customerCartId]);
+  }, [dispatch, customerCartId, isUserLoggedIn]);
+
+  useEffect(() => {
+    if (isUserLoggedIn) {
+      dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+        console.log('carts api call successful');
+      });
+    }
+  }, [isUserLoggedIn]);
 
   return (
     <Box flex={1} backgroundColor="white">
@@ -79,6 +93,12 @@ const CartScreen = () => {
                   contentContainerStyle={{paddingBottom: 100}}
                   ListEmptyComponent={ListEmptyComponent}
                 />
+                <Box
+                  justifyContent="flex-end"
+                  flexDirection="row"
+                  paddingVertical="s8">
+                  <Text variant="bold24">Total : $ {grandTotal}</Text>
+                </Box>
                 {customerCartData?.length !== 0 ? (
                   <>
                     <Button

@@ -24,10 +24,6 @@ const HomeScreen = () => {
     }
   }, []);
 
-  useEffect(() => {
-    dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
-  }, [dispatch]);
-
   return (
     <Box flex={1} backgroundColor="snowy" paddingHorizontal="paddingHorizontal">
       <Text style={styles.title}>Browse</Text>

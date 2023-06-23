@@ -7,6 +7,7 @@ import {ActivityIndicator} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import * as Keychain from 'react-native-keychain';
 import axios from 'axios';
+import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 
 const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
   const [isloading, setIsLoading] = useState(false);
@@ -42,11 +43,13 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
       ).then(error => {
         setIsLoading(false);
       });
+      dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
     } else {
     }
   };
+
   return (
-    <Box flexDirection="row" marginTop="s20">
+    <Box flexDirection="row" alignItems="center">
       <TouchableOpacity
         onPress={() =>
           cartItem.quantity > 1
@@ -68,8 +71,7 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
       <TouchableOpacity
         onPress={() =>
           changeQuantity(cartItem.itemId, cartItem.quantity + 1, cartItem?.sku)
-        }
-        style={styles.quantityButton}>
+        }>
         <Text style={styles.quantityText}>+</Text>
       </TouchableOpacity>
     </Box>
@@ -77,22 +79,13 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
 };
 
 const styles = StyleSheet.create({
-  quantityButton: {
-    // backgroundColor: 'lightgray',
-    borderRadius: 4,
-    paddingHorizontal: 10,
-    marginRight: 10,
-  },
   quantityText: {
-    fontWeight: '300',
-    fontSize: 30,
+    fontSize: 24,
     color: 'black',
   },
   quantity: {
-    fontWeight: '500',
     fontSize: 20,
     marginHorizontal: 10,
-    marginTop: 6,
   },
 });
 
