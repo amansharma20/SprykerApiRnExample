@@ -7,6 +7,7 @@ import {ActivityIndicator} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import * as Keychain from 'react-native-keychain';
 import axios from 'axios';
+import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 
 const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
   const [isloading, setIsLoading] = useState(false);
@@ -42,6 +43,7 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
       ).then(error => {
         setIsLoading(false);
       });
+      dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
     } else {
     }
   };

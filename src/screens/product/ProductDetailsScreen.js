@@ -20,6 +20,8 @@ import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 import {useDispatch} from 'react-redux';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
+import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
+
 import {useSelector} from 'react-redux';
 const ProductDetailsScreen = props => {
   const navigation = useNavigation();
@@ -121,22 +123,17 @@ const ProductDetailsScreen = props => {
         productData,
         isLoading,
       );
-      console.log('response: ', response);
-      if (response.data?.status === 201) {
+      if (response?.data?.status === 201) {
         dispatch(
           getCustomerCartItems(`carts/${customerCart.id}?include=items`),
         ).then(res => {
-          console.log('res: ', res);
           if (res.payload.status === 200) {
             setIsLoading(false);
             alert('added to cart');
           }
         });
+        dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
       } else {
-        console.log(
-          'response:---------- ',
-          response.data.data.errors?.[0]?.detail,
-        );
         alert('error', response.data.data.errors?.[0]?.detail);
         setIsLoading(false);
       }

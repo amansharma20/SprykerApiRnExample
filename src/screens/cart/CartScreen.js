@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Button, FlatList} from 'react-native';
+import {Button, FlatList, Text} from 'react-native';
 import {Box} from '@atoms';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
@@ -14,12 +14,13 @@ const CartScreen = () => {
   const [cartItemsArray, setCartItemsArray] = useState([]);
 
   const dispatch = useDispatch();
-
-  // const customerCartId = 'a25265da-ec75-5854-bf07-c5b35d09e6ad';
-
   const customerCartData = useSelector(
     state => state.getCustomerCartItemsAliSlice?.customerCart || [],
   );
+  const customerCart = useSelector(
+    state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
+  );
+  console.log('price: ', customerCart.attributes.totals.grandTotal);
 
   useEffect(() => {
     if (customerCartData && customerCartId) {
@@ -30,7 +31,6 @@ const CartScreen = () => {
       setCartItemsArray(tempArr);
     }
   }, [customerCartData, customerCartId]);
-
   useEffect(() => {
     if (customerCartId) {
       setIsLoading(true);
@@ -42,15 +42,6 @@ const CartScreen = () => {
     }
   }, [dispatch, customerCartId]);
 
-  // useEffect(() => {
-  //   const getCarts = async () => {
-  //     const response = await api.get('carts');
-  //     if (response?.data?.status === 200) {
-  //       setCartId(response?.data.data.data?.[1]?.id);
-  //     }
-  //   };
-  //   getCarts();
-  // }, []);
   const customerCartId = useSelector(
     state =>
       state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
@@ -66,6 +57,9 @@ const CartScreen = () => {
           }}
           contentContainerStyle={{paddingBottom: 100}}
         />
+        <Text style={{marginLeft: 200, fontWeight: 'bold', fontSize: 25}}>
+          Total : $ {customerCart.attributes.totals.grandTotal}
+        </Text>
         {customerCartData?.length !== 0 ? (
           <>
             <Button
