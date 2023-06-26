@@ -40,15 +40,23 @@ const ProductDetailsScreen = props => {
   const [prodData, setProdData] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [productAvailability, setProductAvailability] = useState(true);
 
   useEffect(() => {
     setProdData(propData);
     const fetchProductData = async () => {
       const response = await commonApi.get(
-        `abstract-products/${propData?.abstractSku}`,
+        `abstract-products/${propData?.abstractSku}?include=abstract-product-availabilities`,
         '',
       );
       if (response.data?.status === 200) {
+        console.log(
+          'product details data',
+          response?.data?.data?.included?.[0]?.attributes?.availability,
+        );
+        setProductAvailability(
+          response?.data?.data?.included?.[0]?.attributes?.availability,
+        );
         setProductData(response?.data?.data?.data);
         setVariationIdData(
           response?.data?.data?.data?.attributes?.attributeMap
@@ -147,7 +155,7 @@ const ProductDetailsScreen = props => {
   const Row = ({title, value}) => {
     return (
       <Box flexDirection="row">
-        <Text>{title}</Text>
+        <Text style={{fontWeight: 'bold'}}>{title}</Text>
         <Text>{value}</Text>
       </Box>
     );
@@ -230,7 +238,9 @@ const ProductDetailsScreen = props => {
               <Box>
                 {variationData && variationData[1] && (
                   <Box>
-                    <Text>Choose Variation : </Text>
+                    <Text style={{fontWeight: 'bold'}}>
+                      Choose Variation :{' '}
+                    </Text>
                     <FlatList
                       data={variationData}
                       renderItem={({item}) => renderItem({item})}
@@ -241,18 +251,26 @@ const ProductDetailsScreen = props => {
                 )}
               </Box>
             </Box>
-            <Text>Description : </Text>
+            <Text style={{fontWeight: 'bold'}}>Description : </Text>
             <Text>{productData?.attributes?.description}</Text>
+            <Text mt="s6">Price : $ {prodData?.price}</Text>
+            {!productAvailability ? (
+              <Text color="red">Product is not available </Text>
+            ) : (
+              <Text color="green">In stock</Text>
+            )}
           </Box>
         ) : (
           <ActivityIndicator size="large" color="#0064FD" />
         )}
       </ScrollView>
+
       <Box paddingVertical="s16" paddingHorizontal="paddingHorizontal">
         <CommonSolidButton
           title={!isLoading ? 'Add to Cart' : 'Loading...'}
           // onPress={addToCartHandler}
           onPress={onPressAddToCart}
+          disabled={!productAvailability}
         />
         {/* <Box mt="s16">
                 <CommonSolidButton
