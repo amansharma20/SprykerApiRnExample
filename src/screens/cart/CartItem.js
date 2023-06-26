@@ -8,7 +8,7 @@ import {ActivityIndicator, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import CartItemQuantity from './CartItemQuantity';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
-
+import {RemoveIcon} from '../../assets/svgs';
 const CartItem = ({item}) => {
   const dispatch = useDispatch();
 
@@ -97,7 +97,9 @@ const CartItem = ({item}) => {
           </Box>
           <Box mb="s8">
             <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
-              <Text style={styles.removeItemButton}>Remove Item</Text>
+              <Text>
+                <RemoveIcon />
+              </Text>
             </TouchableOpacity>
           </Box>
         </Box>
@@ -105,13 +107,5 @@ const CartItem = ({item}) => {
     </Box>
   );
 };
-
-const styles = StyleSheet.create({
-  removeItemButton: {
-    color: 'black',
-    borderRadius: 4,
-    fontWeight: 'bold',
-  },
-});
 
 export default CartItem;
