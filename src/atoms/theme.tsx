@@ -34,6 +34,7 @@ export const theme = createTheme({
     inputGrey: '#F5F5F5',
     purple: '#6650A4',
     red: 'red',
+    green:'#006400',
     ...globalPallete,
   },
   spacing: {

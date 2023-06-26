@@ -24,12 +24,16 @@ const CartItem = ({item}) => {
   useEffect(() => {
     const getProductDetails = async () => {
       if (cartItem) {
-        await api.get(`concrete-products/${cartItem?.sku}`).then(res => {
-          const attributesData = res?.data?.data?.data?.attributes;
-          if (attributesData) {
-            setAttributes(attributesData);
-          }
-        });
+        await api
+          .get(
+            `concrete-products/${cartItem?.sku}?include=concrete-product-availabilities`,
+          )
+          .then(res => {
+            const attributesData = res?.data?.data;
+            if (attributesData) {
+              setAttributes(attributesData);
+            }
+          });
       }
     };
     getProductDetails();
@@ -89,11 +93,16 @@ const CartItem = ({item}) => {
         <Box justifyContent="space-between">
           <Box>
             <Box flexDirection="row">
-              <Text>{attributes?.name}</Text>
+              <Text>{attributes?.data?.attributes?.name}</Text>
             </Box>
             <Text style={{fontWeight: 'bold', marginTop: 4}}>
               $ {cartItem.itemPrice}
             </Text>
+            {!attributes?.included?.[0]?.attributes?.availability ? (
+              <Text color="red">Not Available</Text>
+            ) : (
+              ''
+            )}
           </Box>
           <Box mb="s8">
             <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>

@@ -3,9 +3,11 @@ import {Box, Text} from '@atoms';
 import {StyleSheet} from 'react-native';
 
 const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
+  console.log('orderDetail: ', orderDetail);
+
   return (
     <Box>
-      <Box flexDirection="row" justifyContent="space-between">
+      <Box mt="s16" flexDirection="row" justifyContent="space-between">
         <Text style={{fontWeight: 'bold'}}>Item Total</Text>
         <Text style={{fontWeight: 'bold'}}>
           ${orderDetail?.totals?.subtotal}
@@ -19,13 +21,13 @@ const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
         <Text>Discount Total</Text>
         <Text>${orderDetail?.totals?.discountTotal}</Text>
       </Box>
-      <Text style={styles.horizontalLine} />
-      <Box flexDirection="row" justifyContent="space-between">
+      {/* <Text style={styles.horizontalLine} /> */}
+      {/* <Box flexDirection="row" justifyContent="space-between">
         <Text>Grand Total</Text>
         <Text>${orderDetail?.totals?.grandTotal}</Text>
-      </Box>
+      </Box> */}
       <Text style={styles.horizontalLine} />
-      <Text variant="bold18">Order Details</Text>
+      {/* <Text variant="bold18">Order Details</Text>
       <Text style={styles.horizontalLine} />
       <Text style={styles.headerText}>Order Id</Text>
       <Text style={styles.subHeaderText}>{orderId}</Text>
@@ -45,7 +47,47 @@ const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
       <Text style={styles.orderInfoText}>
         {orderShipment?.[0]?.attributes?.shippingAddress?.address1}
       </Text>
+      <Text style={styles.horizontalLine} /> */}
+      <Text mt="s16" style={styles.headerText}>
+        Billing Address
+      </Text>
+      <Box flexDirection="row" justifyContent="space-between">
+        <Text>Address</Text>
+        <Text>{orderDetail?.billingAddress?.address1}</Text>
+      </Box>
+      <Box flexDirection="row" justifyContent="space-between">
+        <Text>City</Text>
+        <Text>{orderDetail?.billingAddress?.city}</Text>
+      </Box>
+      <Box flexDirection="row" justifyContent="space-between">
+        <Text>Country</Text>
+        <Text>{orderDetail?.billingAddress?.country}</Text>
+      </Box>
+      <Box flexDirection="row" justifyContent="space-between">
+        <Text>Iso2Code</Text>
+        <Text>{orderDetail?.billingAddress?.iso2Code}</Text>
+      </Box>
+      <Box flexDirection="row" justifyContent="space-between">
+        <Text>Zip Code</Text>
+        <Text>{orderDetail?.billingAddress?.zipCode}</Text>
+      </Box>
+      <Box flexDirection="row" justifyContent="space-between">
+        <Text>Salutation</Text>
+        <Text>{orderDetail?.billingAddress?.salutation}</Text>
+      </Box>
       <Text style={styles.horizontalLine} />
+      <Text mt="s12" style={styles.headerText}>
+        Payment Details
+      </Text>
+
+      <Box mt="s6" flexDirection="row" justifyContent="space-between">
+        <Text>Payment By</Text>
+        <Text>{orderDetail?.payments?.[0]?.paymentMethod}</Text>
+      </Box>
+      <Box mt="s6" mb="s10" flexDirection="row" justifyContent="space-between">
+        <Text>Item status : {orderDetail?.itemStates}</Text>
+        <Text>Total Amount : ${orderDetail?.totals?.grandTotal} </Text>
+      </Box>
     </Box>
   );
 };
@@ -56,7 +98,6 @@ const styles = StyleSheet.create({
   },
 
   headerText: {
-    fontSize: 18,
     fontWeight: 'bold',
   },
   subHeaderText: {
