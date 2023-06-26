@@ -137,7 +137,7 @@ const ProductDetailsScreen = props => {
         ).then(res => {
           if (res.payload.status === 200) {
             setIsLoading(false);
-            alert('added to cart');
+            alert('Added to Cart');
           }
         });
         dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
@@ -162,8 +162,13 @@ const ProductDetailsScreen = props => {
   };
 
   if (!productData) {
-    return <Text>Loading...</Text>;
+    return (
+      <Box flex={1} backgroundColor="white">
+        <ActivityIndicator />
+      </Box>
+    );
   }
+
   const Item = ({item, onPress, backgroundColor, textColor}) => (
     <TouchableOpacity
       onPress={onPress}
@@ -269,7 +274,8 @@ const ProductDetailsScreen = props => {
         <CommonSolidButton
           title={!isLoading ? 'Add to Cart' : 'Loading...'}
           // onPress={addToCartHandler}
-          onPress={onPressAddToCart}
+          onPress={!isLoading ? onPressAddToCart : () => {}}
+          // onPress={onPressAddToCart}
           disabled={!productAvailability}
         />
         {/* <Box mt="s16">

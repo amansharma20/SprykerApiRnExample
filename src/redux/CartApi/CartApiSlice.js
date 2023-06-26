@@ -2,10 +2,17 @@ import {createSlice} from '@reduxjs/toolkit';
 import {getCustomerCartItems} from './CartApiAsyncThunk';
 
 const initialState = {
+  itemsCount: null,
   customerCart: [],
   status: 'idle',
   error: null,
 };
+
+function calculateSum(arr, nestedKey) {
+  return arr
+    .map(obj => obj?.attributes?.[nestedKey])
+    .reduce((acc, curr) => acc + curr, 0);
+}
 
 const getCustomerCartItemsAliSlice = createSlice({
   name: 'getCustomerCartItems',
@@ -16,7 +23,8 @@ const getCustomerCartItemsAliSlice = createSlice({
     });
     builder.addCase(getCustomerCartItems.fulfilled, (state, action) => {
       state.status = 'success';
-      const cartItem = action.payload.data.included;
+      const cartItem = action?.payload?.data?.included;
+      console.log('cartItem: ', cartItem);
       const newCartItems = [];
       cartItem?.map(item => {
         newCartItems.push({
@@ -27,6 +35,15 @@ const getCustomerCartItemsAliSlice = createSlice({
         });
       });
       state.customerCart = newCartItems;
+
+      const calculateSumFunc = () => {
+        if (cartItem !== undefined) {
+          state.itemsCount = calculateSum(cartItem, 'quantity');
+        } else {
+          state.itemsCount = null;
+        }
+      };
+      calculateSumFunc();
     });
     builder.addCase(getCustomerCartItems.rejected, (state, action) => {
       state.status = 'rejected';

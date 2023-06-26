@@ -6,10 +6,15 @@ import {Box, Text, theme} from '@atoms';
 import GoBackButton from '../GoBackButton/GoBackButton';
 import {CartIcon} from '../../assets/svgs';
 import {useGoToCart} from '../../hooks/useGoToCart';
+import {useSelector} from 'react-redux';
 // import GoBackButton from './GoBackButton/GoBackButton';
 
 const CommonHeader = ({title, onPress, showCartIcon = false, ...props}) => {
   const {goToCart} = useGoToCart();
+
+  const cartItemsCount = useSelector(
+    state => state.getCustomerCartItemsAliSlice.itemsCount,
+  );
 
   const onPressCart = () => {
     goToCart();
@@ -29,6 +34,29 @@ const CommonHeader = ({title, onPress, showCartIcon = false, ...props}) => {
             <TouchableOpacity
               style={styles.cartContainer}
               onPress={onPressCart}>
+              {cartItemsCount !== null ? (
+                <>
+                  <Box
+                    style={{
+                      backgroundColor: '#F50157',
+                      zIndex: 2,
+                      position: 'absolute',
+                      alignItems: 'center',
+                      width: 16,
+                      height: 16,
+                      justifyContent: 'center',
+                      flexDirection: 'row',
+                      borderRadius: 100,
+                      marginLeft: 16,
+                    }}>
+                    <Text fontSize={12} fontWeight="700">
+                      {cartItemsCount ?? 0}
+                    </Text>
+                  </Box>
+                </>
+              ) : (
+                <></>
+              )}
               <CartIcon />
             </TouchableOpacity>
           </>
