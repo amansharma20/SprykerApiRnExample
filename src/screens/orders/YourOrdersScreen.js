@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, {useEffect, useState} from 'react';
 import {Box, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
@@ -17,20 +18,29 @@ const YourOrdersScreen = () => {
   );
 
   const renderItem = ({item, index}) => {
-    // console.log('index: ', item[0]);
-    // console.log('item: ', item);
     return (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('OrderDetailsScreen', {
-            orderId: item.id,
-          })
-        }>
-        <Box flexDirection="row" justifyContent="space-between">
-          <Text>Order Id</Text>
-          <Text>{item.id}</Text>
-        </Box>
-      </TouchableOpacity>
+      <Box
+        mb="s4"
+        padding="s4"
+        borderRadius={2}
+        borderColor="border"
+        borderWidth={1}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('OrderDetailsScreen', {
+              orderId: item.id,
+            })
+          }>
+          <Box flexDirection="row" justifyContent="space-between" mb="s2">
+            <Text>Order Id</Text>
+            <Text fontWeight="700">{item.id}</Text>
+          </Box>
+          <Box flexDirection="row" justifyContent="space-between">
+            <Text>Grand Total</Text>
+            <Text fontWeight="700">${item.attributes?.totals?.grandTotal}</Text>
+          </Box>
+        </TouchableOpacity>
+      </Box>
     );
   };
 

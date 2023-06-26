@@ -6,6 +6,7 @@ import {ActivityIndicator, Button} from 'react-native';
 import {AuthContext} from '../../navigation/StackNavigator';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCustomerDetails} from '../../redux/profileApi/ProfileApiAsyncThunk';
+import CommonHeader from '../../components/CommonHeader/CommonHeader';
 
 export default function PersonalDetailsScreen() {
   const {signOut} = useContext(AuthContext);
@@ -31,34 +32,41 @@ export default function PersonalDetailsScreen() {
   }, []);
 
   return (
-    <Box flex={1} backgroundColor="background" paddingHorizontal="s16">
+    <Box flex={1} backgroundColor="background">
       {isLoading ? (
-        <ActivityIndicator />
+        <Box flex={1}>
+          <ActivityIndicator />
+        </Box>
       ) : (
         <>
-          <Box flexDirection="row" justifyContent="space-between">
-            <Text>First Name</Text>
-            <Text>{profileDataAttributes?.firstName}</Text>
-          </Box>
-          <Box flexDirection="row" justifyContent="space-between">
-            <Text>Last Name</Text>
-            <Text>{profileDataAttributes?.lastName}</Text>
-          </Box>
-          <Box flexDirection="row" justifyContent="space-between">
-            <Text>Salutation</Text>
-            <Text>{profileDataAttributes?.salutation}</Text>
-          </Box>
-          <Box flexDirection="row" justifyContent="space-between">
-            <Text>Email</Text>
-            <Text>{profileDataAttributes?.email}</Text>
-          </Box>
-          <Box flexDirection="row" justifyContent="space-between">
-            <Text>Gender</Text>
-            <Text>{profileDataAttributes?.gender}</Text>
-          </Box>
-          <Box flexDirection="row" justifyContent="space-between">
-            <Text>Date Of Birth</Text>
-            <Text>{profileDataAttributes?.dateOfBirth}</Text>
+          <Box flex={1}>
+            <CommonHeader />
+            <Box flex={1} paddingHorizontal="paddingHorizontal">
+              <Box flexDirection="row" justifyContent="space-between">
+                <Text>First Name</Text>
+                <Text>{profileDataAttributes?.firstName}</Text>
+              </Box>
+              <Box flexDirection="row" justifyContent="space-between">
+                <Text>Last Name</Text>
+                <Text>{profileDataAttributes?.lastName}</Text>
+              </Box>
+              <Box flexDirection="row" justifyContent="space-between">
+                <Text>Salutation</Text>
+                <Text>{profileDataAttributes?.salutation}</Text>
+              </Box>
+              <Box flexDirection="row" justifyContent="space-between">
+                <Text>Email</Text>
+                <Text>{profileDataAttributes?.email}</Text>
+              </Box>
+              <Box flexDirection="row" justifyContent="space-between">
+                <Text>Gender</Text>
+                <Text>{profileDataAttributes?.gender}</Text>
+              </Box>
+              {/* <Box flexDirection="row" justifyContent="space-between">
+                <Text>Date Of Birth</Text>
+                <Text>{profileDataAttributes?.dateOfBirth}</Text>
+              </Box> */}
+            </Box>
           </Box>
         </>
       )}

@@ -18,11 +18,6 @@ const SearchScreen = () => {
       },
     );
     const result = await resp.json();
-    console.log(
-      result?.data[0]?.attributes?.abstractProducts,
-      'result based on search',
-    );
-
     setSearchResults(result?.data[0]?.attributes?.abstractProducts);
   };
 
