@@ -13,7 +13,6 @@ import RNRestart from 'react-native-restart';
 import {useDispatch, useSelector} from 'react-redux';
 import {getOrderDetailsData} from '../../redux/orderDetailsApi/OrderDetailsApiAsyncThunk';
 import OrdertotalCost from './components/OrderTotalCost';
-
 const OrderDetailsScreen = props => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);

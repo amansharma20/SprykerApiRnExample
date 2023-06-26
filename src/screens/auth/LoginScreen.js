@@ -8,7 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 
 export default function LoginScreen(props) {
   const {signIn} = useContext(AuthContext);
-  const redirectToScreen = props?.route?.params?.redirectToScreen;
+  const {redirectToScreen} = props.route.params;
 
   const navigation = useNavigation();
 
@@ -17,6 +17,7 @@ export default function LoginScreen(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const onPressSubmit = async () => {
+    console.log('redirectToScreen', redirectToScreen);
     setIsLoading(true);
     const apiData = {
       grant_type: 'password',
