@@ -18,6 +18,7 @@ import CheckoutScreen from '../screens/checkout/CheckoutScreen';
 import YourOrdersScreen from '../screens/orders/YourOrdersScreen';
 import OrderDetailsScreen from '../screens/orders/OrderDetailsScreen';
 import CartScreen from '../screens/cart/CartScreen';
+import SearchScreen from '../screens/search/SearchScreen';
 
 export const AuthContext = React.createContext();
 
@@ -186,6 +187,7 @@ export default function StackNavigator() {
           component={OrderDetailsScreen}
         />
         <Stack.Screen name="CartScreen" component={CartScreen} />
+        <Stack.Screen name="SearchScreen" component={SearchScreen} />
       </Stack.Navigator>
     </AuthContext.Provider>
   );

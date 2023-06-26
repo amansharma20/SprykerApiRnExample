@@ -185,12 +185,18 @@ const CheckoutScreen = props => {
         data: data,
       }),
     ).then(res => {
-      let tempArr = [];
-      res?.included?.map(item => {
-        tempArr.push(item.id);
-      });
-      setItems(tempArr);
-      setIsLoading(false);
+      if (res.payload.status === 200) {
+        let tempArr = [];
+        res?.included?.map(item => {
+          tempArr.push(item.id);
+        });
+        setItems(tempArr);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        console.log('res.payload.status: ', res.payload.data.errors[0].detail);
+        alert(res?.payload?.data?.errors?.[0]?.detail);
+      }
     });
   }, [dispatch, cartId]);
 

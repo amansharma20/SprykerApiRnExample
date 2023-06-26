@@ -1,14 +1,16 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, Image, ScrollView, FlatList} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useCallback} from 'react';
+import {StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import CategorySection from './categorySection/CategorySection';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import ContentFullSection from './contentFull/ContentFullSection';
 import {useDispatch} from 'react-redux';
-import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
+import {SearchIcon, SearchIconBlack} from '../../assets/svgs';
+import {useNavigation} from '@react-navigation/native';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
-
+  const navigation = useNavigation();
   const ViewData = ['ContentFullSection', 'CategorySection'];
 
   const renderHomeItems = useCallback(({item}) => {
@@ -25,12 +27,29 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <Box flex={1} backgroundColor="snowy" paddingHorizontal="paddingHorizontal">
-      <Text style={styles.title}>Browse</Text>
+    <Box flex={1} backgroundColor="snowy">
+      <Box
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+        paddingHorizontal="paddingHorizontal"
+        backgroundColor="white"
+        paddingBottom="s8"
+        mb="s4">
+        <Text style={styles.title}>Browse</Text>
+        <TouchableOpacity
+          style={{padding: 4}}
+          onPress={() => navigation.navigate('SearchScreen')}>
+          <SearchIconBlack />
+        </TouchableOpacity>
+      </Box>
       <FlatList
         data={ViewData}
         renderItem={renderHomeItems}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: theme.spacing.paddingHorizontal,
+        }}
       />
     </Box>
   );
@@ -40,7 +59,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    // marginBottom: 16,
   },
 });
 
