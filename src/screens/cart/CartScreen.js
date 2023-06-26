@@ -12,6 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 import LoginScreen from '../auth/LoginScreen';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
+import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 
 const CartScreen = () => {
   const navigation = useNavigation();
@@ -101,7 +102,7 @@ const CartScreen = () => {
                 </Box>
                 {customerCartData?.length !== 0 ? (
                   <>
-                    <Button
+                    <CommonSolidButton
                       title="Proceed to Checkout"
                       onPress={() =>
                         navigation.navigate('CheckoutScreen', {

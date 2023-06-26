@@ -1,6 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {View, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
 import ProductItem from '../../components/ProductItem';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {theme} from '../../atoms/theme';
@@ -46,8 +46,6 @@ const ProductListScreen = props => {
     }
   };
 
-  const navigation = useNavigation();
-
   const renderItem = ({item}) => (
     <>
       <ProductItem item={item} />
@@ -56,13 +54,22 @@ const ProductListScreen = props => {
 
   return (
     <View style={styles.container}>
-      <CommonHeader title={title || 'All Products'} />
-      <FlatList
-        data={products}
-        renderItem={renderItem}
-        numColumns={2}
-        contentContainerStyle={styles.productList}
-      />
+      <CommonHeader title={title || 'All Products'} showCartIcon />
+
+      {!isLoading ? (
+        <>
+          <FlatList
+            data={products}
+            renderItem={renderItem}
+            numColumns={2}
+            contentContainerStyle={styles.productList}
+          />
+        </>
+      ) : (
+        <>
+          <ActivityIndicator />
+        </>
+      )}
     </View>
   );
 };

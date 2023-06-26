@@ -17,6 +17,7 @@ import jwt_decode from 'jwt-decode';
 import CheckoutScreen from '../screens/checkout/CheckoutScreen';
 import YourOrdersScreen from '../screens/orders/YourOrdersScreen';
 import OrderDetailsScreen from '../screens/orders/OrderDetailsScreen';
+import CartScreen from '../screens/cart/CartScreen';
 
 export const AuthContext = React.createContext();
 
@@ -184,6 +185,7 @@ export default function StackNavigator() {
           name="OrderDetailsScreen"
           component={OrderDetailsScreen}
         />
+        <Stack.Screen name="CartScreen" component={CartScreen} />
       </Stack.Navigator>
     </AuthContext.Provider>
   );

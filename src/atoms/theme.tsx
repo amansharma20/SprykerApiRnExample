@@ -32,6 +32,7 @@ export const theme = createTheme({
     snowy: '#F1F1F1',
     grey: '#7C7C7C',
     inputGrey: '#F5F5F5',
+    purple: '#6650A4',
     red: 'red',
     ...globalPallete,
   },
@@ -217,6 +218,7 @@ export const theme = createTheme({
       fontSize: 14,
       // fontFamily: FONT.PrimaryBold,
       color: 'darkText',
+      fontWeight: '700',
     },
     bold20: {
       fontSize: 20,
@@ -273,7 +275,7 @@ export const theme = createTheme({
       fontSize: 18,
       // fontFamily: FONT.PrimaryBold,
       color: 'darkText',
-      fontWeight: '700'
+      fontWeight: '700',
     },
     bold18LightBlack: {
       fontSize: 18,

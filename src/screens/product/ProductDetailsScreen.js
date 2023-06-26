@@ -1,7 +1,7 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
   Image,
   TouchableOpacity,
@@ -9,13 +9,12 @@ import {
   ActivityIndicator,
   FlatList,
   SafeAreaView,
-  StatusBar,
 } from 'react-native';
 import {commonApi} from '../../api/CommanAPI';
 import {api} from '../../api/SecureAPI';
 import {useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import {Box, theme} from '@atoms';
+import {Box, theme, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 import {useDispatch} from 'react-redux';
@@ -23,12 +22,14 @@ import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 
 import {useSelector} from 'react-redux';
+import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+
 const ProductDetailsScreen = props => {
+  const propData = props.route.params.product;
+
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {isUserLoggedIn} = useIsUserLoggedIn();
-  // const cartId = 'b2d6946e-bad3-5d6d-ab9f-b8b71f0cc0fc';
-  // const cartId = 'cdb36660-2eb0-5808-a2d8-74bdec08ca19';
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
@@ -39,7 +40,6 @@ const ProductDetailsScreen = props => {
   const [prodData, setProdData] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const propData = props.route.params.product;
 
   useEffect(() => {
     setProdData(propData);
@@ -144,6 +144,15 @@ const ProductDetailsScreen = props => {
     isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
   };
 
+  const Row = ({title, value}) => {
+    return (
+      <Box flexDirection="row">
+        <Text>{title}</Text>
+        <Text>{value}</Text>
+      </Box>
+    );
+  };
+
   if (!productData) {
     return <Text>Loading...</Text>;
   }
@@ -156,7 +165,8 @@ const ProductDetailsScreen = props => {
   );
 
   const renderItem = ({item}) => {
-    const backgroundColor = item.id == selectedId ? '#825D24' : '#FFF';
+    const backgroundColor =
+      item.id == selectedId ? theme.colors.lightGrey : '#FFF';
     const color = item.id == selectedId ? 'white' : 'black';
 
     return (
@@ -171,126 +181,115 @@ const ProductDetailsScreen = props => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container2}>
-        <Box flexDirection="row">
-          <CommonHeader title={productData?.attributes?.name} />
-        </Box>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: theme.spacing.paddingHorizontal,
-          }}>
-          {prodData && productData ? (
-            <View style={styles.productDetails}>
-              <Image
-                style={styles.backImage}
-                source={{
-                  uri: prodData?.images[0]?.externalUrlLarge,
-                }}
+      <CommonHeader title={productData?.attributes?.name} showCartIcon />
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: theme.spacing.paddingHorizontal,
+          flexGrow: 1,
+        }}>
+        {prodData && productData ? (
+          <Box style={styles.productDetails}>
+            <Image
+              style={styles.backImage}
+              source={{
+                uri: prodData?.images[0]?.externalUrlLarge,
+              }}
+            />
+            <Box>
+              <Text>{productData?.attributes?.name}</Text>
+              <Row
+                title={'Brand : '}
+                value={productData?.attributes?.attributes?.brand}
               />
-              <View style={styles.details}>
-                <View style={styles.row}>
-                  <View>
-                    <Text>Product Id: </Text>
-                    <Text>Price: </Text>
-                    {Object.keys(productData?.attributes?.attributes)?.map(
-                      (item, index) => {
-                        return <Text key={index}>{item}</Text>;
-                      },
-                    )}
-                  </View>
-                  <View>
-                    <Text>: {prodData?.abstractSku}</Text>
-                    <Text>
-                      : $ {prodData?.price} {prodData?.currency}
-                    </Text>
-                    {Object.keys(productData?.attributes?.attributes)?.map(
-                      (item, index) => {
-                        return (
-                          <Text key={index}>
-                            : {productData?.attributes?.attributes[item]}
-                          </Text>
-                        );
-                      },
-                    )}
-                  </View>
-                </View>
-                <View>
-                  <Text>Choose Variation : </Text>
-                  {variationData && variationData[1] && (
+              {/* <Box>
+                  <Text>Product Id: </Text>
+                  <Text>Price: </Text>
+                  {Object.keys(productData?.attributes?.attributes)?.map(
+                    (item, index) => {
+                      return <Text key={index}>{item}</Text>;
+                    },
+                  )}
+                </Box>
+                <Box>
+                  <Text>: {prodData?.abstractSku}</Text>
+                  <Text>
+                    : $ {prodData?.price} {prodData?.currency}
+                  </Text>
+                  {Object.keys(productData?.attributes?.attributes)?.map(
+                    (item, index) => {
+                      return (
+                        <Text key={index}>
+                          : {productData?.attributes?.attributes[item]}
+                        </Text>
+                      );
+                    },
+                  )}
+                </Box> */}
+              <Box>
+                {variationData && variationData[1] && (
+                  <Box>
+                    <Text>Choose Variation : </Text>
                     <FlatList
                       data={variationData}
                       renderItem={({item}) => renderItem({item})}
                       keyExtractor={item => item.id}
                       extraData={selectedId}
                     />
-                  )}
-                </View>
-              </View>
-              {!isLoading ? (
-                <TouchableOpacity
-                  style={styles.cartButton}
-                  // onPress={e => addToCartHandler(e)}
-                  onPress={onPressAddToCart}>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontWeight: '500',
-                    }}>
-                    Add To Cart
-                  </Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={styles.cartButton}
-                  // onPress={e => addToCartHandler(e)}
-                >
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontWeight: '500',
-                    }}>
-                    Loading ...
-                  </Text>
-                </TouchableOpacity>
-              )}
-              <Text style={styles.description}>Description : </Text>
-              <Text>{productData?.attributes?.description}</Text>
-            </View>
-          ) : (
-            <ActivityIndicator size="large" color="#0064FD" />
-          )}
-        </ScrollView>
-      </View>
+                  </Box>
+                )}
+              </Box>
+            </Box>
+            <Text>Description : </Text>
+            <Text>{productData?.attributes?.description}</Text>
+          </Box>
+        ) : (
+          <ActivityIndicator size="large" color="#0064FD" />
+        )}
+      </ScrollView>
+      <Box paddingVertical="s16" paddingHorizontal="paddingHorizontal">
+        <CommonSolidButton
+          title={!isLoading ? 'Add to Cart' : 'Loading...'}
+          // onPress={addToCartHandler}
+          onPress={onPressAddToCart}
+        />
+        {/* <Box mt="s16">
+                <CommonSolidButton
+                  title={!isLoading ? 'Buy Now' : 'Loading...'}
+                  // onPress={addToCartHandler}
+                  onPress={() => onPressAddToCart(true)}
+                />
+              </Box> */}
+      </Box>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: StatusBar.currentHeight || 0,
     backgroundColor: 'white',
     flex: 1,
   },
   backImage: {
     resizeMode: 'contain',
-    width: 270,
-    height: 150,
+    width: '100%',
+    height: 200,
   },
   item: {
-    padding: 10,
     marginVertical: 8,
-    marginHorizontal: 30,
+    padding: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   title: {
     fontSize: 32,
   },
   row: {
-    width: '50%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    display: 'flex',
   },
   cartButton: {
     width: '100%',

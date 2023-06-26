@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {View, TextInput, StyleSheet, FlatList} from 'react-native';
 import ProductItem from '../../components/ProductItem';
+import {SearchIcon} from '../../assets/svgs';
 
 const SearchScreen = () => {
   const [searchText, setSearchText] = useState('');
@@ -36,13 +37,17 @@ const SearchScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search products..."
-        value={searchText}
-        onChangeText={setSearchText}
-        onChange={handleSearch}
-      />
+      <View style={styles.searchContainer}>
+        <SearchIcon />
+        <TextInput
+          style={styles.input}
+          placeholder="Search for Products, Brands and More"
+          value={searchText}
+          onChangeText={setSearchText}
+          onChange={handleSearch}
+          autoFocus={true}
+        />
+      </View>
       {searchResults.length > 0 && (
         <FlatList
           data={searchResults}
@@ -68,6 +73,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 16,
     paddingHorizontal: 8,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginBottom: 16,
+    shadowColor: '#000000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+    paddingHorizontal: 10,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    paddingLeft: 4,
+    color: '#333',
   },
   resultsContainer: {
     marginTop: 16,

@@ -14,7 +14,7 @@ export default function ProductItem({item}) {
       borderWidth={1}
       borderColor="border"
       borderRadius={8}
-      padding="s4">
+      padding="s8">
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('ProductDetailsScreen', {
