@@ -7,7 +7,7 @@ import {
   FlatList,
   ScrollView,
   StyleSheet,
-  View,
+  Image,
 } from 'react-native';
 import RNRestart from 'react-native-restart';
 import {useDispatch, useSelector} from 'react-redux';
@@ -35,15 +35,18 @@ const OrderDetailsScreen = props => {
 
   const renderItem = ({item}) => {
     return (
-      <Box>
-        <Text>{item?.name}</Text>
-        <Box flexDirection="row" justifyContent="space-between">
-          <Text>
-            {item?.quantity} × ${item?.sumSubtotalAggregation}
-          </Text>
-          <Text>${item?.sumSubtotalAggregation}</Text>
+      <Box flexDirection="row">
+        <Image
+          style={styles.backImage}
+          source={{
+            uri: item?.metadata?.image,
+          }}
+        />
+        <Box flexDirection="column" ml="s40">
+          <Text>{item?.name}</Text>
+          <Text>Quantity: {item?.quantity}</Text>
+          <Text>Price: ${item?.sumSubtotalAggregation}</Text>
         </Box>
-        <Text></Text>
       </Box>
     );
   };
@@ -69,8 +72,10 @@ const OrderDetailsScreen = props => {
                 ID is -{orderReference}
               </Text>
 
-              <Text marginVertical="s16">Your Order -</Text>
-              <Text style={styles.horizontalLine} />
+              <Text mb="s2" marginVertical="s16" style={{fontWeight: 'bold'}}>
+                Your Order -
+              </Text>
+              <Text mb="s16" style={styles.horizontalLine} />
 
               <FlatList
                 data={orderItemsData}
@@ -83,7 +88,12 @@ const OrderDetailsScreen = props => {
                 orderShipment={orderShipment}
                 orderId={orderId}
               />
-              <Button title="Go to home" onPress={() => RNRestart.Restart()} />
+              <Box mb="s12">
+                <Button
+                  title="Go to home"
+                  onPress={() => RNRestart.Restart()}
+                />
+              </Box>
             </Box>
           </>
         ) : (
@@ -100,6 +110,11 @@ const styles = StyleSheet.create({
   horizontalLine: {
     borderBottomColor: 'black',
     borderBottomWidth: 1,
+  },
+  backImage: {
+    resizeMode: 'contain',
+    width: '20%',
+    height: 70,
   },
 });
 export default OrderDetailsScreen;
