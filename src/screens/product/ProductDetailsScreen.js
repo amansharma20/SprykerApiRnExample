@@ -33,6 +33,7 @@ const ProductDetailsScreen = props => {
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
+  console.log('customerCart', customerCart);
 
   const [productData, setProductData] = useState();
   const [variationData, setVariationData] = useState();

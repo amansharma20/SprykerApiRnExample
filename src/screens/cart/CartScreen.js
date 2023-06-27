@@ -19,7 +19,8 @@ const CartScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cartItemsArray, setCartItemsArray] = useState([]);
   const {isUserLoggedIn} = useIsUserLoggedIn();
-
+  const [allProductAvailableInCarts, setAllProductsAvailableInCarts] =
+    useState(true);
   const dispatch = useDispatch();
 
   const customerCartId = useSelector(
@@ -66,13 +67,20 @@ const CartScreen = () => {
     }
   }, [dispatch, customerCartId, isUserLoggedIn]);
 
-  useEffect(() => {
-    if (isUserLoggedIn) {
-      dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
-        console.log('carts api call successful');
-      });
+  // useEffect(() => {
+  //   if (isUserLoggedIn) {
+  //     dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+  //       console.log('carts api call successful');
+  //     });
+  //   }
+  // }, [isUserLoggedIn]);
+
+  const checkProductAvailability = isAllProductAvailableInCarts => {
+    console.log('isAllProductAvailableInCarts: ', isAllProductAvailableInCarts);
+    if (!isAllProductAvailableInCarts) {
+      setAllProductsAvailableInCarts(false);
     }
-  }, [isUserLoggedIn]);
+  };
 
   return (
     <Box flex={1} backgroundColor="white">
@@ -89,7 +97,12 @@ const CartScreen = () => {
                 <FlatList
                   data={customerCartData}
                   renderItem={item => {
-                    return <CartItem item={item} />;
+                    return (
+                      <CartItem
+                        item={item}
+                        checkProductAvailability={checkProductAvailability}
+                      />
+                    );
                   }}
                   contentContainerStyle={{paddingBottom: 100}}
                   ListEmptyComponent={ListEmptyComponent}
@@ -101,9 +114,10 @@ const CartScreen = () => {
                   <Text variant="bold24">Total : $ {grandTotal}</Text>
                 </Box>
                 {customerCartData?.length !== 0 ? (
-                  <>
+                  <Box paddingVertical="s16">
                     <CommonSolidButton
                       title="Proceed to Checkout"
+                      disabled={!allProductAvailableInCarts}
                       onPress={() =>
                         navigation.navigate('CheckoutScreen', {
                           cartId: customerCartId,
@@ -111,7 +125,7 @@ const CartScreen = () => {
                         })
                       }
                     />
-                  </>
+                  </Box>
                 ) : (
                   <></>
                 )}

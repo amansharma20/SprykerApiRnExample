@@ -9,13 +9,18 @@ import {useDispatch, useSelector} from 'react-redux';
 import CartItemQuantity from './CartItemQuantity';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import {RemoveIcon} from '../../assets/svgs';
-const CartItem = ({item}) => {
+const CartItem = ({item, checkProductAvailability}) => {
   const dispatch = useDispatch();
 
   const cartItem = item?.item;
   const [attributes, setAttributes] = useState([]);
   const [productImage, setProductImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [isProductAvailabilityLoading, setIsProductAvailabilityLoading] =
+    useState(true);
+  const isProductAvailable =
+    attributes?.included?.[0]?.attributes?.availability;
+  console.log('isProductAvailable: ', isProductAvailable);
 
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
@@ -30,9 +35,17 @@ const CartItem = ({item}) => {
           )
           .then(res => {
             const attributesData = res?.data?.data;
+            if (
+              attributesData?.included?.[0]?.attributes?.availability == false
+            ) {
+              checkProductAvailability(false);
+            } else {
+              checkProductAvailability(true);
+            }
             if (attributesData) {
               setAttributes(attributesData);
             }
+            setIsProductAvailabilityLoading(false);
           });
       }
     };
@@ -76,43 +89,46 @@ const CartItem = ({item}) => {
       mb="s8"
       padding="s8"
       backgroundColor="white">
-      {isLoading === true ? <ActivityIndicator /> : ''}
-      <Box flexDirection="row">
-        <Box alignItems="center" mr="s8">
-          <Image
-            style={{height: 120, width: 120, resizeMode: 'contain'}}
-            source={{
-              uri: productImage,
-            }}
-          />
-          <CartItemQuantity
-            cartItem={cartItem}
-            removeItemTrigger={removeItem}
-          />
-        </Box>
-        <Box justifyContent="space-between">
-          <Box>
-            <Box flexDirection="row">
-              <Text>{attributes?.data?.attributes?.name}</Text>
-            </Box>
-            <Text style={{fontWeight: 'bold', marginTop: 4}}>
-              $ {cartItem.itemPrice}
-            </Text>
-            {!attributes?.included?.[0]?.attributes?.availability ? (
-              <Text color="red">Not Available</Text>
-            ) : (
-              ''
-            )}
+      {isLoading === true ? (
+        <ActivityIndicator />
+      ) : (
+        <Box flexDirection="row">
+          <Box alignItems="center" mr="s8">
+            <Image
+              style={{height: 120, width: 120, resizeMode: 'contain'}}
+              source={{
+                uri: productImage,
+              }}
+            />
+            <CartItemQuantity
+              cartItem={cartItem}
+              removeItemTrigger={removeItem}
+            />
           </Box>
-          <Box mb="s8">
-            <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
-              <Text>
-                <RemoveIcon />
+          <Box justifyContent="space-between">
+            <Box>
+              <Box flexDirection="row">
+                <Text>{attributes?.data?.attributes?.name}</Text>
+              </Box>
+              <Text style={{fontWeight: 'bold', marginTop: 4}}>
+                $ {cartItem.itemPrice}
               </Text>
-            </TouchableOpacity>
+              {!isProductAvailable && isProductAvailabilityLoading === false ? (
+                <Text color="red">Not Available</Text>
+              ) : (
+                ''
+              )}
+            </Box>
+            <Box mb="s8">
+              <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
+                <Text>
+                  <RemoveIcon />
+                </Text>
+              </TouchableOpacity>
+            </Box>
           </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 };

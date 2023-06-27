@@ -19,6 +19,9 @@ import YourOrdersScreen from '../screens/orders/YourOrdersScreen';
 import OrderDetailsScreen from '../screens/orders/OrderDetailsScreen';
 import CartScreen from '../screens/cart/CartScreen';
 import SearchScreen from '../screens/search/SearchScreen';
+// import {useIsUserLoggedIn} from '../hooks/useIsUserLoggedIn';
+import {useDispatch} from 'react-redux';
+import {CustomerCartIdApiAsyncThunk} from '../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 
 export const AuthContext = React.createContext();
 
@@ -27,7 +30,9 @@ const Stack = createStackNavigator();
 export default function StackNavigator() {
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  // const {isUserLoggedIn} = useIsUserLoggedIn();
 
+  const reduxDispatch = useDispatch();
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       // if (
@@ -137,6 +142,14 @@ export default function StackNavigator() {
 
     bootstrapAsync();
   }, []);
+
+  useEffect(() => {
+    if (state.userToken) {
+      reduxDispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+        console.log('carts api call successful');
+      });
+    }
+  }, [state.userToken]);
 
   return (
     <AuthContext.Provider value={authContext}>
