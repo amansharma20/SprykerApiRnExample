@@ -2,14 +2,14 @@ import React, {useState} from 'react';
 import {View, TextInput, StyleSheet, FlatList} from 'react-native';
 import ProductItem from '../../components/ProductItem';
 import {SearchIcon} from '../../assets/svgs';
-
+import {applicationProperties} from '../../utils/application.properties';
 const SearchScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
   const handleSearch = async () => {
     const resp = await fetch(
-      `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search-suggestions?q=${searchText}`,
+      `${applicationProperties.baseUrl}catalog-search-suggestions?q=${searchText}`,
       {
         method: 'GET',
         headers: {
