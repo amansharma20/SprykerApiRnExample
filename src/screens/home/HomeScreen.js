@@ -4,12 +4,10 @@ import {StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import CategorySection from './categorySection/CategorySection';
 import {Box, Text, theme} from '@atoms';
 import ContentFullSection from './contentFull/ContentFullSection';
-import {useDispatch} from 'react-redux';
-import {SearchIcon, SearchIconBlack} from '../../assets/svgs';
+import {SearchIconBlack} from '../../assets/svgs';
 import {useNavigation} from '@react-navigation/native';
 
 const HomeScreen = () => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const ViewData = ['ContentFullSection', 'CategorySection'];
 
