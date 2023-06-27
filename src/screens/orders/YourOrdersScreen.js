@@ -16,6 +16,7 @@ const YourOrdersScreen = () => {
   const ordersData = useSelector(
     state => state.getOrdersDataApiSlice.ordersData?.data?.data || [],
   );
+  console.log('ordersData: ', ordersData[0]?.attributes);
 
   const renderItem = ({item, index}) => {
     return (
@@ -24,7 +25,8 @@ const YourOrdersScreen = () => {
         padding="s4"
         borderRadius={2}
         borderColor="border"
-        borderWidth={1}>
+        borderWidth={1}
+        style={{backgroundColor: '#f8f9f9'}}>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('OrderDetailsScreen', {
@@ -38,6 +40,14 @@ const YourOrdersScreen = () => {
           <Box flexDirection="row" justifyContent="space-between">
             <Text>Grand Total</Text>
             <Text fontWeight="700">${item.attributes?.totals?.grandTotal}</Text>
+          </Box>
+          <Box flexDirection="row" justifyContent="space-between">
+            <Text>Status </Text>
+            {item.attributes?.itemStates == 'paid' ? (
+              <Text fontWeight="700">Delivered</Text>
+            ) : (
+              ''
+            )}
           </Box>
         </TouchableOpacity>
       </Box>
