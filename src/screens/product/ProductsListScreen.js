@@ -4,7 +4,7 @@ import {View, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
 import ProductItem from '../../components/ProductItem';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {theme} from '../../atoms/theme';
-
+import {applicationProperties} from '../../utils/application.properties';
 const ProductListScreen = props => {
   const {nodeId, title} = props.route.params;
   console.log('nodeId: ', nodeId);
@@ -18,7 +18,7 @@ const ProductListScreen = props => {
   const getProducts = async () => {
     setIsLoading(true);
     const resp = await fetch(
-      `https://glue.de.faas-suite-prod.cloud.spryker.toys/catalog-search?category=${nodeId}&page[offset]=${pageOffset}&page[limit]=12`,
+      `${applicationProperties.baseUrl}catalog-search?category=${nodeId}&page[offset]=${pageOffset}&page[limit]=12`,
       {
         method: 'GET',
         headers: {

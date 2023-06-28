@@ -212,7 +212,9 @@ const ProductDetailsScreen = props => {
               }}
             />
             <Box>
-              <Text>{productData?.attributes?.name}</Text>
+              <Text style={{fontWeight: 'bold'}}>
+                {productData?.attributes?.name}
+              </Text>
               <Row
                 title={'Brand : '}
                 value={productData?.attributes?.attributes?.brand}
@@ -259,7 +261,9 @@ const ProductDetailsScreen = props => {
             </Box>
             <Text style={{fontWeight: 'bold'}}>Description : </Text>
             <Text>{productData?.attributes?.description}</Text>
-            <Text mt="s6">Price : $ {prodData?.price}</Text>
+            <Text mt="s6" style={{fontWeight: 'bold'}}>
+              Price : $ {prodData?.price}
+            </Text>
             {!productAvailability ? (
               <Text color="red">Product is not available </Text>
             ) : (

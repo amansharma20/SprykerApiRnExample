@@ -37,22 +37,41 @@ const CommonOptionsSelector = ({
 
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={onPressItem}>
+        {/* <Text style={styles.horizontalLine} /> */}
+
+        {item.type == 'address' ? (
+          <Box borderTopWidth={1} borderColor="border">
+            <Text fontWeight="600" color="bottomTabActiveColor" mt="s4">
+              DELIVERS TO
+            </Text>
+          </Box>
+        ) : (
+          ''
+        )}
+
         <Box flex={1} flexDirection="row" mb="s12">
           <BouncyCheckbox
             disableBuiltInState
             isChecked={item.isSelected}
             onPress={onPressItem}
             iconStyle={{
-              borderColor: theme.colors.green,
+              borderColor: theme.colors.bottomTabActiveColor,
             }}
-            fillColor={theme.colors.green}
+            fillColor={theme.colors.bottomTabActiveColor}
             size={20}
           />
           <Box width={'100%'} flexShrink={1} justifyContent="center">
+            {item.firstName != '' ? (
+              <Text variant="bold14" lineHeight={20} numberOfLines={2}>
+                {item.firstName}
+              </Text>
+            ) : (
+              ''
+            )}
             <Text
               variant="regular14LightBlack"
               lineHeight={20}
-              numberOfLines={1}>
+              numberOfLines={2}>
               {item.title}
             </Text>
           </Box>
@@ -69,6 +88,8 @@ const CommonOptionsSelector = ({
       subTitle: item.subTitle,
       isSelected: index === selectedIndex ? true : false,
       index: index,
+      firstName: item?.firstName,
+      type: item?.type,
     };
   });
 

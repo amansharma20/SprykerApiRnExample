@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, Button, FlatList} from 'react-native';
+import {ActivityIndicator, Button, FlatList, TextInput} from 'react-native';
 import {Box, Text} from '@atoms';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
@@ -107,6 +107,19 @@ const CartScreen = () => {
                   contentContainerStyle={{paddingBottom: 100}}
                   ListEmptyComponent={ListEmptyComponent}
                 />
+                <Box
+                  color="borderGrey"
+                  backgroundColor="white"
+                  borderRadius={4}
+                  borderWidth={1}
+                  mb="s10"
+                  paddingVertical="s8"
+                  paddingHorizontal="s4">
+                  <TextInput
+                    placeholder="Enter Promo Code"
+                    placeholderTextColor="gray"
+                  />
+                </Box>
                 <Box
                   justifyContent="flex-end"
                   flexDirection="row"

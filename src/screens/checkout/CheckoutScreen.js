@@ -51,9 +51,13 @@ const CheckoutScreen = props => {
   const addresses = checkoutFormattedData?.addresses;
 
   const ADDRESSES_DATA = addresses?.map(item => {
+    const title = `${item?.attributes?.address1} , ${item?.attributes?.city} , ${item?.attributes?.country} , ${item?.attributes?.zipCode} , ${item?.attributes?.phone} `;
+    const firstName = item?.attributes?.firstName;
     return {
-      title: item?.attributes?.address1,
+      title: title,
       value: item?.attributes?.address1,
+      firstName: firstName,
+      type: 'address',
     };
   });
 
@@ -124,8 +128,8 @@ const CheckoutScreen = props => {
     try {
       const response = await api.post('checkout', JSON.stringify(orderData));
       if (response.data.status === 201) {
-        console.log('response: ', response);
-        console.log('response?.data?.data?.data: ', response?.data?.data?.data);
+        // console.log('response: ', response);
+        // console.log('response?.data?.data?.data: ', response?.data?.data?.data);
         Alert.alert('Order Placed Successfully', '', [
           {
             text: 'OK',
@@ -145,7 +149,7 @@ const CheckoutScreen = props => {
         // );
         // RNRestart.Restart();
       } else {
-        console.log('response: ', response?.data?.data?.errors?.[0]?.detail);
+        // console.log('response: ', response?.data?.data?.errors?.[0]?.detail);
 
         Alert.alert(response?.data?.data?.errors?.[0]?.detail, '', [
           {
@@ -194,7 +198,7 @@ const CheckoutScreen = props => {
         setIsLoading(false);
       } else {
         setIsLoading(false);
-        console.log('res.payload.status: ', res.payload.data.errors[0].detail);
+        // console.log('res.payload.status: ', res.payload.data.errors[0].detail);
         alert(res?.payload?.data?.errors?.[0]?.detail);
       }
     });

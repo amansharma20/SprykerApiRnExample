@@ -24,7 +24,8 @@ const YourOrdersScreen = () => {
         padding="s4"
         borderRadius={2}
         borderColor="border"
-        borderWidth={1}>
+        borderWidth={1}
+        backgroundColor="snowy">
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('OrderDetailsScreen', {
@@ -39,18 +40,26 @@ const YourOrdersScreen = () => {
             <Text>Grand Total</Text>
             <Text fontWeight="700">${item.attributes?.totals?.grandTotal}</Text>
           </Box>
+          <Box flexDirection="row" justifyContent="space-between">
+            <Text>Status </Text>
+            {item.attributes?.itemStates == 'paid' ? (
+              <Text fontWeight="700">Delivered</Text>
+            ) : (
+              ''
+            )}
+          </Box>
         </TouchableOpacity>
       </Box>
     );
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    dispatch(getOrdersData('customers/DE--21/orders')).then(res => {
-      // console.log('res: ', res);
-      setIsLoading(false);
-    });
-  }, [dispatch]);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   dispatch(getOrdersData('customers/DE--21/orders')).then(res => {
+  //     // console.log('res: ', res);
+  //     setIsLoading(false);
+  //   });
+  // }, [dispatch]);
 
   return (
     <Box flex={1} backgroundColor="white">
