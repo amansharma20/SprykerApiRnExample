@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useEffect, useState} from 'react';
 import {Box, Text, theme} from '@atoms';
-import {Button, FlatList, TouchableOpacity} from 'react-native';
+import {Button, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 const CommonOptionsSelector = ({
@@ -37,6 +37,16 @@ const CommonOptionsSelector = ({
 
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={onPressItem}>
+        <Text style={styles.horizontalLine} />
+
+        {item.type == 'address' ? (
+          <Text variant="semiBold14Green" mt="s4">
+            DELIVERS TO
+          </Text>
+        ) : (
+          ''
+        )}
+
         <Box flex={1} flexDirection="row" mb="s12">
           <BouncyCheckbox
             disableBuiltInState
@@ -49,10 +59,17 @@ const CommonOptionsSelector = ({
             size={20}
           />
           <Box width={'100%'} flexShrink={1} justifyContent="center">
+            {item.firstName != '' ? (
+              <Text variant="bold14" lineHeight={20} numberOfLines={2}>
+                {item.firstName}
+              </Text>
+            ) : (
+              ''
+            )}
             <Text
               variant="regular14LightBlack"
               lineHeight={20}
-              numberOfLines={1}>
+              numberOfLines={2}>
               {item.title}
             </Text>
           </Box>
@@ -69,6 +86,8 @@ const CommonOptionsSelector = ({
       subTitle: item.subTitle,
       isSelected: index === selectedIndex ? true : false,
       index: index,
+      firstName: item?.firstName,
+      type: item?.type,
     };
   });
 
@@ -94,5 +113,11 @@ const CommonOptionsSelector = ({
     </Box>
   );
 };
+const styles = StyleSheet.create({
+  horizontalLine: {
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+  },
+});
 
 export default CommonOptionsSelector;
