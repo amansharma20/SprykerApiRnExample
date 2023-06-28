@@ -19,7 +19,7 @@ const CategorySection = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [categoriesData, setCategoriesData] = useState([]);
-  console.log('categoriesData: ', categoriesData);
+  
   const firstItem = categoriesData?.[0]?.nodeId || null;
   const [expandedItem, setExpandedItem] = useState(firstItem);
   const animation = useRef(new Animated.Value(0)).current;
@@ -86,7 +86,6 @@ const CategorySection = () => {
   };
 
   const renderCategory = ({item}) => {
-    console.log('item: ', item?.name);
     const expandStyle = {
       maxHeight: animation.interpolate({
         inputRange: [0, 1],
@@ -95,19 +94,29 @@ const CategorySection = () => {
       opacity: animation,
     };
 
+    const onPressHeader = () => {
+      console.log('item: ', item);
+      if (item?.children?.length === 0) {
+        if (item.name === 'Bundled Products') {
+          navigation.navigate('BundledProductsListScreen', {
+            nodeId: item?.nodeId,
+            title: item?.name,
+          });
+        } else {
+          navigation.navigate('ProductsListScreen', {
+            nodeId: item?.nodeId,
+            title: item?.name,
+          });
+        }
+      } else {
+        handleItemPress(item.nodeId);
+      }
+    };
+
     return (
       <TouchableOpacity
         style={styles.item}
-        onPress={() => {
-          if (item?.children?.length === 0) {
-            navigation.navigate('ProductsListScreen', {
-              nodeId: item?.nodeId,
-              title: item?.name,
-            });
-            return;
-          }
-          handleItemPress(item.nodeId);
-        }}
+        onPress={onPressHeader}
         activeOpacity={0.8}>
         <View style={styles.itemContainer}>
           <Text style={styles.itemText}>

@@ -21,6 +21,7 @@ import CartScreen from '../screens/cart/CartScreen';
 import SearchScreen from '../screens/search/SearchScreen';
 import {useDispatch} from 'react-redux';
 import {CustomerCartIdApiAsyncThunk} from '../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
+import BundledProductsListScreen from '../screens/product/BundledProductsListScreen';
 
 export const AuthContext = React.createContext();
 
@@ -199,6 +200,10 @@ export default function StackNavigator() {
         />
         <Stack.Screen name="CartScreen" component={CartScreen} />
         <Stack.Screen name="SearchScreen" component={SearchScreen} />
+        <Stack.Screen
+          name="BundledProductsListScreen"
+          component={BundledProductsListScreen}
+        />
       </Stack.Navigator>
     </AuthContext.Provider>
   );
