@@ -7,6 +7,8 @@ import {theme} from '../../atoms/theme';
 
 const ProductListScreen = props => {
   const {nodeId, title} = props.route.params;
+  console.log('nodeId: ', nodeId);
+  console.log('title: ', title);
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
@@ -37,7 +39,9 @@ const ProductListScreen = props => {
   };
 
   useEffect(() => {
-    getProducts();
+    if (nodeId) {
+      getProducts();
+    }
   }, [nodeId]);
 
   const loadMore = () => {
@@ -56,7 +60,7 @@ const ProductListScreen = props => {
     <View style={styles.container}>
       <CommonHeader title={title || 'All Products'} showCartIcon />
 
-      {!isLoading ? (
+      {!isLoading && nodeId ? (
         <>
           <FlatList
             data={products}

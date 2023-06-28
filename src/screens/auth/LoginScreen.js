@@ -23,6 +23,9 @@ export default function LoginScreen(props) {
       grant_type: 'password',
       username: userEmail,
       password: password,
+      // RICOH
+      // client_id: 'frontend',
+      // client_secret: 'qq7NRNQDJbQ8dFq91Swm3pjFmVPmQd6CMfOPtBlp5hIWytMs',
     };
     const response = await commonApi.post('token', apiData, {
       'Content-Type': 'multipart/form-data',

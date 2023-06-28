@@ -19,7 +19,6 @@ import YourOrdersScreen from '../screens/orders/YourOrdersScreen';
 import OrderDetailsScreen from '../screens/orders/OrderDetailsScreen';
 import CartScreen from '../screens/cart/CartScreen';
 import SearchScreen from '../screens/search/SearchScreen';
-// import {useIsUserLoggedIn} from '../hooks/useIsUserLoggedIn';
 import {useDispatch} from 'react-redux';
 import {CustomerCartIdApiAsyncThunk} from '../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 
@@ -30,7 +29,6 @@ const Stack = createStackNavigator();
 export default function StackNavigator() {
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
-  // const {isUserLoggedIn} = useIsUserLoggedIn();
 
   const reduxDispatch = useDispatch();
   useEffect(() => {

@@ -13,11 +13,11 @@ const HomeScreen = () => {
 
   const renderHomeItems = useCallback(({item}) => {
     switch (item) {
-      case 'CategorySection':
-        return <CategorySection />;
-
       case 'ContentFullSection':
         return <ContentFullSection />;
+
+      case 'CategorySection':
+        return <CategorySection />;
 
       default:
         return <></>;
@@ -32,8 +32,8 @@ const HomeScreen = () => {
         justifyContent="space-between"
         paddingHorizontal="paddingHorizontal"
         backgroundColor="white"
-        paddingBottom="s8"
-        mb="s4">
+        mb="s4"
+        paddingVertical="s4">
         <Text style={styles.title}>Browse</Text>
         <TouchableOpacity
           style={{padding: 4}}
@@ -45,9 +45,11 @@ const HomeScreen = () => {
         data={ViewData}
         renderItem={renderHomeItems}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingHorizontal: theme.spacing.paddingHorizontal,
-        }}
+        contentContainerStyle={
+          {
+            // paddingHorizontal: theme.spacing.paddingHorizontal,
+          }
+        }
       />
     </Box>
   );

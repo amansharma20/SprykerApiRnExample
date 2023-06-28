@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {commonApi} from '../../../api/CommanAPI';
+import {Box} from '@atoms';
 
 const CategorySection = () => {
   const navigation = useNavigation();
@@ -18,6 +19,7 @@ const CategorySection = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [categoriesData, setCategoriesData] = useState([]);
+  console.log('categoriesData: ', categoriesData);
   const firstItem = categoriesData?.[0]?.nodeId || null;
   const [expandedItem, setExpandedItem] = useState(firstItem);
   const animation = useRef(new Animated.Value(0)).current;
@@ -56,6 +58,16 @@ const CategorySection = () => {
     getCategories();
   }, []); // Or [] if effect doesn't need props or state
 
+  useEffect(() => {
+    categoriesData.push({
+      children: [],
+      name: 'Bundled Products',
+      // nodeId: 15,
+      // order: 80,
+      url: 'Bundled Products',
+    });
+  }, [categoriesData]);
+
   const renderSubCategory = ({item}) => {
     return (
       <TouchableOpacity
@@ -74,6 +86,7 @@ const CategorySection = () => {
   };
 
   const renderCategory = ({item}) => {
+    console.log('item: ', item?.name);
     const expandStyle = {
       maxHeight: animation.interpolate({
         inputRange: [0, 1],
@@ -87,7 +100,10 @@ const CategorySection = () => {
         style={styles.item}
         onPress={() => {
           if (item?.children?.length === 0) {
-            navigation.navigate('ProductsListScreen', {nodeId: item?.nodeId});
+            navigation.navigate('ProductsListScreen', {
+              nodeId: item?.nodeId,
+              title: item?.name,
+            });
             return;
           }
           handleItemPress(item.nodeId);
@@ -124,11 +140,11 @@ const CategorySection = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <Box flex={1} paddingHorizontal="paddingHorizontal">
       <FlatList
         data={categoriesData}
         renderItem={renderCategory}
-        keyExtractor={item => item.nodeId.toString()}
+        // keyExtractor={item => item.nodeId.toString()}
         contentContainerStyle={styles.flatListContainer}
         ListEmptyComponent={
           isLoading ? <ActivityIndicator /> : <Text>EMPTY LIST</Text>
@@ -149,14 +165,11 @@ const CategorySection = () => {
           <ActivityIndicator />
         </>
       )} */}
-    </View>
+    </Box>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   flatListContainer: {
     flexGrow: 1,
   },
