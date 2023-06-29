@@ -254,6 +254,7 @@ const ProductDetailsScreen = props => {
                       renderItem={({item}) => renderItem({item})}
                       keyExtractor={item => item.id}
                       extraData={selectedId}
+                      contentContainerStyle={styles.productList}
                     />
                   </Box>
                 )}
@@ -300,6 +301,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
   },
+  productList: {
+    // justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+
   backImage: {
     resizeMode: 'contain',
     width: '100%',
