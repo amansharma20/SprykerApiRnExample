@@ -28,6 +28,12 @@ export default function ProfileScreen() {
       },
     },
     {
+      name: 'My Wish List',
+      onPress: function () {
+        navigation.navigate('WishlistScreen');
+      },
+    },
+    {
       name: 'Contact Us',
       onPress: function () {},
     },

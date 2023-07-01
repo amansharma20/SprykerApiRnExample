@@ -23,6 +23,8 @@ import {useDispatch} from 'react-redux';
 import {CustomerCartIdApiAsyncThunk} from '../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import BundledProductsListScreen from '../screens/product/BundledProductsListScreen';
 import BundleProductDetailsScreen from '../screens/product/BundleProductDetailsScreen';
+import WishlistScreen from '../screens/wishlist/WishlistScreen';
+import WishlistItemsScreen from '../screens/wishlist/WishlistItemsScreen';
 
 export const AuthContext = React.createContext();
 
@@ -208,6 +210,11 @@ export default function StackNavigator() {
         <Stack.Screen
           name="BundleProductDetailsScreen"
           component={BundleProductDetailsScreen}
+        />
+        <Stack.Screen name="WishlistScreen" component={WishlistScreen} />
+        <Stack.Screen
+          name="WishlistItemsScreen"
+          component={WishlistItemsScreen}
         />
       </Stack.Navigator>
     </AuthContext.Provider>

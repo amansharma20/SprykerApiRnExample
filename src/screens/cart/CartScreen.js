@@ -60,7 +60,9 @@ const CartScreen = () => {
     setIsLoading(true);
     if (customerCartId) {
       dispatch(
-        getCustomerCartItems(`carts/${customerCartId}?include=items`),
+        getCustomerCartItems(
+          `carts/${customerCartId}?include=items%2Cbundle-items%2Cbundle-items`,
+        ),
       ).then(() => {
         setIsLoading(false);
       });
