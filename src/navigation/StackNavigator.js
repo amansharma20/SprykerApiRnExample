@@ -173,7 +173,6 @@ export default function StackNavigator() {
                   CardStyleInterpolators.forModalPresentationIOS,
                 headerShown: false,
                 headerShadowVisible: false,
-                // cardStyle: {backgroundColor: 'transparent'},
                 presentation: 'modal',
               }}
             />
@@ -200,7 +199,17 @@ export default function StackNavigator() {
           component={OrderDetailsScreen}
         />
         <Stack.Screen name="CartScreen" component={CartScreen} />
-        <Stack.Screen name="SearchScreen" component={SearchScreen} />
+        <Stack.Screen
+          name="SearchScreen"
+          component={SearchScreen}
+          options={{
+            cardStyleInterpolator:
+              CardStyleInterpolators.forModalPresentationIOS,
+            headerShown: false,
+            headerShadowVisible: false,
+            presentation: 'modal',
+          }}
+        />
         <Stack.Screen
           name="BundledProductsListScreen"
           component={BundledProductsListScreen}

@@ -3,6 +3,9 @@ import {View, TextInput, StyleSheet, FlatList} from 'react-native';
 import ProductItem from '../../components/ProductItem';
 import {SearchIcon} from '../../assets/svgs';
 import {applicationProperties} from '../../utils/application.properties';
+import {Box} from '@atoms';
+import CommonHeader from '../../components/CommonHeader/CommonHeader';
+
 const SearchScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -31,55 +34,53 @@ const SearchScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <SearchIcon />
-        <TextInput
-          style={styles.input}
-          placeholder="Search for Products, Brands and More"
-          value={searchText}
-          onChangeText={setSearchText}
-          onChange={handleSearch}
-          autoFocus={true}
-        />
-      </View>
-      {searchResults.length > 0 && (
-        <FlatList
-          data={searchResults}
-          renderItem={renderProductItem}
-          keyExtractor={item => item.abstractSku}
-          numColumns={2}
-          contentContainerStyle={styles.productList}
-        />
-      )}
-    </View>
+    <Box flex={1} backgroundColor="white">
+      <Box paddingTop="s8" backgroundColor="white">
+        <CommonHeader />
+      </Box>
+      <Box paddingHorizontal="s16">
+        <Box
+          flexDirection="row"
+          alignItems="center"
+          backgroundColor="white"
+          borderRadius={10}
+          mb="s16"
+          shadowColor="black"
+          shadowOpacity={0.1}
+          shadowRadius={5}
+          elevation={3}
+          paddingHorizontal="s10">
+          <SearchIcon />
+          <TextInput
+            style={styles.input}
+            placeholder="Search for Products, Brands and More"
+            value={searchText}
+            onChangeText={setSearchText}
+            onChange={handleSearch}
+            autoFocus={true}
+          />
+        </Box>
+        {searchResults.length > 0 && (
+          <FlatList
+            data={searchResults}
+            renderItem={renderProductItem}
+            keyExtractor={item => item.abstractSku}
+            numColumns={2}
+            contentContainerStyle={styles.productList}
+          />
+        )}
+      </Box>
+    </Box>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: 'white',
-  },
   searchInput: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 16,
     paddingHorizontal: 8,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    marginBottom: 16,
-    shadowColor: '#000000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-    paddingHorizontal: 10,
   },
   input: {
     flex: 1,
