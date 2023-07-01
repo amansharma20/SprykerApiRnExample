@@ -23,7 +23,6 @@ const BundledProductsListScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
 
   const BundleProductItem = ({item}) => {
-    // console.log('items111111: ', item);
     const productItem = item.item;
     const productImage =
       item?.item?.[0]?.included?.[0]?.attributes.imageSets?.[0]?.images?.[0]
@@ -75,9 +74,8 @@ const BundledProductsListScreen = props => {
     const getBundeledProducts = async id => {
       setIsLoading(true);
       const response = await commonApi.get(
-        `abstract-products/${id}?include=abstract-product-image-sets`,
+        `abstract-products/${id}?include=abstract-product-image-sets%2Cabstract-product-prices%2Cabstract-product-availabilities`,
       );
-      // console.log('response: ', response?.data?.data);
       setBundleProducts(prevBundleProducts => [
         ...prevBundleProducts,
         [response?.data?.data],

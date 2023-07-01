@@ -134,7 +134,9 @@ const ProductDetailsScreen = props => {
       );
       if (response?.data?.status === 201) {
         dispatch(
-          getCustomerCartItems(`carts/${customerCart.id}?include=items`),
+          getCustomerCartItems(
+            `carts/${customerCart.id}?include=items%2Cbundle-items`,
+          ),
         ).then(res => {
           if (res.payload.status === 200) {
             setIsLoading(false);

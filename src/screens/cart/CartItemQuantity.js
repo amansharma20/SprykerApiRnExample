@@ -39,7 +39,9 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
     const response = resp.data;
     if (response) {
       dispatch(
-        getCustomerCartItems(`carts/${customerCart.id}?include=items`),
+        getCustomerCartItems(
+          `carts/${customerCart.id}?include=items2Cbundle-items%2Cbundle-items`,
+        ),
       ).then(error => {
         setIsLoading(false);
       });

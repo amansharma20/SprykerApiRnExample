@@ -73,7 +73,9 @@ const CartItem = ({item, checkProductAvailability}) => {
       .then(res => {
         if (res.data.status == 204) {
           dispatch(
-            getCustomerCartItems(`carts/${customerCart.id}?include=items`),
+            getCustomerCartItems(
+              `carts/${customerCart.id}?include=items%2Cbundle-items`,
+            ),
           ).then(() => {
             setIsLoading(false);
           });

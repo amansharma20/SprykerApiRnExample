@@ -16,6 +16,7 @@ const YourOrdersScreen = () => {
   const ordersData = useSelector(
     state => state.getOrdersDataApiSlice.ordersData?.data?.data || [],
   );
+  console.log('ordersData: ', ordersData);
 
   const renderItem = ({item, index}) => {
     return (
