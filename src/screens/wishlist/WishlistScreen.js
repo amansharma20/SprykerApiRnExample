@@ -5,12 +5,18 @@ import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {api} from '../../api/SecureAPI';
 import {getCustomerWishlist} from '../../redux/wishlist/GetWishlistApiAsyncThunk';
 import {useSelector, useDispatch} from 'react-redux';
-import {FlatList, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {TextInput} from 'react-native-gesture-handler';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 const WishlistScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [wishlistName, setWishlistName] = useState('');
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const customerWishlist = useSelector(
@@ -22,7 +28,7 @@ const WishlistScreen = () => {
       data: {
         type: 'shopping-lists',
         attributes: {
-          name: 'My Shopping List testing',
+          name: wishlistName,
         },
       },
     };
@@ -30,7 +36,16 @@ const WishlistScreen = () => {
       `shopping-lists`,
       JSON.stringify(wishlistPayload),
     );
-    console.log('resps: ', resp.data.data);
+    if (resp?.data?.status === 201) {
+      setWishlistName('');
+      dispatch(getCustomerWishlist('shopping-lists')).then(res => {
+        if (res.payload.status === 200) {
+          alert('Wishlist added successfully');
+        }
+      });
+    } else {
+      alert('error');
+    }
   };
 
   useEffect(() => {
@@ -59,10 +74,9 @@ const WishlistScreen = () => {
   };
   return (
     <Box style={styles.container}>
-      <CommonHeader title={'Wish List'} />
+      <CommonHeader title={'Shopping List'} />
       <Box m="s8">
         <Box
-          color="borderGrey"
           backgroundColor="white"
           borderRadius={4}
           borderWidth={1}
@@ -73,17 +87,24 @@ const WishlistScreen = () => {
           <TextInput
             placeholder="Enter Name here"
             placeholderTextColor="gray"
+            onChangeText={text => {
+              setWishlistName(text);
+            }}
           />
         </Box>
 
         <CommonSolidButton
-          title="Add new wishlist"
+          title="Add new Shopping list"
           onPress={() => addNewWishlist()}
         />
         <Text mt="s8" style={styles.title}>
-          Your wishlist
+          Your Shopping List
         </Text>
-        <FlatList data={customerWishlist} renderItem={renderItem} />
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <FlatList data={customerWishlist} renderItem={renderItem} />
+        )}
       </Box>
     </Box>
   );

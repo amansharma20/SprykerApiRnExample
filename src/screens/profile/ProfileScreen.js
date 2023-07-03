@@ -28,7 +28,7 @@ export default function ProfileScreen() {
       },
     },
     {
-      name: 'My Wish List',
+      name: 'Shopping List',
       onPress: function () {
         navigation.navigate('WishlistScreen');
       },
