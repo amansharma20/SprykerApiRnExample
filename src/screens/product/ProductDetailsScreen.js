@@ -23,6 +23,7 @@ import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/Custome
 
 import {useSelector} from 'react-redux';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import CommonLoading from '../../components/CommonLoading';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
@@ -33,7 +34,6 @@ const ProductDetailsScreen = props => {
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
-  console.log('customerCart', customerCart);
 
   const [productData, setProductData] = useState();
   const [variationData, setVariationData] = useState();
@@ -42,6 +42,67 @@ const ProductDetailsScreen = props => {
   const [selectedId, setSelectedId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [productAvailability, setProductAvailability] = useState(true);
+
+  const onPressAddToCart = () => {
+    isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
+  };
+
+  const addToCartHandler = async () => {
+    if (variationData && variationData[1]) {
+      if (selectedId) {
+        var productSkuId = '';
+        await variationIdData?.map((item, index) => {
+          if (index == selectedId) {
+            productSkuId = item;
+          }
+        });
+      } else {
+        return alert('select Varint');
+      }
+    } else {
+      productSkuId = variationIdData[0];
+    }
+    if (productSkuId) {
+      const productData = {
+        data: {
+          type: 'items',
+          attributes: {
+            sku: productSkuId,
+            quantity: 1,
+            salesUnit: {
+              id: 0,
+              amount: 0,
+            },
+            productOptions: [null],
+          },
+        },
+      };
+      // setIsLoading(true);
+      CommonLoading.show();
+      const response = await api.post(
+        `carts/${customerCart.id}/items`,
+        productData,
+      );
+      if (response?.data?.status === 201) {
+        dispatch(
+          getCustomerCartItems(
+            `carts/${customerCart.id}?include=items%2Cbundle-items`,
+          ),
+        ).then(res => {
+          if (res.payload.status === 200) {
+            // setIsLoading(false);
+            alert('Added to Cart');
+          }
+          CommonLoading.hide();
+        });
+        dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+      } else {
+        alert('error', response.data.data.errors?.[0]?.detail);
+        // setIsLoading(false);
+        CommonLoading.hide();
+      }
+    }
+  };
 
   useEffect(() => {
     setProdData(propData);
@@ -95,65 +156,6 @@ const ProductDetailsScreen = props => {
     };
     handlerfunction();
   }, [productData]);
-
-  const addToCartHandler = async () => {
-    if (variationData && variationData[1]) {
-      if (selectedId) {
-        var productSkuId = '';
-        await variationIdData?.map((item, index) => {
-          if (index == selectedId) {
-            productSkuId = item;
-          }
-        });
-      } else {
-        return alert('select Varint');
-      }
-    } else {
-      productSkuId = variationIdData[0];
-    }
-    if (productSkuId) {
-      const productData = {
-        data: {
-          type: 'items',
-          attributes: {
-            sku: productSkuId,
-            quantity: 1,
-            salesUnit: {
-              id: 0,
-              amount: 0,
-            },
-            productOptions: [null],
-          },
-        },
-      };
-      setIsLoading(true);
-      const response = await api.post(
-        `carts/${customerCart.id}/items`,
-        productData,
-        isLoading,
-      );
-      if (response?.data?.status === 201) {
-        dispatch(
-          getCustomerCartItems(
-            `carts/${customerCart.id}?include=items%2Cbundle-items`,
-          ),
-        ).then(res => {
-          if (res.payload.status === 200) {
-            setIsLoading(false);
-            alert('Added to Cart');
-          }
-        });
-        dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
-      } else {
-        alert('error', response.data.data.errors?.[0]?.detail);
-        setIsLoading(false);
-      }
-    }
-  };
-
-  const onPressAddToCart = () => {
-    isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
-  };
 
   const Row = ({title, value}) => {
     return (
