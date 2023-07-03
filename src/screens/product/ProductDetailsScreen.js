@@ -112,10 +112,6 @@ const ProductDetailsScreen = props => {
         '',
       );
       if (response.data?.status === 200) {
-        console.log(
-          'product details data',
-          response?.data?.data?.included?.[0]?.attributes?.availability,
-        );
         setProductAvailability(
           response?.data?.data?.included?.[0]?.attributes?.availability,
         );
@@ -288,6 +284,14 @@ const ProductDetailsScreen = props => {
           // onPress={onPressAddToCart}
           disabled={!productAvailability}
         />
+        <Box mt="s8">
+          <TouchableOpacity style={styles.wishListContainer}>
+            <Text style={{color: 'white', fontWeight: 'bold'}}>
+              Add to wishlist
+            </Text>
+          </TouchableOpacity>
+        </Box>
+
         {/* <Box mt="s16">
                 <CommonSolidButton
                   title={!isLoading ? 'Buy Now' : 'Loading...'}
@@ -337,6 +341,17 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: 'center',
     borderRadius: 8,
+  },
+  wishListContainer: {
+    width: '100%',
+    height: 40,
+    backgroundColor: theme.colors.red,
+    borderRadius: theme.spacing.lml,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    color: 'white',
   },
 });
 

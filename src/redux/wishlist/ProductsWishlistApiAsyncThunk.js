@@ -1,10 +1,10 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {api} from '../../api/SecureAPI';
-export const customerWishlist = createAsyncThunk(
-  'createWishlist',
-  async ({endpoint, data}, thunkAPI) => {
+export const getProductsByWishlistAsyncThunk = createAsyncThunk(
+  'productsWishlist',
+  async (endpoint, thunkAPI) => {
     try {
-      const response = await api.post(endpoint, data);
+      const response = await api.get(endpoint);
       return response.data;
     } catch (error) {
       return error;
