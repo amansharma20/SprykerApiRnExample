@@ -24,6 +24,8 @@ import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/Custome
 import {useSelector} from 'react-redux';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import CommonLoading from '../../components/CommonLoading';
+import {getCustomerWishlist} from '../../redux/wishlist/GetWishlistApiAsyncThunk';
+import {all} from 'axios';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
@@ -41,12 +43,17 @@ const ProductDetailsScreen = props => {
   const [prodData, setProdData] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingShopingList, setIsLoadingShopingList] = useState(false);
   const [productAvailability, setProductAvailability] = useState(true);
 
   const onPressAddToCart = () => {
     isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
   };
-
+  const onPressAddToShoppingList = () => {
+    isUserLoggedIn
+      ? addToShoppingListHandler()
+      : navigation.navigate('LoginScreen');
+  };
   const addToCartHandler = async () => {
     if (variationData && variationData[1]) {
       if (selectedId) {
@@ -100,6 +107,48 @@ const ProductDetailsScreen = props => {
         alert('error', response.data.data.errors?.[0]?.detail);
         // setIsLoading(false);
         CommonLoading.hide();
+      }
+    }
+  };
+
+  const addToShoppingListHandler = async () => {
+    setIsLoadingShopingList(true);
+    if (variationData && variationData[1]) {
+      if (selectedId) {
+        var productSkuId = '';
+        await variationIdData?.map((item, index) => {
+          if (index == selectedId) {
+            productSkuId = item;
+          }
+        });
+      } else {
+        return alert('select Varint');
+      }
+    } else {
+      productSkuId = variationIdData[0];
+    }
+    if (productSkuId) {
+      const productData = {
+        data: {
+          type: 'shopping-list-items',
+          attributes: {
+            productOfferReference: null,
+            quantity: 1,
+            sku: productSkuId,
+          },
+        },
+      };
+      const response = await api.post(
+        `shopping-lists/105fb4c9-0b55-500f-ae5e-bbb48cbf64fc/shopping-list-items`,
+        productData,
+      );
+      if (response?.data?.status === 201) {
+        setIsLoadingShopingList(false);
+        dispatch(getCustomerWishlist('shopping-lists')).then(() => {});
+        alert('Added to shopping list');
+      } else {
+        setIsLoadingShopingList(false);
+        alert('error');
       }
     }
   };
@@ -285,20 +334,14 @@ const ProductDetailsScreen = props => {
           disabled={!productAvailability}
         />
         <Box mt="s8">
-          <TouchableOpacity style={styles.wishListContainer}>
+          <TouchableOpacity
+            style={styles.wishListContainer}
+            onPress={onPressAddToShoppingList}>
             <Text style={{color: 'white', fontWeight: 'bold'}}>
-              Add to wishlist
+              {isLoadingShopingList ? 'Loading...' : 'Add to Shopping List'}
             </Text>
           </TouchableOpacity>
         </Box>
-
-        {/* <Box mt="s16">
-                <CommonSolidButton
-                  title={!isLoading ? 'Buy Now' : 'Loading...'}
-                  // onPress={addToCartHandler}
-                  onPress={() => onPressAddToCart(true)}
-                />
-              </Box> */}
       </Box>
     </SafeAreaView>
   );

@@ -113,6 +113,7 @@ const WishlistScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 20,
@@ -124,6 +125,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     marginBottom: 8,
+    backgroundColor: 'white',
   },
   wishlistItemName: {
     fontSize: 16,

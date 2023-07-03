@@ -91,17 +91,18 @@ const WishlistItemsScreen = props => {
         borderColor="border"
         borderRadius={8}
         padding="s8">
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('ProductDetailsScreen');
-          }}>
+        <TouchableOpacity>
           <Box alignItems="center">
             <Image source={{uri: product?.image}} style={styles.productImage} />
           </Box>
-          <Text style={styles.productTitle} numberOfLines={2}>
-            {product?.name}
-          </Text>
-          <Box>
+
+          <Box alignItems="center">
+            <Text style={styles.productTitle} numberOfLines={2}>
+              {product?.name}
+            </Text>
+          </Box>
+
+          <Box alignItems="center">
             <Text style={styles.productPrice}>$ {product?.price}</Text>
           </Box>
         </TouchableOpacity>
@@ -120,11 +121,7 @@ const WishlistItemsScreen = props => {
     <Box>
       <CommonHeader title="Items" />
       {filteredProducts.length > 0 ? (
-        <FlatList
-          data={filteredProducts}
-          numColumns={2}
-          renderItem={renderItem}
-        />
+        <FlatList data={filteredProducts} renderItem={renderItem} />
       ) : (
         ''
       )}
