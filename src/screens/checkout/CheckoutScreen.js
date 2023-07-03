@@ -7,6 +7,7 @@ import CommonOptionsSelector from '../../components/CommonOptionsSelector/Common
 import {ActivityIndicator, Alert, Button, ScrollView} from 'react-native';
 import {api} from '../../api/SecureAPI';
 import {useNavigation} from '@react-navigation/native';
+import CommonLoading from '../../components/CommonLoading';
 
 const CheckoutScreen = props => {
   const navigation = useNavigation();
@@ -124,7 +125,8 @@ const CheckoutScreen = props => {
   };
 
   const orderConfirm = async () => {
-    setIsOrderConfirmedLoading(true);
+    // setIsOrderConfirmedLoading(true);
+    CommonLoading.show();
     try {
       const response = await api.post('checkout', JSON.stringify(orderData));
       if (response.data.status === 201) {
@@ -139,7 +141,8 @@ const CheckoutScreen = props => {
               }),
           },
         ]);
-        setIsOrderConfirmedLoading(false);
+        // setIsOrderConfirmedLoading(false);
+        CommonLoading.hide();
         // dispatch(getCustomerCartItems(`carts/${cartId}?include=items`)).then(
         //   () => {
         //     Alert.alert('Order Placed Successfully', [
@@ -157,10 +160,12 @@ const CheckoutScreen = props => {
             onPress: () => {},
           },
         ]);
-        setIsOrderConfirmedLoading(false);
+        // setIsOrderConfirmedLoading(false);
+        CommonLoading.hide();
       }
     } catch (error) {
       console.log('error: ', error);
+      CommonLoading.hide();
     }
   };
 

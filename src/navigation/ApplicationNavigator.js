@@ -5,6 +5,7 @@ import {ThemeProvider} from '@shopify/restyle';
 import {lightTheme} from '@atoms';
 import {Provider} from 'react-redux';
 import RootStore from '../redux/RootStore';
+import CommonLoading from '../components/CommonLoading';
 
 export default function ApplicationNavigator() {
   const routeNameRef = useRef('');
@@ -31,6 +32,7 @@ export default function ApplicationNavigator() {
           <StackNavigator />
         </ThemeProvider>
       </Provider>
+      <CommonLoading ref={ref => CommonLoading.setRef(ref)} />
     </NavigationContainer>
   );
 }

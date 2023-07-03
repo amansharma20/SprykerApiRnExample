@@ -7,18 +7,18 @@ import {theme} from '../../atoms/theme';
 import {applicationProperties} from '../../utils/application.properties';
 const ProductListScreen = props => {
   const {nodeId, title} = props.route.params;
-  console.log('nodeId: ', nodeId);
-  console.log('title: ', title);
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [pageOffset, setPageOffset] = useState(0);
 
+  const [includedData, setIncludedData] = useState([]);
+
   const getProducts = async () => {
     setIsLoading(true);
     const resp = await fetch(
-      `${applicationProperties.baseUrl}catalog-search?category=${nodeId}&page[offset]=${pageOffset}&page[limit]=12`,
+      `${applicationProperties.baseUrl}catalog-search?category=${nodeId}&page[offset]=${pageOffset}&page[limit]=12&include=abstract-products%2Cconcrete-products%2F`,
       {
         method: 'GET',
         headers: {
@@ -32,6 +32,7 @@ const ProductListScreen = props => {
       ...products,
       ...result?.data[0]?.attributes?.abstractProducts,
     ]);
+    setIncludedData(result.included);
     setPageOffset(pageOffset + 12);
     setIsLoading(false);
     setLastPage(result?.data[0]?.attributes?.pagination.maxPage);
@@ -50,9 +51,9 @@ const ProductListScreen = props => {
     }
   };
 
-  const renderItem = ({item}) => (
+  const renderItem = ({item, index}) => (
     <>
-      <ProductItem item={item} />
+      <ProductItem item={item} includedData={includedData} index={index} />
     </>
   );
 

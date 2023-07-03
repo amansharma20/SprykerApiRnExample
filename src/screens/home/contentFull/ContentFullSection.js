@@ -4,15 +4,12 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Box, Text, theme} from '@atoms';
 import {
   Animated,
-  Button,
   Dimensions,
   FlatList,
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
-  View,
 } from 'react-native';
-import CommonSolidButton from '../../../components/CommonSolidButton/CommonSolidButton';
 
 const ITEM_WIDTH = Dimensions.get('window').width;
 const ITEM_HEIGHT = 200;

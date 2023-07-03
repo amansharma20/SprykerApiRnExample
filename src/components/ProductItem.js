@@ -1,10 +1,76 @@
-import {Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import React from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {Box} from '@atoms';
+import {Box, Text} from '@atoms';
+import Icons from '../assets/constants/Icons';
+import {api} from '../api/SecureAPI';
+import {useDispatch, useSelector} from 'react-redux';
+import {getCustomerCartItems} from '../redux/CartApi/CartApiAsyncThunk';
+import {CustomerCartIdApiAsyncThunk} from '../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
+import CommonLoading from './CommonLoading';
 
-export default function ProductItem({item}) {
+export default function ProductItem({item, includedData, index}) {
+  // console.log('item: ', item);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const includedSingleProductData = includedData?.[index];
+
+  const concreteId =
+    includedSingleProductData?.attributes?.attributeMap
+      ?.product_concrete_ids?.[0];
+
+  const productData = {
+    data: {
+      type: 'items',
+      attributes: {
+        sku: concreteId,
+        quantity: 1,
+        salesUnit: {
+          id: 0,
+          amount: 0,
+        },
+        productOptions: [null],
+      },
+    },
+  };
+
+  const customerCart = useSelector(
+    state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
+  );
+
+  const onPressAddToCart = async () => {
+    CommonLoading.show();
+    const response = await api.post(
+      `carts/${customerCart.id}/items`,
+      productData,
+    );
+    if (response?.data?.status === 201) {
+      dispatch(
+        getCustomerCartItems(
+          `carts/${customerCart.id}?include=items%2Cbundle-items`,
+        ),
+      ).then(res => {
+        if (res.payload.status === 200) {
+          alert('Added to Cart');
+        }
+        CommonLoading.hide();
+      });
+      dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+    } else {
+      alert('error', response.data.data.errors?.[0]?.detail);
+      CommonLoading.hide();
+    }
+  };
+
   return (
     <Box
       flex={1}
@@ -27,11 +93,40 @@ export default function ProductItem({item}) {
             style={styles.productImage}
           />
         </Box>
-        <Text style={styles.productTitle} numberOfLines={2}>
+        <Text style={styles.productTitle} numberOfLines={1}>
           {item.abstractName}
         </Text>
-        <Box>
-          <Text style={styles.productPrice}>$ {item.price}</Text>
+        <Box
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="center"
+          paddingVertical="s2">
+          <Box>
+            <Text fontSize={14} fontWeight="600">
+              $ {item.price}
+            </Text>
+          </Box>
+          <TouchableOpacity onPress={onPressAddToCart}>
+            <Box
+              backgroundColor="purple"
+              padding="s4"
+              paddingHorizontal="s8"
+              borderRadius={8}
+              flexDirection="row"
+              alignItems="center">
+              <Text
+                fontSize={14}
+                color="white"
+                fontWeight="600"
+                marginRight="s4">
+                Add
+              </Text>
+              <Image
+                source={Icons.addToCartIcon}
+                style={{width: 24, height: 24, tintColor: 'white'}}
+              />
+            </Box>
+          </TouchableOpacity>
         </Box>
       </TouchableOpacity>
     </Box>
@@ -54,15 +149,6 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 14,
     color: 'gray',
-  },
-  roundButton2: {
-    width: 60,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    backgroundColor: 'red',
-    color: 'white',
   },
   button: {
     borderRadius: 14,
