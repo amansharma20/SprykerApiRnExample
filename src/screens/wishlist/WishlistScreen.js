@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import Box from '../../atoms/box';
 import Text from '../../atoms/text';
@@ -14,11 +16,14 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {TextInput} from 'react-native-gesture-handler';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import ShoppingListItem from '../../components/ShoppingListItem';
 const WishlistScreen = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [wishlistName, setWishlistName] = useState('');
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [wishlistName, setWishlistName] = useState('');
+
   const customerWishlist = useSelector(
     state => state?.getWishlistApiSlice?.customerWishlistData?.data?.data || [],
   );
@@ -54,6 +59,7 @@ const WishlistScreen = () => {
       setIsLoading(false);
     });
   }, []);
+
   const renderItem = item => {
     const wishlist = item?.item?.attributes;
     return (
@@ -72,6 +78,7 @@ const WishlistScreen = () => {
       </Box>
     );
   };
+
   return (
     <Box style={styles.container}>
       <CommonHeader title={'Shopping List'} />
@@ -90,6 +97,7 @@ const WishlistScreen = () => {
             onChangeText={text => {
               setWishlistName(text);
             }}
+            style={{paddingVertical: 10}}
           />
         </Box>
 
@@ -103,7 +111,12 @@ const WishlistScreen = () => {
         {isLoading ? (
           <ActivityIndicator />
         ) : (
-          <FlatList data={customerWishlist} renderItem={renderItem} />
+          <FlatList
+            data={customerWishlist}
+            renderItem={item => {
+              return <ShoppingListItem item={item} />;
+            }}
+          />
         )}
       </Box>
     </Box>

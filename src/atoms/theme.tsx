@@ -36,6 +36,7 @@ export const theme = createTheme({
     red: 'red',
     green: '#006400',
     bottomTabActiveColor: '#4486c6',
+    lightGreen: '#1BB18B',
     ...globalPallete,
   },
   spacing: {

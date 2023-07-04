@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // import * as React from 'react';
 import {
   CardStyleInterpolators,
@@ -25,6 +26,7 @@ import BundledProductsListScreen from '../screens/product/BundledProductsListScr
 import BundleProductDetailsScreen from '../screens/product/BundleProductDetailsScreen';
 import WishlistScreen from '../screens/wishlist/WishlistScreen';
 import WishlistItemsScreen from '../screens/wishlist/WishlistItemsScreen';
+import {getCustomerWishlist} from '../redux/wishlist/GetWishlistApiAsyncThunk';
 
 export const AuthContext = React.createContext();
 
@@ -150,6 +152,7 @@ export default function StackNavigator() {
       reduxDispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
         console.log('carts api call successful');
       });
+      reduxDispatch(getCustomerWishlist('shopping-lists'));
     }
   }, [state.userToken]);
 

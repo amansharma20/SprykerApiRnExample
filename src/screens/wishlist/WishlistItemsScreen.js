@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import Box from '../../atoms/box';
 import Text from '../../atoms/text';
@@ -5,22 +6,27 @@ import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useSelector, useDispatch} from 'react-redux';
 import {getProductsByWishlistAsyncThunk} from '../../redux/wishlist/ProductsWishlistApiAsyncThunk';
 import {FlatList} from 'react-native-gesture-handler';
-import {Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
 const WishlistItemsScreen = props => {
   const dispatch = useDispatch();
   const wishlistId = props.route.params.id;
   const [filteredProducts, setFilteredProducts] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const productsByWishlist = useSelector(
     state =>
       state?.getProductsByWishlistApiSlice?.productsByWishlist?.data || [],
   );
-  useEffect(() => {
-    if (
-      productsByWishlist &&
-      productsByWishlist.included &&
-      productsByWishlist.included.length > 0
-    ) {
+
+  const prepDataForFlatList = async () => {
+    if (productsByWishlist?.included?.length > 0) {
       const concreteProductData = [];
       const image = [];
       const quantity = [];
@@ -59,24 +65,33 @@ const WishlistItemsScreen = props => {
         }
       });
 
-      const shoppingItems = concreteProductData.map(concreteProduct => {
-        const matchingImage = image.find(img => img.id === concreteProduct.id);
-        const matchingQuantity = quantity.find(
-          qty => qty.id === concreteProduct.id,
-        );
-        const matchingPrice = price.find(prc => prc.id === concreteProduct.id);
+      const shoppingItems = () =>
+        concreteProductData.map(concreteProduct => {
+          const matchingImage = image.find(
+            img => img.id === concreteProduct.id,
+          );
+          const matchingQuantity = quantity.find(
+            qty => qty.id === concreteProduct.id,
+          );
+          const matchingPrice = price.find(
+            prc => prc.id === concreteProduct.id,
+          );
 
-        return {
-          id: concreteProduct.id,
-          name: concreteProduct.name,
-          image: matchingImage?.image,
-          quantity: matchingQuantity?.quantity || 0,
-          price: matchingPrice?.price || 0,
-        };
-      });
+          return {
+            id: concreteProduct.id,
+            name: concreteProduct.name,
+            image: matchingImage?.image,
+            quantity: matchingQuantity?.quantity || 0,
+            price: matchingPrice?.price || 0,
+          };
+        });
 
-      setFilteredProducts(shoppingItems);
+      setFilteredProducts(shoppingItems());
     }
+  };
+
+  useEffect(() => {
+    prepDataForFlatList();
   }, [productsByWishlist]);
 
   const renderItem = item => {
@@ -111,19 +126,27 @@ const WishlistItemsScreen = props => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     dispatch(
       getProductsByWishlistAsyncThunk(
         `shopping-lists/${wishlistId}?include=shopping-list-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-prices`,
       ),
-    );
+    ).then(() => {
+      setIsLoading(false);
+    });
   }, [wishlistId]);
+
   return (
-    <Box>
+    <Box flex={1} backgroundColor="white">
       <CommonHeader title="Items" />
-      {filteredProducts.length > 0 ? (
-        <FlatList data={filteredProducts} renderItem={renderItem} />
+      {isLoading ? (
+        <>
+          <ActivityIndicator />
+        </>
       ) : (
-        ''
+        <>
+          <FlatList data={filteredProducts} renderItem={renderItem} />
+        </>
       )}
     </Box>
   );

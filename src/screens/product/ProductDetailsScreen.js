@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   Image,
@@ -13,19 +13,18 @@ import {
 import {commonApi} from '../../api/CommanAPI';
 import {api} from '../../api/SecureAPI';
 import {useNavigation} from '@react-navigation/native';
-import {useEffect, useState} from 'react';
 import {Box, theme, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 import {useDispatch} from 'react-redux';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
-
 import {useSelector} from 'react-redux';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import CommonLoading from '../../components/CommonLoading';
 import {getCustomerWishlist} from '../../redux/wishlist/GetWishlistApiAsyncThunk';
-import {all} from 'axios';
+import ShoppingListItem from '../../components/ShoppingListItem';
+import DynamicSnapPointBottomSheet from '../../components/bottomsheets/DynamicSnapPointBottomSheet';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
@@ -33,8 +32,22 @@ const ProductDetailsScreen = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {isUserLoggedIn} = useIsUserLoggedIn();
+
+  const bottomSheetRef = useRef(null);
+
+  const handleExpandPress = useCallback(() => {
+    bottomSheetRef.current?.expand();
+  }, []);
+  const handleClosePress = useCallback(() => {
+    bottomSheetRef.current?.close();
+  }, []);
+
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
+  );
+
+  const customerWishlist = useSelector(
+    state => state?.getWishlistApiSlice?.customerWishlistData?.data?.data || [],
   );
 
   const [productData, setProductData] = useState();
@@ -45,6 +58,10 @@ const ProductDetailsScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingShopingList, setIsLoadingShopingList] = useState(false);
   const [productAvailability, setProductAvailability] = useState(true);
+  const [selectedShoppingListId, setSelectedShoppingListId] = useState(
+    customerWishlist?.[0]?.id,
+  );
+  console.log('selectedShoppingListId: ', selectedShoppingListId);
 
   const onPressAddToCart = () => {
     isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
@@ -111,6 +128,10 @@ const ProductDetailsScreen = props => {
     }
   };
 
+  const selectShoppingList = () => {
+    handleExpandPress();
+  };
+
   const addToShoppingListHandler = async () => {
     setIsLoadingShopingList(true);
     if (variationData && variationData[1]) {
@@ -139,12 +160,14 @@ const ProductDetailsScreen = props => {
         },
       };
       const response = await api.post(
-        `shopping-lists/105fb4c9-0b55-500f-ae5e-bbb48cbf64fc/shopping-list-items`,
+        // `shopping-lists/105fb4c9-0b55-500f-ae5e-bbb48cbf64fc/shopping-list-items`,
+        `shopping-lists/${selectedShoppingListId}/shopping-list-items`,
         productData,
       );
       if (response?.data?.status === 201) {
         setIsLoadingShopingList(false);
         dispatch(getCustomerWishlist('shopping-lists')).then(() => {});
+        handleClosePress();
         alert('Added to shopping list');
       } else {
         setIsLoadingShopingList(false);
@@ -336,13 +359,44 @@ const ProductDetailsScreen = props => {
         <Box mt="s8">
           <TouchableOpacity
             style={styles.wishListContainer}
-            onPress={onPressAddToShoppingList}>
+            // onPress={onPressAddToShoppingList}
+            onPress={selectShoppingList}>
             <Text style={{color: 'white', fontWeight: 'bold'}}>
               {isLoadingShopingList ? 'Loading...' : 'Add to Shopping List'}
             </Text>
           </TouchableOpacity>
         </Box>
       </Box>
+
+      <DynamicSnapPointBottomSheet
+        handleExpandPress={handleExpandPress}
+        bottomSheetRef={bottomSheetRef}>
+        <Box flex={1} padding="s16">
+          <Text fontSize={18} fontWeight="600" pb="s12">
+            Please select the shopping list -
+          </Text>
+          <FlatList
+            data={customerWishlist}
+            renderItem={(item, index) => {
+              return (
+                <ShoppingListItem
+                  item={item}
+                  onPress={() => {
+                    setSelectedShoppingListId(item?.item?.id);
+                  }}
+                  index={index}
+                  selectedShoppingListId={selectedShoppingListId}
+                  showCheckMark={true}
+                />
+              );
+            }}
+          />
+          <CommonSolidButton
+            title={'Continue'}
+            onPress={onPressAddToShoppingList}
+          />
+        </Box>
+      </DynamicSnapPointBottomSheet>
     </SafeAreaView>
   );
 };
