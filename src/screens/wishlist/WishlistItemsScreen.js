@@ -7,11 +7,15 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getProductsByWishlistAsyncThunk} from '../../redux/wishlist/ProductsWishlistApiAsyncThunk';
 import {FlatList} from 'react-native-gesture-handler';
 import {
-  ActivityIndicator,
   Image,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
+import {RemoveIcon} from '../../assets/svgs';
+import {getCustomerWishlist} from '../../redux/wishlist/GetWishlistApiAsyncThunk';
+import {api} from '../../api/SecureAPI';
+import WishListItemQuantityScreen from './WishListItemQuantityScreen';
 
 const WishlistItemsScreen = props => {
   const dispatch = useDispatch();
@@ -24,6 +28,19 @@ const WishlistItemsScreen = props => {
     state =>
       state?.getProductsByWishlistApiSlice?.productsByWishlist?.data || [],
   );
+
+  useEffect(() => {
+    const productIds = [];
+
+    productsByWishlist?.included?.forEach(element => {
+      if (element.type == 'concrete-products') {
+        productIds.push({
+          id: element.id,
+        });
+      }
+    });
+    console.log('productIds: ', productIds);
+  }, [productsByWishlist]);
 
   const prepDataForFlatList = async () => {
     if (productsByWishlist?.included?.length > 0) {
@@ -53,6 +70,7 @@ const WishlistItemsScreen = props => {
             quantity.push({
               quantity: element.attributes.quantity,
               id: element.attributes.sku,
+              itemId: element.id,
             });
             break;
 
@@ -83,6 +101,7 @@ const WishlistItemsScreen = props => {
             image: matchingImage?.image,
             quantity: matchingQuantity?.quantity || 0,
             price: matchingPrice?.price || 0,
+            itemId: matchingQuantity.itemId,
           };
         });
 
@@ -110,19 +129,55 @@ const WishlistItemsScreen = props => {
           <Box alignItems="center">
             <Image source={{uri: product?.image}} style={styles.productImage} />
           </Box>
-
           <Box alignItems="center">
             <Text style={styles.productTitle} numberOfLines={2}>
               {product?.name}
             </Text>
           </Box>
 
-          <Box alignItems="center">
+          <Box mb="s24" alignItems="center">
             <Text style={styles.productPrice}>$ {product?.price}</Text>
+            <Text style={styles.productPrice}>
+              Quantity : {product?.quantity} {product?.id}
+            </Text>
           </Box>
         </TouchableOpacity>
+        <Box mb="s8" alignItems="center">
+          <TouchableOpacity
+            onPress={() => removeItemFromShoppingList(product.itemId)}>
+            <Text>
+              <RemoveIcon />
+            </Text>
+          </TouchableOpacity>
+        </Box>
+        <Box alignItems="center">
+          <WishListItemQuantityScreen
+            shoppingListId={wishlistId}
+            shoppingListItemId={product.itemId}
+            productSku={product.id}
+            quantity={product?.quantity}
+          />
+        </Box>
       </Box>
     );
+  };
+
+  const removeItemFromShoppingList = async itemId => {
+    setIsLoading(true);
+    const response = await api
+      .Delete(`shopping-lists/${wishlistId}/shopping-list-items/${itemId}`)
+      .then(res => {
+        if (res.data.status == 204) {
+          dispatch(
+            getProductsByWishlistAsyncThunk(
+              `shopping-lists/${wishlistId}?include=shopping-list-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-prices`,
+            ),
+          );
+          dispatch(getCustomerWishlist('shopping-lists')).then(() => {
+            setIsLoading(false);
+          });
+        }
+      });
   };
 
   useEffect(() => {

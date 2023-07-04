@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -25,6 +26,7 @@ import CommonLoading from '../../components/CommonLoading';
 import {getCustomerWishlist} from '../../redux/wishlist/GetWishlistApiAsyncThunk';
 import ShoppingListItem from '../../components/ShoppingListItem';
 import DynamicSnapPointBottomSheet from '../../components/bottomsheets/DynamicSnapPointBottomSheet';
+import {getProductsByWishlistAsyncThunk} from '../../redux/wishlist/ProductsWishlistApiAsyncThunk';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
@@ -52,9 +54,11 @@ const ProductDetailsScreen = props => {
 
   const [productData, setProductData] = useState();
   const [variationData, setVariationData] = useState();
-  const [variationIdData, setVariationIdData] = useState();
   const [prodData, setProdData] = useState(null);
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(0);
+  const [variationIdData, setVariationIdData] = useState();
+  const initialSkuId = variationIdData?.[selectedId];
+  const [selectedSkuId, setSelectedSkuId] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingShopingList, setIsLoadingShopingList] = useState(false);
   const [productAvailability, setProductAvailability] = useState(true);
@@ -63,6 +67,8 @@ const ProductDetailsScreen = props => {
   );
   console.log('selectedShoppingListId: ', selectedShoppingListId);
 
+  const [isProductExistInShoppingList, setIsProductExistInShoppingList] =
+    useState(false);
   const onPressAddToCart = () => {
     isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
   };
@@ -72,26 +78,12 @@ const ProductDetailsScreen = props => {
       : navigation.navigate('LoginScreen');
   };
   const addToCartHandler = async () => {
-    if (variationData && variationData[1]) {
-      if (selectedId) {
-        var productSkuId = '';
-        await variationIdData?.map((item, index) => {
-          if (index == selectedId) {
-            productSkuId = item;
-          }
-        });
-      } else {
-        return alert('select Varint');
-      }
-    } else {
-      productSkuId = variationIdData[0];
-    }
-    if (productSkuId) {
+    if (selectedSkuId) {
       const productData = {
         data: {
           type: 'items',
           attributes: {
-            sku: productSkuId,
+            sku: selectedSkuId,
             quantity: 1,
             salesUnit: {
               id: 0,
@@ -134,33 +126,18 @@ const ProductDetailsScreen = props => {
 
   const addToShoppingListHandler = async () => {
     setIsLoadingShopingList(true);
-    if (variationData && variationData[1]) {
-      if (selectedId) {
-        var productSkuId = '';
-        await variationIdData?.map((item, index) => {
-          if (index == selectedId) {
-            productSkuId = item;
-          }
-        });
-      } else {
-        return alert('select Varint');
-      }
-    } else {
-      productSkuId = variationIdData[0];
-    }
-    if (productSkuId) {
+    if (selectedSkuId) {
       const productData = {
         data: {
           type: 'shopping-list-items',
           attributes: {
             productOfferReference: null,
             quantity: 1,
-            sku: productSkuId,
+            sku: selectedSkuId,
           },
         },
       };
       const response = await api.post(
-        // `shopping-lists/105fb4c9-0b55-500f-ae5e-bbb48cbf64fc/shopping-list-items`,
         `shopping-lists/${selectedShoppingListId}/shopping-list-items`,
         productData,
       );
@@ -168,6 +145,11 @@ const ProductDetailsScreen = props => {
         setIsLoadingShopingList(false);
         dispatch(getCustomerWishlist('shopping-lists')).then(() => {});
         handleClosePress();
+        dispatch(
+          getProductsByWishlistAsyncThunk(
+            `shopping-lists/${selectedShoppingListId}?include=shopping-list-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-prices`,
+          ),
+        );
         alert('Added to shopping list');
       } else {
         setIsLoadingShopingList(false);
@@ -209,6 +191,9 @@ const ProductDetailsScreen = props => {
         )?.map((item, index) => {
           tempVar.push({
             id: index,
+            sku: productData?.attributes?.attributeMap?.product_concrete_ids[
+              index
+            ],
             title: Object.keys(
               productData?.attributes?.attributeMap?.attribute_variant_map[
                 item
@@ -224,6 +209,53 @@ const ProductDetailsScreen = props => {
     };
     handlerfunction();
   }, [productData]);
+
+  const checkIfAddedInShoppingList = sku => {
+    console.log('sku: ', sku);
+    const productIds = [];
+
+    productsByWishlist?.included?.forEach(element => {
+      if (element.type == 'concrete-products') {
+        productIds.push({
+          id: element.id,
+        });
+      }
+    });
+    console.log('productIds: ', productIds);
+
+    const idExists = productIds.some(item => item.id === sku);
+    console.log('idExists: ', idExists);
+
+    if (idExists) {
+      setIsProductExistInShoppingList(true);
+    } else {
+      setIsProductExistInShoppingList(false);
+    }
+  };
+
+  useEffect(() => {
+    checkIfAddedInShoppingList(
+      // productData?.attributes?.attributeMap?.product_concrete_ids[0],
+      selectedSkuId,
+    );
+  }, [selectedSkuId]);
+
+  const productsByWishlist = useSelector(
+    state =>
+      state?.getProductsByWishlistApiSlice?.productsByWishlist?.data || [],
+  );
+
+  useEffect(() => {
+    dispatch(
+      getProductsByWishlistAsyncThunk(
+        `shopping-lists/${selectedShoppingListId}?include=shopping-list-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-prices`,
+      ),
+    );
+  }, [selectedShoppingListId]);
+
+  useEffect(() => {
+    setSelectedSkuId(initialSkuId);
+  }, [initialSkuId]);
 
   const Row = ({title, value}) => {
     return (
@@ -244,21 +276,28 @@ const ProductDetailsScreen = props => {
 
   const Item = ({item, onPress, backgroundColor, textColor}) => (
     <TouchableOpacity
-      onPress={onPress}
+      // onPress={onPress}
+      onPress={() => {
+        // console.log(item);
+        setSelectedSkuId(item?.sku);
+      }}
       style={[styles.item, {backgroundColor}]}>
       <Text style={[styles.title, {color: textColor}]}>{item.title}</Text>
     </TouchableOpacity>
   );
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item, variationData}) => {
     const backgroundColor =
-      item.id == selectedId ? theme.colors.lightGrey : '#FFF';
-    const color = item.id == selectedId ? 'white' : 'black';
+      item.sku == selectedSkuId ? theme.colors.lightGrey : '#FFF';
+    const color = item.sku == selectedSkuId ? 'white' : 'black';
 
     return (
       <Item
         item={item}
-        onPress={() => setSelectedId(item.id.toString())}
+        onPress={() => {
+          setSelectedSkuId(item?.sku);
+          checkIfAddedInShoppingList(item.id.toString(), item.sku);
+        }}
         backgroundColor={backgroundColor}
         textColor={color}
       />
@@ -323,7 +362,7 @@ const ProductDetailsScreen = props => {
                     </Text>
                     <FlatList
                       data={variationData}
-                      renderItem={({item}) => renderItem({item})}
+                      renderItem={({item}) => renderItem({item, variationData})}
                       keyExtractor={item => item.id}
                       extraData={selectedId}
                       contentContainerStyle={styles.productList}
@@ -357,14 +396,24 @@ const ProductDetailsScreen = props => {
           disabled={!productAvailability}
         />
         <Box mt="s8">
-          <TouchableOpacity
-            style={styles.wishListContainer}
-            // onPress={onPressAddToShoppingList}
-            onPress={selectShoppingList}>
-            <Text style={{color: 'white', fontWeight: 'bold'}}>
-              {isLoadingShopingList ? 'Loading...' : 'Add to Shopping List'}
-            </Text>
-          </TouchableOpacity>
+          {!isProductExistInShoppingList ? (
+            <TouchableOpacity
+              style={styles.wishListContainer}
+              // onPress={onPressAddToShoppingList}
+              onPress={selectShoppingList}>
+              <Text style={{color: 'white', fontWeight: 'bold'}}>
+                {isLoadingShopingList ? 'Loading...' : 'Add to Shopping List'}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.wishListContainer}
+              onPress={selectShoppingList}>
+              <Text style={{color: 'white', fontWeight: 'bold'}}>
+                Remove from Shopping List
+              </Text>
+            </TouchableOpacity>
+          )}
         </Box>
       </Box>
 
@@ -407,7 +456,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   productList: {
-    // justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
 
