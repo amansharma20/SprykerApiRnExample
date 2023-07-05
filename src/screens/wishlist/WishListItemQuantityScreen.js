@@ -18,9 +18,6 @@ const WishListItemQuantityScreen = ({
   quantity,
 }) => {
   const [isloading, setIsLoading] = useState(false);
-  console.log('shoppingListId: ', shoppingListId);
-  console.log('shoppingListItemId: ', shoppingListItemId);
-  console.log('productSku: ', productSku);
   const dispatch = useDispatch();
 
   const changeQuantity = async (

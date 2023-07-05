@@ -39,7 +39,7 @@ const WishlistItemsScreen = props => {
         });
       }
     });
-    console.log('productIds: ', productIds);
+    // console.log('productIds: ', productIds);
   }, [productsByWishlist]);
 
   const prepDataForFlatList = async () => {
@@ -50,6 +50,7 @@ const WishlistItemsScreen = props => {
       const price = [];
 
       productsByWishlist.included.forEach(element => {
+        console.log('element123456789: ', element);
         switch (element.type) {
           case 'concrete-products':
             concreteProductData.push({
@@ -84,7 +85,7 @@ const WishlistItemsScreen = props => {
       });
 
       const shoppingItems = () =>
-        concreteProductData.map(concreteProduct => {
+        quantity.map(concreteProduct => {
           const matchingImage = image.find(
             img => img.id === concreteProduct.id,
           );
@@ -118,6 +119,7 @@ const WishlistItemsScreen = props => {
     return (
       <Box
         flex={1}
+        flexDirection="row"
         marginHorizontal="s4"
         flexShrink={1}
         mb="s8"
@@ -125,38 +127,41 @@ const WishlistItemsScreen = props => {
         borderColor="border"
         borderRadius={8}
         padding="s8">
-        <TouchableOpacity>
-          <Box alignItems="center">
+        <Box flex={1} alignItems="center">
+          <TouchableOpacity>
             <Image source={{uri: product?.image}} style={styles.productImage} />
-          </Box>
-          <Box alignItems="center">
+          </TouchableOpacity>
+        </Box>
+
+        <Box flex={2} paddingLeft="s4" justifyContent="space-between">
+          <Box>
             <Text style={styles.productTitle} numberOfLines={2}>
               {product?.name}
             </Text>
-          </Box>
-
-          <Box mb="s24" alignItems="center">
             <Text style={styles.productPrice}>$ {product?.price}</Text>
             <Text style={styles.productPrice}>
-              Quantity : {product?.quantity} {product?.id}
+              Quantity : {product?.quantity}
             </Text>
           </Box>
-        </TouchableOpacity>
-        <Box mb="s8" alignItems="center">
-          <TouchableOpacity
-            onPress={() => removeItemFromShoppingList(product.itemId)}>
-            <Text>
-              <RemoveIcon />
-            </Text>
-          </TouchableOpacity>
-        </Box>
-        <Box alignItems="center">
-          <WishListItemQuantityScreen
-            shoppingListId={wishlistId}
-            shoppingListItemId={product.itemId}
-            productSku={product.id}
-            quantity={product?.quantity}
-          />
+
+          <Box
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="space-between">
+            <TouchableOpacity
+              onPress={() => removeItemFromShoppingList(product.itemId)}>
+              <Text>
+                <RemoveIcon />
+              </Text>
+            </TouchableOpacity>
+
+            <WishListItemQuantityScreen
+              shoppingListId={wishlistId}
+              shoppingListItemId={product.itemId}
+              productSku={product.id}
+              quantity={product?.quantity}
+            />
+          </Box>
         </Box>
       </Box>
     );
@@ -208,20 +213,17 @@ const WishlistItemsScreen = props => {
 };
 const styles = StyleSheet.create({
   productImage: {
-    width: 150,
-    height: 150,
-    marginBottom: 8,
-    backgroundColor: 'white',
-    resizeMode: 'contain',
+    width: 100,
+    height: 100,
+    resizeMode: 'contain', // Adjust the image resize mode based on your requirement
   },
   productTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   productPrice: {
     fontSize: 14,
-    color: 'gray',
   },
   roundButton2: {
     width: 60,
