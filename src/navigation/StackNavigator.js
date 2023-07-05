@@ -37,6 +37,7 @@ export default function StackNavigator() {
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
   const reduxDispatch = useDispatch();
+
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       // if (
@@ -149,7 +150,10 @@ export default function StackNavigator() {
 
   useEffect(() => {
     if (state.userToken) {
-      reduxDispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+      reduxDispatch(CustomerCartIdApiAsyncThunk('carts')).then(res => {
+        if (res.payload?.status === 401) {
+          authContext.signOut();
+        }
         console.log('carts api call successful');
       });
       reduxDispatch(getCustomerWishlist('shopping-lists'));

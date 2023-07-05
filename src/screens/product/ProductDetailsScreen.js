@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   FlatList,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import {commonApi} from '../../api/CommanAPI';
 import {api} from '../../api/SecureAPI';
@@ -113,7 +114,20 @@ const ProductDetailsScreen = props => {
         });
         dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
       } else {
-        alert('error', response.data.data.errors?.[0]?.detail);
+        console.log(
+          'response.data.data.errors?.[0]?.detail: ',
+          response.data.data.errors?.[0]?.detail,
+        );
+        Alert.alert('Error', response.data.data.errors?.[0]?.detail, [
+          {
+            text: 'OK',
+            // onPress: () =>
+            //   navigation.replace('OrderDetailsScreen', {
+            //     checkoutResponse: response?.data?.data?.data,
+            //   }),
+          },
+        ]);
+        // alert('error', response.data.data.errors?.[0]?.detail);
         // setIsLoading(false);
         CommonLoading.hide();
       }
@@ -150,10 +164,19 @@ const ProductDetailsScreen = props => {
             `shopping-lists/${selectedShoppingListId}?include=shopping-list-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-prices`,
           ),
         );
+        checkIfAddedInShoppingList();
         alert('Added to shopping list');
       } else {
         setIsLoadingShopingList(false);
-        alert('error');
+        Alert.alert('Error', response.data.data.errors?.[0]?.detail, [
+          {
+            text: 'OK',
+            // onPress: () =>
+            //   navigation.replace('OrderDetailsScreen', {
+            //     checkoutResponse: response?.data?.data?.data,
+            //   }),
+          },
+        ]);
       }
     }
   };

@@ -20,7 +20,6 @@ const CartItem = ({item, checkProductAvailability}) => {
     useState(true);
   const isProductAvailable =
     attributes?.included?.[0]?.attributes?.availability;
-  console.log('isProductAvailable: ', isProductAvailable);
 
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],

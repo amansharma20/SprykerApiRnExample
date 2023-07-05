@@ -78,7 +78,6 @@ const CartScreen = () => {
   // }, [isUserLoggedIn]);
 
   const checkProductAvailability = isAllProductAvailableInCarts => {
-    console.log('isAllProductAvailableInCarts: ', isAllProductAvailableInCarts);
     if (!isAllProductAvailableInCarts) {
       setAllProductsAvailableInCarts(false);
     }
