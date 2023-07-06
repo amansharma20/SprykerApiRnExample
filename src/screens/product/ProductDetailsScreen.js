@@ -66,7 +66,7 @@ const ProductDetailsScreen = props => {
   const [selectedShoppingListId, setSelectedShoppingListId] = useState(
     customerWishlist?.[0]?.id,
   );
-  console.log('selectedShoppingListId: ', selectedShoppingListId);
+  console.log('selectedSkuId: ', selectedSkuId);
 
   const [isProductExistInShoppingList, setIsProductExistInShoppingList] =
     useState(false);
