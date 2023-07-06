@@ -419,16 +419,16 @@ const ProductDetailsScreen = props => {
           disabled={!productAvailability}
         />
         <Box mt="s8">
-          {!isProductExistInShoppingList ? (
-            <TouchableOpacity
-              style={styles.wishListContainer}
-              // onPress={onPressAddToShoppingList}
-              onPress={selectShoppingList}>
-              <Text style={{color: 'white', fontWeight: 'bold'}}>
-                {isLoadingShopingList ? 'Loading...' : 'Add to Shopping List'}
-              </Text>
-            </TouchableOpacity>
-          ) : (
+          {/* {!isProductExistInShoppingList ? ( */}
+          <TouchableOpacity
+            style={styles.wishListContainer}
+            // onPress={onPressAddToShoppingList}
+            onPress={selectShoppingList}>
+            <Text style={{color: 'white', fontWeight: 'bold'}}>
+              {isLoadingShopingList ? 'Loading...' : 'Add to Shopping List'}
+            </Text>
+          </TouchableOpacity>
+          {/* ) : (
             <TouchableOpacity
               style={styles.wishListContainer}
               onPress={selectShoppingList}>
@@ -436,7 +436,7 @@ const ProductDetailsScreen = props => {
                 Remove from Shopping List
               </Text>
             </TouchableOpacity>
-          )}
+          )} */}
         </Box>
       </Box>
 

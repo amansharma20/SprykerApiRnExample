@@ -1,11 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import React, {useState} from 'react';
+import {Alert, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Box, Text} from '@atoms';
 import Icons from '../assets/constants/Icons';
@@ -14,13 +10,17 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getCustomerCartItems} from '../redux/CartApi/CartApiAsyncThunk';
 import {CustomerCartIdApiAsyncThunk} from '../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import CommonLoading from './CommonLoading';
+import {getCustomerWishlist} from '../redux/wishlist/GetWishlistApiAsyncThunk';
+import {getProductsByWishlistAsyncThunk} from '../redux/wishlist/ProductsWishlistApiAsyncThunk';
 
 export default function ProductItem({item, includedData, index}) {
-  // console.log('item: ', item);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isProductExistInShoppingList, setIsProductExistInShoppingList] =
+    useState(false);
 
   const includedSingleProductData = includedData?.[index];
 
@@ -43,8 +43,30 @@ export default function ProductItem({item, includedData, index}) {
     },
   };
 
+  const productDataForShoppingList = {
+    data: {
+      type: 'shopping-list-items',
+      attributes: {
+        productOfferReference: null,
+        quantity: 1,
+        sku: concreteId,
+      },
+    },
+  };
+
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
+  );
+
+  const customerWishlistFirstId = useSelector(
+    state =>
+      state?.getWishlistApiSlice?.customerWishlistData?.data?.data?.[0]?.id ||
+      [],
+  );
+
+  const productsByWishlist = useSelector(
+    state =>
+      state?.getProductsByWishlistApiSlice?.productsByWishlist?.data || [],
   );
 
   const onPressAddToCart = async () => {
@@ -71,6 +93,83 @@ export default function ProductItem({item, includedData, index}) {
     }
   };
 
+  const checkIfAddedInShoppingList = () => {
+    const productIds = [];
+
+    productsByWishlist?.included?.forEach(element => {
+      if (element.type === 'concrete-products') {
+        productIds.push({
+          id: element.id,
+        });
+      }
+    });
+
+    return productIds.some(item => item.id === concreteId);
+    // console.log('idExists: ', idExists);
+
+    // if (idExists) {
+    //   setIsProductExistInShoppingList(true);
+    // } else {
+    //   setIsProductExistInShoppingList(false);
+    // }
+  };
+
+  const onPressAddToShoppingList = async () => {
+    const response = await api.post(
+      `shopping-lists/${customerWishlistFirstId}/shopping-list-items`,
+      productDataForShoppingList,
+    );
+    if (response?.data?.status === 201) {
+      dispatch(getCustomerWishlist('shopping-lists'));
+      dispatch(
+        getProductsByWishlistAsyncThunk(
+          `shopping-lists/${customerWishlistFirstId}?include=shopping-list-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-prices`,
+        ),
+      ).then(() => {
+        // const wait = new Promise(resolve => setTimeout(resolve, 1000));
+        // wait.then(() => {
+        // handleClosePress();
+        checkIfAddedInShoppingList();
+        // });
+      });
+      alert('Added to shopping list');
+    } else {
+      Alert.alert('Error', response.data.data.errors?.[0]?.detail, [
+        {
+          text: 'OK',
+          // onPress: () =>
+          //   navigation.replace('OrderDetailsScreen', {
+          //     checkoutResponse: response?.data?.data?.data,
+          //   }),
+        },
+      ]);
+    }
+  };
+
+  const renderWishlistButton = useCallback(() => {
+    if (checkIfAddedInShoppingList()) {
+      // return <Text>true</Text>;
+      return (
+        <Image
+          style={{width: 24, height: 24, resizeMode: 'contain'}}
+          source={Icons.addedToWishlistIcon}
+        />
+      );
+    } else {
+      // return <Text>false</Text>;
+      return (
+        <Image
+          style={{width: 24, height: 24, resizeMode: 'contain'}}
+          source={Icons.wishlistIcon}
+        />
+      );
+    }
+  }, [productsByWishlist]);
+
+  useEffect(() => {
+    checkIfAddedInShoppingList();
+  }, [productsByWishlist]);
+
   return (
     <Box
       flex={1}
@@ -96,6 +195,12 @@ export default function ProductItem({item, includedData, index}) {
         <Text style={styles.productTitle} numberOfLines={1}>
           {item.abstractName}
         </Text>
+        <Box position="absolute" alignSelf="flex-end">
+          <TouchableOpacity onPress={onPressAddToShoppingList}>
+            {/* <Text>add to wishlist</Text> */}
+            {renderWishlistButton()}
+          </TouchableOpacity>
+        </Box>
         <Box
           flexDirection="row"
           justifyContent="space-between"

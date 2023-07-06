@@ -45,6 +45,12 @@ export default function ProfileScreen() {
       name: 'Language',
       onPress: function () {},
     },
+    {
+      name: 'SushittoHomeScreen',
+      onPress: function () {
+        navigation.navigate('SushittoHomeScreen');
+      },
+    },
   ];
 
   const renderItem = ({item}) => {
