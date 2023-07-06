@@ -33,6 +33,7 @@ export default function ProfileScreen() {
         navigation.navigate('WishlistScreen');
       },
     },
+
     {
       name: 'Contact Us',
       onPress: function () {},
