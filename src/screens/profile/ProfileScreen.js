@@ -52,6 +52,12 @@ export default function ProfileScreen() {
         navigation.navigate('SushittoHomeScreen');
       },
     },
+    {
+      name: 'ConfiguredBundle',
+      onPress: function () {
+        navigation.navigate('ConfiguredBundleScreen');
+      },
+    },
   ];
 
   const renderItem = ({item}) => {

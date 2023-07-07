@@ -39,7 +39,6 @@ const WishlistItemsScreen = props => {
         });
       }
     });
-    // console.log('productIds: ', productIds);
   }, [productsByWishlist]);
 
   const prepDataForFlatList = async () => {
@@ -50,7 +49,6 @@ const WishlistItemsScreen = props => {
       const price = [];
 
       productsByWishlist.included.forEach(element => {
-        console.log('element123456789: ', element);
         switch (element.type) {
           case 'concrete-products':
             concreteProductData.push({
@@ -114,75 +112,84 @@ const WishlistItemsScreen = props => {
     prepDataForFlatList();
   }, [productsByWishlist]);
 
-  const renderItem = item => {
-    const product = item.item;
+  const RenderItem = item => {
+    const product = item?.item?.item;
+    const [isRemoveLoading, setIsRemoveLoading] = useState(false);
+    const removeItemFromShoppingList = async itemId => {
+      // setIsLoading(true);
+      setIsRemoveLoading(true);
+      const response = await api
+        .Delete(`shopping-lists/${wishlistId}/shopping-list-items/${itemId}`)
+        .then(res => {
+          if (res.data.status == 204) {
+            dispatch(
+              getProductsByWishlistAsyncThunk(
+                `shopping-lists/${wishlistId}?include=shopping-list-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-prices`,
+              ),
+            );
+            dispatch(getCustomerWishlist('shopping-lists')).then(() => {
+              // setIsLoading(false);
+              setIsRemoveLoading(false);
+            });
+          }
+        });
+    };
     return (
-      <Box
-        flex={1}
-        flexDirection="row"
-        marginHorizontal="s4"
-        flexShrink={1}
-        mb="s8"
-        borderWidth={1}
-        borderColor="border"
-        borderRadius={8}
-        padding="s8">
-        <Box flex={1} alignItems="center">
-          <TouchableOpacity>
-            <Image source={{uri: product?.image}} style={styles.productImage} />
-          </TouchableOpacity>
-        </Box>
-
-        <Box flex={2} paddingLeft="s4" justifyContent="space-between">
-          <Box>
-            <Text style={styles.productTitle} numberOfLines={2}>
-              {product?.name}
-            </Text>
-            <Text style={styles.productPrice}>$ {product?.price}</Text>
-            <Text style={styles.productPrice}>
-              Quantity : {product?.quantity}
-            </Text>
-          </Box>
-
-          <Box
-            flexDirection="row"
-            alignItems="center"
-            justifyContent="space-between">
-            <TouchableOpacity
-              onPress={() => removeItemFromShoppingList(product.itemId)}>
-              <Text>
-                <RemoveIcon />
-              </Text>
+      <>
+        <Box
+          flex={1}
+          flexDirection="row"
+          marginHorizontal="s4"
+          flexShrink={1}
+          mb="s8"
+          borderWidth={1}
+          borderColor="border"
+          borderRadius={8}
+          padding="s8">
+          <Box flex={1} alignItems="center">
+            <TouchableOpacity>
+              <Image
+                source={{uri: product?.image}}
+                style={styles.productImage}
+              />
             </TouchableOpacity>
+          </Box>
+          <Box flex={2} paddingLeft="s4" justifyContent="space-between">
+            <Box>
+              <Text style={styles.productTitle} numberOfLines={2}>
+                {product?.name}
+              </Text>
+              <Text style={styles.productPrice}>$ {product?.price}</Text>
+              <Text style={styles.productPrice}>
+                Quantity : {product?.quantity}
+              </Text>
+            </Box>
 
-            <WishListItemQuantityScreen
-              shoppingListId={wishlistId}
-              shoppingListItemId={product.itemId}
-              productSku={product.id}
-              quantity={product?.quantity}
-            />
+            <Box
+              flexDirection="row"
+              alignItems="center"
+              justifyContent="space-between">
+              {isRemoveLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <TouchableOpacity
+                  onPress={() => removeItemFromShoppingList(product.itemId)}>
+                  <Text>
+                    <RemoveIcon />
+                  </Text>
+                </TouchableOpacity>
+              )}
+              <WishListItemQuantityScreen
+                shoppingListId={wishlistId}
+                shoppingListItemId={product.itemId}
+                productSku={product.id}
+                quantity={product?.quantity}
+              />
+            </Box>
           </Box>
         </Box>
-      </Box>
+      </>
     );
-  };
-
-  const removeItemFromShoppingList = async itemId => {
-    setIsLoading(true);
-    const response = await api
-      .Delete(`shopping-lists/${wishlistId}/shopping-list-items/${itemId}`)
-      .then(res => {
-        if (res.data.status == 204) {
-          dispatch(
-            getProductsByWishlistAsyncThunk(
-              `shopping-lists/${wishlistId}?include=shopping-list-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-prices`,
-            ),
-          );
-          dispatch(getCustomerWishlist('shopping-lists')).then(() => {
-            setIsLoading(false);
-          });
-        }
-      });
   };
 
   useEffect(() => {
@@ -205,7 +212,12 @@ const WishlistItemsScreen = props => {
         </>
       ) : (
         <>
-          <FlatList data={filteredProducts} renderItem={renderItem} />
+          <FlatList
+            data={filteredProducts}
+            renderItem={item => {
+              return <RenderItem item={item} />;
+            }}
+          />
         </>
       )}
     </Box>

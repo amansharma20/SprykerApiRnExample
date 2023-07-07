@@ -27,8 +27,6 @@ const BundledProductsListScreen = props => {
     const productImage =
       item?.item?.[0]?.included?.[0]?.attributes.imageSets?.[0]?.images?.[0]
         ?.externalUrlSmall;
-    console.log('productImage: ', productImage);
-    console.log('item: ', productItem[0]?.data?.attributes?.name);
     return (
       <Box>
         <Box
@@ -87,7 +85,6 @@ const BundledProductsListScreen = props => {
       getBundeledProducts(id);
     });
   }, []);
-  console.log('bundleProducts', bundleProducts.length);
   return (
     <Box flex={1} backgroundColor="white">
       <CommonHeader title={title} />

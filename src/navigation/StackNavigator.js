@@ -28,6 +28,8 @@ import WishlistScreen from '../screens/wishlist/WishlistScreen';
 import WishlistItemsScreen from '../screens/wishlist/WishlistItemsScreen';
 import {getCustomerWishlist} from '../redux/wishlist/GetWishlistApiAsyncThunk';
 import SushittoHomeScreen from '../screens/sushittoHomeScreen/SushittoHomeScreen';
+import ConfiguredBundleScreen from '../screens/configuredBundle/ConfiguredBundleScreen';
+import ConfigurableBundleSlotsScreen from '../screens/configuredBundle/ConfigurableBundleSlotsScreen';
 
 export const AuthContext = React.createContext();
 
@@ -233,9 +235,17 @@ export default function StackNavigator() {
           name="WishlistItemsScreen"
           component={WishlistItemsScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="SushittoHomeScreen"
           component={SushittoHomeScreen}
+        />
+        <Stack.Screen
+          name="ConfiguredBundleScreen"
+          component={ConfiguredBundleScreen}
+        />
+        <Stack.Screen
+          name="ConfigurableBundleSlotsScreen"
+          component={ConfigurableBundleSlotsScreen}
         />
       </Stack.Navigator>
     </AuthContext.Provider>
