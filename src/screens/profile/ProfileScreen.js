@@ -51,6 +51,12 @@ export default function ProfileScreen() {
         navigation.navigate('SushittoHomeScreen');
       },
     },
+    {
+      name: 'BundlesScreen',
+      onPress: function () {
+        navigation.navigate('BundlesScreen');
+      },
+    },
   ];
 
   const renderItem = ({item}) => {
