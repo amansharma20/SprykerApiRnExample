@@ -115,7 +115,7 @@ const ConfigurableBundleSlotsScreen = props => {
                               {product?.name}
                             </Text>
                             <Text style={styles.productPrice}>
-                              $ {product?.price}
+                              $ -{product?.price}
                             </Text>
                           </Box>
                         </Box>
