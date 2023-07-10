@@ -2,6 +2,7 @@ import React from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {SyncedList} from './components';
 import {listData} from './mock-data';
+import {DUMMYDATA} from './components/DUMMYDATA';
 
 const SushittoHomeScreen = () => {
   const renderHorizontalItem = (
@@ -27,7 +28,7 @@ const SushittoHomeScreen = () => {
   const renderVerticalItem = (item: any) => {
     return (
       <View style={styles.verticalItemContainer}>
-        <Text>{item}</Text>
+        <Text>{item.name}</Text>
       </View>
     );
   };
@@ -45,7 +46,7 @@ const SushittoHomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <SyncedList
-        data={listData}
+        data={DUMMYDATA?.data.Menu}
         horizontalListContainerStyle={styles.horizontalListContainerStyle}
         renderHorizontalItem={renderHorizontalItem}
         renderSectionHeader={renderSectionHeader}

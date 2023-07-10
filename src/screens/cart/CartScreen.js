@@ -61,7 +61,7 @@ const CartScreen = () => {
     if (customerCartId) {
       dispatch(
         getCustomerCartItems(
-          `carts/${customerCartId}?include=items%2Cbundle-items%2Cbundle-items`,
+          `carts/${customerCartId}?include=items%2Cbundle-items`,
         ),
       ).then(() => {
         setIsLoading(false);

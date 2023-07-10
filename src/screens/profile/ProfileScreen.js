@@ -33,6 +33,7 @@ export default function ProfileScreen() {
         navigation.navigate('WishlistScreen');
       },
     },
+
     {
       name: 'Contact Us',
       onPress: function () {},
@@ -55,6 +56,12 @@ export default function ProfileScreen() {
       name: 'BundlesScreen',
       onPress: function () {
         navigation.navigate('BundlesScreen');
+      },
+    },
+    {
+      name: 'ConfiguredBundle',
+      onPress: function () {
+        navigation.navigate('ConfiguredBundleScreen');
       },
     },
   ];

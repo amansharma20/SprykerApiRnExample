@@ -13,6 +13,7 @@ const CartItem = ({item, checkProductAvailability}) => {
   const dispatch = useDispatch();
 
   const cartItem = item?.item;
+  console.log('cartItemaaa: ', cartItem);
   const [attributes, setAttributes] = useState([]);
   const [productImage, setProductImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
