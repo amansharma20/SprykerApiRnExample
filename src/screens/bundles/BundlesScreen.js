@@ -1,45 +1,51 @@
+/* eslint-disable no-new */
+/* eslint-disable new-parens */
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Box, Text, theme} from '@atoms';
-import {api} from '../../api/SecureAPI';
-import axios from 'axios';
-import {Button, FlatList, ScrollView, StyleSheet} from 'react-native';
-import {SCREEN_WIDTH} from '@gorhom/bottom-sheet';
+import {Box} from '@atoms';
+import {ActivityIndicator, Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import BundleItem from './BundleItem';
+import {commonApi} from '../../api/CommanAPI';
+import {FlashList} from '@shopify/flash-list';
+import CommonHeader from '../../components/CommonHeader/CommonHeader';
+import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import CommonLoading from '../../components/CommonLoading';
+import {api} from '../../api/SecureAPI';
+import Toast from 'react-native-toast-message';
 
-const BundlesScreen = () => {
+const BundlesScreen = props => {
+  const configurableBundleId = props.route?.params?.configurableBundleId;
+
   const flatListRef = useRef();
   const navigation = useNavigation();
 
-  const [questionnaireData, setQuestionnaireData] = useState([]);
-  console.log('questionnaireData: ', questionnaireData);
-  const [postQuestionnaireData, setPostQuestionnaireData] = useState([]);
-  //   console.log('postQuestionnaireData: ', postQuestionnaireData);
+  const [postBundleData, setPostBundleData] = useState([]);
+  console.log(
+    'postBundleData: ',
+    postBundleData.filter(item => typeof item === 'object' && item !== null),
+  );
+
+  const [finalState, setFinalState] = useState([]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  console.log('currentIndex: ', currentIndex);
+
   const [isSelected, setIsSelected] = useState([]);
 
-  const getQuestionnaire = async () => {
-    const response = await axios.get(
-      'https://console.wealthzi.com/mf/risk-profile-questionaire/v2',
-    );
-    if (response.status === 200) {
-      setQuestionnaireData(response.data.data.questions);
-    }
-  };
-
-  const renderQuestionnaireItems = ({item, index}) => {
+  // console.log('finalState[index]?.slotID: ', finalState[1]?.slotID);
+  const renderBundleItems = ({item, index}) => {
     return (
       <BundleItem
-        title={questionnaireData[index]?.title}
-        QuestionnaireData={questionnaireData[index]?.options}
+        title={finalState[index]?.slotName}
+        BundleData={finalState[index]?.productSKUS}
+        slotID={finalState[index]?.slotID}
+        finalState={finalState}
         index={index}
         selectedOptionsIndex={index}
         isSelected={isSelected}
-        setPostQuestionnaireData={setPostQuestionnaireData}
-        postQuestionnaireData={postQuestionnaireData}
+        setPostBundleData={setPostBundleData}
+        postBundleData={postBundleData}
       />
     );
   };
@@ -55,28 +61,55 @@ const BundlesScreen = () => {
   }, [currentIndex]);
 
   const onPressBack = () => {
-    if (currentIndex == 0) {
+    if (currentIndex === 0) {
       navigation.goBack();
     } else {
       changeIndexNegative();
     }
   };
 
+  const postProductSlotsData = {
+    data: {
+      type: 'configured-bundles',
+      attributes: {
+        quantity: 1,
+        templateUuid: configurableBundleId,
+        items: postBundleData,
+      },
+    },
+  };
+
+  const addToCart = async () => {
+    CommonLoading.show();
+    const response = await api.post(
+      `carts/${configurableBundleId}/configured-bundles`,
+      postProductSlotsData,
+    );
+    if (response?.data?.status === 201) {
+      console.log('response?.data: success ', response?.data);
+      CommonLoading.hide();
+    } else {
+      console.log('response?.data: error', response?.data);
+      CommonLoading.hide();
+      //  Alert.alert("something error");
+    }
+  };
+
   const changeIndexPositive = useCallback(() => {
-    // if (postQuestionnaireData[currentIndex]) {
+    // if (postBundleData[currentIndex]) {
     setIsSelected(true);
-    console.log('questionnaireData.length: ', questionnaireData.length);
     setCurrentIndex(index => {
-      const newIndex = index < questionnaireData.length - 1 ? index + 1 : index;
-      console.log('newIndex: ', newIndex);
+      const newIndex = index < finalState.length - 1 ? index + 1 : index;
+
       const dummyIndex = index + 1;
-      if (dummyIndex !== questionnaireData.length) {
+      if (dummyIndex !== finalState.length) {
         flatListRef.current?.scrollToIndex({
           index: newIndex,
         });
       } else {
         //   submitQuestions();
         console.log('submit');
+        addToCart();
       }
       return newIndex;
     });
@@ -93,62 +126,166 @@ const BundlesScreen = () => {
     //   });
     //   console.log('error');
     // }
-  }, [currentIndex, questionnaireData]);
+  }, [currentIndex, finalState]);
+
+  // SLOTS
+
+  // const configurableBundleId = `8d8510d8-59fe-5289-8a65-19f0c35a0089`;
+  const [isLoading, setIsLoading] = useState(false);
+  const [configuredBundleTemplateSlots, setConfiguredBundleTemplateSlots] =
+    useState([]);
+
+  const refractorData = () => {
+    const allProductsWithSlots = [];
+
+    const slotIds =
+      configuredBundleTemplateSlots?.data?.relationships[
+        'configurable-bundle-template-slots'
+      ]?.data;
+    if (!slotIds || slotIds.length === 0) {
+      return allProductsWithSlots;
+    }
+
+    configuredBundleTemplateSlots.included.forEach(element => {
+      if (
+        element.type === 'configurable-bundle-template-slots' &&
+        slotIds.some(slot => slot.id === element.id)
+      ) {
+        const productSKUS = element.relationships['concrete-products']?.data;
+        const slotName = element.attributes.name;
+
+        allProductsWithSlots.push({
+          slotID: element.id,
+          productSKUS,
+          slotName,
+        });
+      }
+    });
+
+    allProductsWithSlots.forEach(products => {
+      products.productSKUS?.forEach(item => {
+        configuredBundleTemplateSlots.included.forEach(includedItem => {
+          if (item?.id === includedItem.id) {
+            if (includedItem.type === 'concrete-product-image-sets') {
+              const externalUrlLarge =
+                includedItem.attributes.imageSets[0]?.images[0]
+                  ?.externalUrlLarge;
+              item.image = externalUrlLarge;
+            } else if (includedItem.type === 'concrete-product-prices') {
+              const price = includedItem.attributes.price;
+              item.price = price;
+            } else if (includedItem.type === 'concrete-products') {
+              const name = includedItem.attributes.name;
+              item.name = name;
+            }
+          }
+        });
+      });
+    });
+
+    return allProductsWithSlots;
+  };
 
   useEffect(() => {
-    getQuestionnaire();
+    const getConfiguredBundleSlotsByID = async configurableBundleId => {
+      setIsLoading(true);
+      const response = await commonApi.get(
+        `configurable-bundle-templates/${configurableBundleId}?include=configurable-bundle-template-slots%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-prices`,
+      );
+      setConfiguredBundleTemplateSlots(response?.data?.data);
+
+      setIsLoading(false);
+    };
+    getConfiguredBundleSlotsByID(configurableBundleId);
   }, []);
 
+  const result = refractorData();
+  const [stateSetted, setStateSetted] = useState(false);
+
+  useEffect(() => {
+    if (result.length > 0 && stateSetted === false) {
+      setFinalState(result);
+      setStateSetted(true);
+    }
+  }, [result]);
+
   return (
-    <Box>
-      <FlatList
-        data={questionnaireData}
-        renderItem={renderQuestionnaireItems}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          backgroundColor: 'white',
-        }}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        scrollEnabled={false}
-        bounces={false}
-        ref={ref => (flatListRef.current = ref)}
-        onScrollToIndexFailed={() => {
-          setTimeout(() => {
-            if (flatListRef) {
-              flatListRef?.current?.scrollToIndex({
-                index: 1,
-                animated: true,
-              });
-            }
-          }, 100);
-        }}
-        // ListEmptyComponent={
-        //   <>
-        //     <ScrollView
-        //       bounces={false}
-        //       contentContainerStyle={styles.scrollViewContainer}>
-        //       <Box alignItems="center" mb="s40" mt="s20">
-        //         <CustomQuestionIcon />
-        //         <Text>CustomQuestionIcon</Text>
-        //       </Box>
-        //       <ShimmerLoaderWrapper isLoading={true} />
-        //     </ScrollView>
-        //   </>
-        // }
-      />
-      <Button title="changeIndexPositive" onPress={changeIndexPositive} />
-      <Button title="changeIndexNegative" onPress={onPressBack} />
+    <Box flex={1} backgroundColor="white">
+      <CommonHeader title={'Configure Bundle'} onPress={onPressBack} />
+      {/* <Button title="changeIndexPositive" onPress={changeIndexPositive} />
+      <Button title="changeIndexNegative" onPress={onPressBack} /> */}
+
+      <Box flex={1}>
+        {finalState && finalState?.length > 0 ? (
+          <Box flex={1}>
+            <FlashList
+              data={finalState}
+              renderItem={renderBundleItems}
+              estimatedItemSize={100}
+              showsVerticalScrollIndicator={false}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              // scrollEnabled={false}
+              bounces={false}
+              ref={ref => (flatListRef.current = ref)}
+              onScrollToIndexFailed={() => {
+                setTimeout(() => {
+                  if (flatListRef) {
+                    flatListRef?.current?.scrollToIndex({
+                      index: 1,
+                      animated: true,
+                    });
+                  }
+                }, 100);
+              }}
+              estimatedListSize={{
+                height: Dimensions.get('window').height,
+                width: Dimensions.get('screen').width,
+              }}
+              scrollEnabled={false}
+            />
+          </Box>
+        ) : (
+          <>
+            <ActivityIndicator />
+          </>
+        )}
+      </Box>
+      {finalState && finalState?.length > 0 ? (
+        <>
+          {currentIndex + 1 === finalState.length ? (
+            <>
+              <Box paddingHorizontal="paddingHorizontal" paddingVertical="s16">
+                <CommonSolidButton
+                  title={'Show Summary'}
+                  onPress={changeIndexPositive}
+                  disabled={postBundleData.length === 0 ? true : false}
+                  disabledOnPress={() => {
+                    Toast.show({
+                      type: 'info',
+                      text1: 'Please select atleast one Bundle.',
+                      position: 'bottom',
+                    });
+                  }}
+                />
+              </Box>
+            </>
+          ) : (
+            <>
+              <Box paddingHorizontal="paddingHorizontal" paddingVertical="s16">
+                <CommonSolidButton
+                  title={'Continue'}
+                  onPress={changeIndexPositive}
+                />
+              </Box>
+            </>
+          )}
+        </>
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };
 
 export default BundlesScreen;
-
-const styles = StyleSheet.create({
-  scrollViewContainer: {
-    flexGrow: 1,
-    width: SCREEN_WIDTH,
-    paddingHorizontal: theme.spacing.paddingHorizontal,
-  },
-});

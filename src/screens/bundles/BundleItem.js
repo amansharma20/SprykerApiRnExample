@@ -1,36 +1,53 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
-import {FlatList, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {theme, Text, Box} from '@atoms';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {SCREEN_WIDTH} from '@gorhom/bottom-sheet';
+import FastImage from 'react-native-fast-image';
+import {FlashList} from '@shopify/flash-list';
+import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 
 const BundleItem = ({
-  QuestionnaireData,
+  BundleData,
   title,
   selectedOptionsIndex,
-  postQuestionnaireData,
-  setPostQuestionnaireData,
+  postBundleData,
+  setPostBundleData,
+  slotID,
+  finalState,
 }) => {
-  const [questionsArray, setQuestionsArray] = useState([]);
+  const [productsArray, setProductsArray] = useState([]);
 
   const Item = ({item}) => {
     const onPressItem = () => {
       let newArr = [];
-      if ((questionsArray || item.index !== -1) && item.isSelected === false) {
-        questionsArray[item.index].isSelected = !item.isSelected;
-        questionsArray
-          .filter(filterItem => filterItem !== questionsArray[item.index])
+      if ((productsArray || item.index !== -1) && item.isSelected === false) {
+        productsArray[item.index].isSelected = !item.isSelected;
+        productsArray
+          .filter(filterItem => filterItem !== productsArray[item.index])
           .map(newItem => (newItem.isSelected = false));
-        newArr.push(...questionsArray);
-        setQuestionsArray(newArr);
+        newArr.push(...productsArray);
+        setProductsArray(newArr);
         if (selectedOptionsIndex !== -1) {
-          postQuestionnaireData[selectedOptionsIndex] = {
-            response: {option: item.option, title: item.title},
-            title: title,
+          console.log('item.slotID: ', item.slotID);
+          postBundleData[selectedOptionsIndex] = {
+            sku: item.id,
+            quantity: 1,
+            slotUuid: item.slotID,
           };
-          setPostQuestionnaireData(postQuestionnaireData);
+          let postArr = postBundleData.filter(
+            item => typeof item === 'object' && item !== null,
+          );
+          setPostBundleData(postArr);
         }
       }
     };
@@ -44,26 +61,36 @@ const BundleItem = ({
             onPress={onPressItem}
             iconStyle={{
               borderColor: item.isSelected
-                ? theme.colors.green
+                ? theme.colors.blue
                 : theme.colors.border,
             }}
-            fillColor={theme.colors.green}
+            fillColor={theme.colors.lightGreen}
           />
           <Box
-            borderColor={item.isSelected ? 'green' : 'border'}
-            borderWidth={1}
             flex={1}
-            justifyContent="center"
-            minHeight={40}
-            pl={'s18'}
+            flexDirection="row"
+            marginHorizontal="s4"
+            flexShrink={1}
+            mb="s8"
+            borderWidth={1}
+            borderColor="border"
             borderRadius={8}
-            backgroundColor={item.isSelected ? 'lightGreen' : 'background'}
-            paddingVertical={'s8'}>
-            <Text
-              variant="semiBold14"
-              color={item.isSelected ? 'green' : 'lightBlack'}>
-              {item.title}
-            </Text>
+            padding="s8"
+            key={item.id}>
+            <Box alignItems="center">
+              <FastImage
+                source={{uri: item?.image}}
+                style={styles.productImage}
+              />
+            </Box>
+            <Box paddingLeft="s4" justifyContent="space-between">
+              <Box flexShrink={1} maxWidth={'80%'}>
+                <Text style={styles.productTitle} numberOfLines={2}>
+                  {item?.name}
+                </Text>
+                <Text style={styles.productPrice}>$ {item?.price}</Text>
+              </Box>
+            </Box>
           </Box>
         </Box>
       </TouchableOpacity>
@@ -72,38 +99,60 @@ const BundleItem = ({
 
   const renderItem = ({item}) => <Item item={item} />;
 
-  const addQuestions = QuestionnaireData?.map((item, index) => {
+  const addQuestions = BundleData?.map((item, index) => {
     return {
-      title: item.title,
-      option: item.option,
-      isSelected: false,
+      id: item?.id,
       index: index,
+      isSelected: false,
+      name: item.name,
+      price: item.price,
+      image: item?.image,
+      sku: item?.sku,
+      slotID: slotID,
     };
   });
 
   useEffect(() => {
-    setQuestionsArray(addQuestions);
+    setProductsArray(addQuestions);
   }, []);
 
   return (
-    <ScrollView
-      bounces={false}
-      contentContainerStyle={styles.scrollViewContainer}
-      style={styles.body}>
-      <Box alignItems="center" mb="s40" mt="s20">
-        <Text>icon</Text>
-      </Box>
-      <Text variant="semiBold18" mb="s10" lineHeight={22}>
-        {title}
-      </Text>
-      <FlatList
-        data={questionsArray}
+    <Box flex={1}>
+      <ScrollView
+        bounces={false}
+        contentContainerStyle={styles.scrollViewContainer}
+        style={styles.body}>
+        <Text variant="semiBold18" mb="s10" lineHeight={22}>
+          {title}
+        </Text>
+        {/* <FlatList
+        data={productsArray}
         renderItem={renderItem}
         keyExtractor={item => item.index}
         scrollEnabled={false}
         showsVerticalScrollIndicator={false}
-      />
-    </ScrollView>
+        contentContainerStyle={{paddingBottom: 200}}
+      /> */}
+        <Box flex={1}>
+          {/* <FlashList */}
+          {productsArray && productsArray.length > 0 ? (
+            <>
+              <FlashList
+                data={productsArray}
+                renderItem={renderItem}
+                keyExtractor={item => item.index}
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                // contentContainerStyle={{paddingBottom: 200}}
+                estimatedItemSize={140}
+              />
+            </>
+          ) : (
+            <></>
+          )}
+        </Box>
+      </ScrollView>
+    </Box>
   );
 };
 
@@ -118,5 +167,18 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     width: SCREEN_WIDTH,
     paddingHorizontal: theme.spacing.paddingHorizontal,
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
+  productTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  productPrice: {
+    fontSize: 14,
   },
 });

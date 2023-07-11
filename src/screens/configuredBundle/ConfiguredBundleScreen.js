@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {Box, Text} from '@atoms';
@@ -28,7 +29,7 @@ const ConfiguredBundleScreen = () => {
       <>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('ConfigurableBundleSlotsScreen', {
+            navigation.navigate('BundlesScreen', {
               configurableBundleId: bundle?.id,
             })
           }>
@@ -47,12 +48,15 @@ const ConfiguredBundleScreen = () => {
                 uri: img ? img : '',
               }}
             />
-            <Text textAlign="center">{bundle?.attributes?.name}</Text>
+            <Text fontSize={18} fontWeight="600" textAlign="center" pt="s8">
+              {bundle?.attributes?.name}
+            </Text>
           </Box>
         </TouchableOpacity>
       </>
     );
   };
+
   useEffect(() => {
     const getConfiguredBundleTemplate = async () => {
       setIsLoading(true);
@@ -64,18 +68,21 @@ const ConfiguredBundleScreen = () => {
     };
     getConfiguredBundleTemplate();
   }, []);
+
   return (
-    <Box>
+    <Box flex={1} backgroundColor="white">
       <CommonHeader title="Configured Bundle" />
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <FlatList
-          data={configuredBundleTemplate?.data}
-          renderItem={item => {
-            return <ConfiguredBundles item={item} />;
-          }}
-        />
+        <Box paddingHorizontal="paddingHorizontal">
+          <FlatList
+            data={configuredBundleTemplate?.data}
+            renderItem={item => {
+              return <ConfiguredBundles item={item} />;
+            }}
+          />
+        </Box>
       )}
     </Box>
   );

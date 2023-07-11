@@ -6,6 +6,7 @@ import {lightTheme} from '@atoms';
 import {Provider} from 'react-redux';
 import RootStore from '../redux/RootStore';
 import CommonLoading from '../components/CommonLoading';
+import Toast from 'react-native-toast-message';
 
 export default function ApplicationNavigator() {
   const routeNameRef = useRef('');
@@ -33,6 +34,7 @@ export default function ApplicationNavigator() {
         </ThemeProvider>
       </Provider>
       <CommonLoading ref={ref => CommonLoading.setRef(ref)} />
+      <Toast />
     </NavigationContainer>
   );
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, {useEffect, useState} from 'react';
 import {Box, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
@@ -71,6 +72,9 @@ const ConfigurableBundleSlotsScreen = props => {
       });
     }
 
+    console.log('allProductsWithSlots: ', allProductsWithSlots);
+
+
     return (
       <Box>
         <FlatList
@@ -130,6 +134,7 @@ const ConfigurableBundleSlotsScreen = props => {
       </Box>
     );
   };
+
   useEffect(() => {
     const getConfiguredBundleSlotsByID = async configurableBundleId => {
       setIsLoading(true);
@@ -141,6 +146,7 @@ const ConfigurableBundleSlotsScreen = props => {
     };
     getConfiguredBundleSlotsByID(configurableBundleId);
   }, [configurableBundleId]);
+
   return (
     <Box>
       <CommonHeader title="Back to Bundle" />
