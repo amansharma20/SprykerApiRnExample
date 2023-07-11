@@ -3,80 +3,137 @@ import React, {useEffect, useState} from 'react';
 import {Box, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {commonApi} from '../../api/CommanAPI';
+import {api} from '../../api/SecureAPI';
 import {
   ActivityIndicator,
   FlatList,
   Image,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
+import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import {useNavigation} from '@react-navigation/native';
+import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
+import CommonLoading from '../../components/CommonLoading';
 
 const ConfigurableBundleSlotsScreen = props => {
   const configurableBundleId = props.route.params?.configurableBundleId;
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [configuredBundleTemplateSlots, setConfiguredBundleTemplateSlots] =
     useState([]);
+  const navigation = useNavigation();
+  const {isUserLoggedIn} = useIsUserLoggedIn();
 
+  const onPressAddToCart = () => {
+    isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
+  };
+
+  const addToCartHandler = async () => {
+    const productSlotsData = {
+      data: {
+        type: 'configured-bundles',
+        attributes: {
+          quantity: 1,
+          templateUuid: '8d8510d8-59fe-5289-8a65-19f0c35a0089',
+          items: [
+            {
+              sku: '134_29759322',
+              quantity: 1,
+              slotUuid: '332b40ac-a789-57ce-bec0-23d8dddd71eb',
+            },
+            {
+              sku: '156_32018944',
+              quantity: 1,
+              slotUuid: 'a7599d6b-9453-54b9-81d3-60a81effa883',
+            },
+          ],
+        },
+      },
+    };
+    // setIsLoading(true);
+    CommonLoading.show();
+    const response = await api.post(
+      `carts/9c5ff9da-05ff-5091-b11a-9ec15d5c0d74/configured-bundles`,
+      productSlotsData,
+    );
+    if (response?.data?.status === 201) {
+      console.log('response?.data: success ', response?.data);
+      CommonLoading.hide();
+    } else {
+      console.log('response?.data: error', response?.data);
+      CommonLoading.hide();
+
+      //  Alert.alert("something error");
+    }
+  };
   const Slots = () => {
     const allProductsWithSlots = [];
 
-    if (configuredBundleTemplateSlots?.included?.length > 0) {
-      const slotIds =
-        configuredBundleTemplateSlots?.data?.relationships[
-          'configurable-bundle-template-slots'
-        ]?.data;
-      slotIds?.forEach(slot => {
-        configuredBundleTemplateSlots?.included.forEach(element => {
-          if (
-            element.type == 'configurable-bundle-template-slots' &&
-            slot.id === element.id
-          ) {
-            allProductsWithSlots.push({
-              slotID: slot.id,
-              productSKUS: element?.relationships['concrete-products']?.data,
-              slotName: element?.attributes?.name,
-            });
-          }
-        });
-      });
-      console.log('slotIds: ', slotIds.length);
-
-      allProductsWithSlots?.forEach(products => {
-        products?.productSKUS?.map((item, index) => {
-          configuredBundleTemplateSlots.included.forEach(includedItem => {
+    const test = () => {
+      if (configuredBundleTemplateSlots?.included?.length > 0) {
+        const slotIds =
+          configuredBundleTemplateSlots?.data?.relationships[
+            'configurable-bundle-template-slots'
+          ]?.data;
+        slotIds?.forEach(slot => {
+          configuredBundleTemplateSlots?.included.forEach(element => {
             if (
-              includedItem.type === 'concrete-product-image-sets' &&
-              item?.id === includedItem.id
+              element.type == 'configurable-bundle-template-slots' &&
+              slot.id === element.id
             ) {
-              const externalUrlLarge =
-                includedItem.attributes.imageSets[0]?.images[0]
-                  ?.externalUrlLarge;
-              item.image = externalUrlLarge;
-            }
-            if (
-              includedItem.type === 'concrete-product-prices' &&
-              item?.id === includedItem.id
-            ) {
-              const price = includedItem.attributes.price;
-              item.price = price;
-            }
-            if (
-              includedItem.type === 'concrete-products' &&
-              item?.id === includedItem.id
-            ) {
-              const name = includedItem.attributes.name;
-              item.name = name;
+              allProductsWithSlots.push({
+                slotID: slot.id,
+                productSKUS: element?.relationships['concrete-products']?.data,
+                slotName: element?.attributes?.name,
+              });
             }
           });
         });
-      });
-    }
+        //   console.log('slotIds: ', slotIds.length);
+
+        allProductsWithSlots?.forEach(products => {
+          products?.productSKUS?.map((item, index) => {
+            configuredBundleTemplateSlots.included.forEach(includedItem => {
+              if (
+                includedItem.type === 'concrete-product-image-sets' &&
+                item?.id === includedItem.id
+              ) {
+                const externalUrlLarge =
+                  includedItem.attributes.imageSets[0]?.images[0]
+                    ?.externalUrlLarge;
+                item.image = externalUrlLarge;
+              }
+              if (
+                includedItem.type === 'concrete-product-prices' &&
+                item?.id === includedItem.id
+              ) {
+                const price = includedItem.attributes.price;
+                item.price = price;
+              }
+              if (
+                includedItem.type === 'concrete-products' &&
+                item?.id === includedItem.id
+              ) {
+                const name = includedItem.attributes.name;
+                item.name = name;
+              }
+            });
+          });
+        });
+      }
+    };
 
     console.log('allProductsWithSlots: ', allProductsWithSlots);
 
 
     return (
       <Box>
+        <CommonSolidButton
+          title={!isLoadingButton ? 'Add to Cart' : 'Loading...'}
+          onPress={!isLoadingButton ? onPressAddToCart : () => {}}
+        />
         <FlatList
           data={allProductsWithSlots}
           renderItem={slots => {
@@ -119,7 +176,7 @@ const ConfigurableBundleSlotsScreen = props => {
                               {product?.name}
                             </Text>
                             <Text style={styles.productPrice}>
-                              $ -{product?.price}
+                              $ {product?.price}
                             </Text>
                           </Box>
                         </Box>

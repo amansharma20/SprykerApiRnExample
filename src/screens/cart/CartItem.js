@@ -9,14 +9,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import CartItemQuantity from './CartItemQuantity';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import {RemoveIcon} from '../../assets/svgs';
-const CartItem = ({item, checkProductAvailability}) => {
+import {FlatList} from 'react-native-gesture-handler';
+const CartItem = ({item, checkProductAvailability, customerCartData}) => {
   const dispatch = useDispatch();
 
   const cartItem = item?.item;
-  console.log('cartItemaaa: ', cartItem);
   const [attributes, setAttributes] = useState([]);
   const [productImage, setProductImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [configuredBundle, setConfiguredBundle] = useState([]);
   const [isProductAvailabilityLoading, setIsProductAvailabilityLoading] =
     useState(true);
   const isProductAvailable =
@@ -25,7 +26,28 @@ const CartItem = ({item, checkProductAvailability}) => {
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
+  // console.log('customerCart: ', customerCart.id);
 
+  const removeItem = async itemId => {
+    setIsLoading(true);
+    const response = await api
+      .Delete(`carts/${customerCart.id}/items/${itemId}`)
+      .then(res => {
+        if (res.data.status == 204) {
+          dispatch(
+            getCustomerCartItems(
+              `carts/${customerCart.id}?include=items%2Cbundle-items`,
+            ),
+          ).then(() => {
+            setIsLoading(false);
+          });
+          dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+        }
+      });
+  };
+
+  // configured bundle logic
+  // const isConfiguredBundle = true;
   useEffect(() => {
     const getProductDetails = async () => {
       if (cartItem) {
@@ -66,23 +88,23 @@ const CartItem = ({item, checkProductAvailability}) => {
     getProductImage();
   }, [cartItem]);
 
-  const removeItem = async itemId => {
-    setIsLoading(true);
-    const response = await api
-      .Delete(`carts/${customerCart.id}/items/${itemId}`)
-      .then(res => {
-        if (res.data.status == 204) {
-          dispatch(
-            getCustomerCartItems(
-              `carts/${customerCart.id}?include=items%2Cbundle-items`,
-            ),
-          ).then(() => {
-            setIsLoading(false);
-          });
-          dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
-        }
-      });
-  };
+  // if (cartItem?.configuredBundle != null) {
+  //   return (
+  //     <Box>
+  //       <FlatList
+  //         data={configuredBundle}
+  //         renderItem={item => {
+  //           const data = item?.item;
+  //           return (
+  //             <Box>
+  //               <Text>{data?.templateName}</Text>
+  //             </Box>
+  //           );
+  //         }}
+  //       />
+  //     </Box>
+  //   );
+  // }
   return (
     <Box
       borderRadius={8}
