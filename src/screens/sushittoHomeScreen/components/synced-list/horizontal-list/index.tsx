@@ -75,7 +75,7 @@ const HorizontalList = ({
           data={data}
           horizontal
           initialNumToRender={30}
-          keyExtractor={item => item.id.toString()}
+          // keyExtractor={item => item?.id?.toString()}
           onScrollToIndexFailed={() => {
             // fallBack();
           }}

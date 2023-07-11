@@ -95,31 +95,39 @@ const VerticalList = ({
   };
 
   const keyExtractor = (item: any, index: number) =>
-    item?.id?.toString() || index.toString();
+    item?.id?.toString() || index?.toString();
 
   const getSectionListProps = () =>
     verticalListProps ? verticalListProps : {};
 
   return (
-    <SectionList
-      contentContainerStyle={styles.contentContainerStyle}
-      initialNumToRender={40}
-      keyExtractor={keyExtractor}
-      onScrollToIndexFailed={() => {
-        fallBack();
-      }}
-      onViewableItemsChanged={onViewableItemsChanged}
-      ref={scrollRef}
-      renderItem={renderItem}
-      renderSectionHeader={renderHeader}
-      sections={data}
-      showsVerticalScrollIndicator={false}
-      stickySectionHeadersEnabled={false}
-      viewabilityConfig={{
-        itemVisiblePercentThreshold: 50,
-      }}
-      {...getSectionListProps()}
-    />
+    <>
+      {data?.length > 0 ? (
+        <>
+          <SectionList
+            contentContainerStyle={styles.contentContainerStyle}
+            initialNumToRender={40}
+            keyExtractor={keyExtractor}
+            onScrollToIndexFailed={() => {
+              fallBack();
+            }}
+            onViewableItemsChanged={onViewableItemsChanged}
+            ref={scrollRef}
+            renderItem={renderItem}
+            renderSectionHeader={renderHeader}
+            sections={data}
+            showsVerticalScrollIndicator={false}
+            stickySectionHeadersEnabled={false}
+            viewabilityConfig={{
+              itemVisiblePercentThreshold: 50,
+            }}
+            {...getSectionListProps()}
+          />
+        </>
+      ) : (
+        <></>
+      )}
+    </>
   );
 };
 

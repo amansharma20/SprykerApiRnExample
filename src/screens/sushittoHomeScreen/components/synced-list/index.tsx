@@ -29,7 +29,7 @@ const SyncedList = ({
   }, []);
 
   useEffect(() => {
-    if (data.length) {
+    if (data?.length) {
       setSelected(data[0].id);
       const initialMapping: {[key: string]: any} = {};
       data.forEach((el, index) => {
@@ -40,7 +40,7 @@ const SyncedList = ({
         setRendered(true);
       }, 700);
     }
-  }, [data.length]);
+  }, [data?.length]);
 
   useEffect(() => {
     if (rendered && initialId) {
