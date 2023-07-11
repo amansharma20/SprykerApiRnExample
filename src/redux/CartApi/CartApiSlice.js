@@ -24,7 +24,6 @@ const getCustomerCartItemsAliSlice = createSlice({
     builder.addCase(getCustomerCartItems.fulfilled, (state, action) => {
       state.status = 'success';
       const cartItem = action?.payload?.data?.included;
-      console.log('cartItem: ', cartItem);
       const newCartItems = [];
       cartItem?.map(item => {
         newCartItems.push({
@@ -32,6 +31,8 @@ const getCustomerCartItemsAliSlice = createSlice({
           quantity: item.attributes.quantity,
           itemId: item.id,
           itemPrice: item.attributes.calculations.sumPriceToPayAggregation,
+          configuredBundleItem: item.attributes.configuredBundleItem,
+          configuredBundle: item.attributes.configuredBundle,
         });
       });
       state.customerCart = newCartItems;

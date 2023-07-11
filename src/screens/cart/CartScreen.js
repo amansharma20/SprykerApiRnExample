@@ -13,12 +13,16 @@ import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 import LoginScreen from '../auth/LoginScreen';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import ConfiguredBundledCartItem from './ConfiguredBundledCartItem';
 
 const CartScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [cartItemsArray, setCartItemsArray] = useState([]);
   const {isUserLoggedIn} = useIsUserLoggedIn();
+  const [configuredBundleTemplateID, setConfiguredBundleTemplateID] = useState(
+    [],
+  );
   const [allProductAvailableInCarts, setAllProductsAvailableInCarts] =
     useState(true);
   const dispatch = useDispatch();
@@ -31,6 +35,7 @@ const CartScreen = () => {
   const customerCartData = useSelector(
     state => state.getCustomerCartItemsAliSlice?.customerCart || [],
   );
+
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
@@ -54,6 +59,32 @@ const CartScreen = () => {
       setCartItemsArray(tempArr);
       setIsLoading(false);
     }
+    const getConfiguredBundle = () => {
+      const uuidsSet = new Set();
+
+      customerCartData?.forEach(items => {
+        if (items?.configuredBundle != null) {
+          const uuid = items?.configuredBundle?.template?.uuid;
+          if (uuid) {
+            uuidsSet.add(uuid);
+          }
+        }
+      });
+      const uuids = Array.from(uuidsSet).map(uuid => ({uuid: uuid}));
+      // console.log('uuids:', uuids);
+
+      const newDataArray = uuids.map(uuidObj => {
+        const templateName = customerCartData.find(
+          item => item.configuredBundle?.template?.uuid === uuidObj.uuid,
+        )?.configuredBundle?.template?.name;
+        const data = customerCartData.filter(
+          item => item.configuredBundle?.template?.uuid === uuidObj.uuid,
+        );
+        return {templateName, data};
+      });
+      setConfiguredBundleTemplateID(newDataArray);
+    };
+    getConfiguredBundle();
   }, [customerCartData, customerCartId]);
 
   useEffect(() => {
@@ -67,6 +98,7 @@ const CartScreen = () => {
         setIsLoading(false);
       });
     }
+    setIsLoading(false);
   }, [dispatch, customerCartId, isUserLoggedIn]);
 
   // useEffect(() => {
@@ -96,14 +128,25 @@ const CartScreen = () => {
             <>
               <Box flex={1} paddingHorizontal="paddingHorizontal">
                 <FlatList
+                  data={configuredBundleTemplateID}
+                  renderItem={item => {
+                    const data = item?.item;
+                    return <ConfiguredBundledCartItem data={data} />;
+                  }}
+                />
+                <FlatList
                   data={customerCartData}
                   renderItem={item => {
-                    return (
-                      <CartItem
-                        item={item}
-                        checkProductAvailability={checkProductAvailability}
-                      />
-                    );
+                    const data = item?.item;
+                    if (data?.configuredBundle == null) {
+                      return (
+                        <CartItem
+                          item={item}
+                          customerCartData={customerCartData}
+                          checkProductAvailability={checkProductAvailability}
+                        />
+                      );
+                    }
                   }}
                   contentContainerStyle={{paddingBottom: 100}}
                   ListEmptyComponent={ListEmptyComponent}
