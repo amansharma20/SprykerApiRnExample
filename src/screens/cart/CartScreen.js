@@ -55,6 +55,7 @@ const CartScreen = () => {
       </Box>
     );
   };
+  // console.log('configuredBundleTemplateID: ', configuredBundleTemplateID);
 
   useEffect(() => {
     if (customerCartData.length !== 0 && customerCartId) {
@@ -70,23 +71,34 @@ const CartScreen = () => {
 
       customerCartData?.forEach(items => {
         if (items?.configuredBundle != null) {
-          const uuid = items?.configuredBundle?.template?.uuid;
+          const uuid = items?.configuredBundle?.groupKey;
           if (uuid) {
             uuidsSet.add(uuid);
           }
         }
       });
       const uuids = Array.from(uuidsSet).map(uuid => ({uuid: uuid}));
-      // console.log('uuids:', uuids);
 
       const newDataArray = uuids.map(uuidObj => {
         const templateName = customerCartData.find(
-          item => item.configuredBundle?.template?.uuid === uuidObj.uuid,
+          item => item.configuredBundle?.groupKey === uuidObj.uuid,
         )?.configuredBundle?.template?.name;
+        const templateUUID = customerCartData.find(
+          item => item.configuredBundle?.groupKey === uuidObj.uuid,
+        )?.configuredBundle?.template?.uuid;
+        const slotUUID = customerCartData.find(
+          item => item.configuredBundle?.groupKey === uuidObj.uuid,
+        )?.configuredBundleItem?.slot?.uuid;
+        const quantity = customerCartData.find(
+          item => item.configuredBundle?.groupKey === uuidObj.uuid,
+        )?.configuredBundle?.quantity;
         const data = customerCartData.filter(
-          item => item.configuredBundle?.template?.uuid === uuidObj.uuid,
+          item => item.configuredBundle?.groupKey === uuidObj.uuid,
         );
-        return {templateName, data};
+        const groupKey = customerCartData.find(
+          item => item.configuredBundle?.groupKey === uuidObj.uuid,
+        )?.configuredBundle?.groupKey;
+        return {templateName, quantity, templateUUID, slotUUID, data, groupKey};
       });
       setConfiguredBundleTemplateID(newDataArray);
     };
@@ -142,7 +154,12 @@ const CartScreen = () => {
                     data={configuredBundleTemplateID}
                     renderItem={item => {
                       const data = item?.item;
-                      return <ConfiguredBundledCartItem data={data} />;
+                      return (
+                        <ConfiguredBundledCartItem
+                          data={data}
+                          customerCartId={customerCartId}
+                        />
+                      );
                     }}
                     scrollEnabled={false}
                   />
