@@ -9,6 +9,7 @@ import customerCartIdApiSlice from './customerCartIdApi/CustomerCartIdApiSlice';
 import getOrderDetailsDataApiSlice from './orderDetailsApi/OrderDetailsApiSlice';
 import getWishlistApiSlice from './wishlist/GetWishlistApiSlice';
 import getProductsByWishlistApiSlice from './wishlist/ProductsWishlistApiSlice';
+import CreateCustomerCartApiSlice from './createCustomerCart/CreateCustomerCartApiSlice';
 const allReducers = combineReducers({
   getCustomerDetailsApiSlice,
   getCustomerCartItemsAliSlice,
@@ -18,6 +19,7 @@ const allReducers = combineReducers({
   getOrderDetailsDataApiSlice,
   getWishlistApiSlice,
   getProductsByWishlistApiSlice,
+  CreateCustomerCartApiSlice,
 });
 
 const store = configureStore({

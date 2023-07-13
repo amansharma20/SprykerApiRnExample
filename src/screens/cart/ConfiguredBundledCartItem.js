@@ -14,7 +14,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RemoveIcon} from '../../assets/svgs';
 
 const ConfiguredBundledCartItem = ({data, customerCartId}) => {
-  console.log('customerCartId: ', customerCartId);
+  //   console.log('customerCartId: ', customerCartId);
   //   console.log('data: ', data);
   const dispatch = useDispatch();
 
@@ -54,7 +54,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
     if (response) {
       dispatch(
         getCustomerCartItems(
-          `carts/${customerCartId}?include=items2Cbundle-items%2Cbundle-items`,
+          `carts/${customerCartId}?include=items%2Cbundle-items`,
         ),
       ).then(error => {
         console.log('error: ', error);
@@ -66,13 +66,15 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
   };
 
   const removeItem = async groupKey => {
+    setIsLoading(true);
+
     const response = await api.Delete(
       `carts/${customerCartId}/configured-bundles/${groupKey}`,
       '',
     );
     dispatch(
       getCustomerCartItems(
-        `carts/${customerCartId}?include=items2Cbundle-items%2Cbundle-items`,
+        `carts/${customerCartId}?include=items%2Cbundle-items`,
       ),
     ).then(error => {
       console.log('error: ', error);
@@ -132,11 +134,13 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
             <>
               <TouchableOpacity
                 onPress={() => {
-                  changeQuantity(
-                    data?.templateUUID,
-                    itemImages,
-                    data?.quantity - 1,
-                  );
+                  data?.quantity > 1
+                    ? changeQuantity(
+                        data?.templateUUID,
+                        itemImages,
+                        data?.quantity - 1,
+                      )
+                    : removeItem(data?.groupKey);
                 }}>
                 <Text style={styles.quantityText}>-</Text>
               </TouchableOpacity>

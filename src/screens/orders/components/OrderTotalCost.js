@@ -3,7 +3,7 @@ import {Box, Text} from '@atoms';
 import {StyleSheet} from 'react-native';
 
 const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
-  console.log('orderDetail: ', orderDetail);
+  // console.log('orderDetail: ', orderDetail);
 
   return (
     <Box>

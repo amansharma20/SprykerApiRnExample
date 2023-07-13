@@ -16,9 +16,10 @@ const YourOrdersScreen = () => {
   const ordersData = useSelector(
     state => state.getOrdersDataApiSlice.ordersData?.data?.data || [],
   );
-  console.log('ordersData: ', ordersData);
+  // console.log('ordersData: ', ordersData);
 
   const renderItem = ({item, index}) => {
+    // console.log('item: ', item);
     return (
       <Box
         mb="s4"
@@ -30,7 +31,7 @@ const YourOrdersScreen = () => {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('OrderDetailsScreen', {
-              orderId: item.id,
+              orderId: 'DE--5198',
             })
           }>
           <Box flexDirection="row" justifyContent="space-between" mb="s2">
