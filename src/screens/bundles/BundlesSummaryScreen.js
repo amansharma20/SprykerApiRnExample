@@ -7,8 +7,10 @@ import FastImage from 'react-native-fast-image';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import {api} from '../../api/SecureAPI';
 import CommonLoading from '../../components/CommonLoading';
+import {useNavigation} from '@react-navigation/native';
 
 const BundlesSummaryScreen = props => {
+  const navigation = useNavigation();
   const summaryBundleData = props.route?.params?.summaryBundleData;
   const configurableBundleId = props.route?.params?.configurableBundleId;
   const postProductSlotsData = props.route?.params?.postProductSlotsData;
@@ -21,15 +23,11 @@ const BundlesSummaryScreen = props => {
     );
     if (response?.data?.status === 201) {
       console.log('response?.data: success ', response?.data);
+      navigation.navigate('CartScreen');
       CommonLoading.hide();
     } else {
-      console.log(
-        'response?.data: error',
-        response?.data?.data?.errors?.[0]?.detail,
-      );
       Alert.alert(response?.data?.data?.errors?.[0]?.detail);
       CommonLoading.hide();
-      //  Alert.alert("something error");
     }
   };
 
