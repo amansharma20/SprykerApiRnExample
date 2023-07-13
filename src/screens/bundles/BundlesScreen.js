@@ -96,23 +96,6 @@ const BundlesScreen = props => {
     },
   };
 
-  const addToCart = async () => {
-    console.log('postProductSlotsData: ', postProductSlotsData);
-    CommonLoading.show();
-    const response = await api.post(
-      `carts/${configurableBundleId}/configured-bundles`,
-      postProductSlotsData,
-    );
-    if (response?.data?.status === 201) {
-      console.log('response?.data: success ', response?.data);
-      CommonLoading.hide();
-    } else {
-      console.log('response?.data: error', response?.data);
-      CommonLoading.hide();
-      //  Alert.alert("something error");
-    }
-  };
-
   const changeIndexPositive = useCallback(() => {
     // if (postBundleData[currentIndex]) {
     setIsSelected(true);
@@ -129,10 +112,11 @@ const BundlesScreen = props => {
         console.log('submit');
         // addToCart();
         // handleExpandPress();
-        // navigation.navigate('BundlesSummaryScreen', {
-        //   summaryBundleData: summaryBundleData,
-        //   addToCart: addToCart,
-        // });
+        navigation.navigate('BundlesSummaryScreen', {
+          summaryBundleData: summaryBundleData,
+          configurableBundleId: configurableBundleId,
+          postProductSlotsData: postProductSlotsData,
+        });
       }
       return newIndex;
     });

@@ -24,7 +24,8 @@ import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerC
 
 const CartScreen = () => {
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  console.log('isLoading: ', isLoading);
   const [cartItemsArray, setCartItemsArray] = useState([]);
   const {isUserLoggedIn} = useIsUserLoggedIn();
   const [configuredBundleTemplateID, setConfiguredBundleTemplateID] = useState(
@@ -89,7 +90,6 @@ const CartScreen = () => {
         tempArr.push(item.itemId);
       });
       setCartItemsArray(tempArr);
-      setIsLoading(false);
     }
     const getConfiguredBundle = () => {
       const uuidsSet = new Set();
@@ -142,7 +142,6 @@ const CartScreen = () => {
         setIsLoading(false);
       });
     }
-    setIsLoading(false);
   }, [dispatch, customerCartId, isUserLoggedIn]);
 
   // useEffect(() => {
@@ -191,6 +190,7 @@ const CartScreen = () => {
                   />
                   <FlatList
                     data={customerCartData}
+                    // data={[]}
                     renderItem={item => {
                       const data = item?.item;
                       if (data?.configuredBundle == null) {
@@ -203,11 +203,16 @@ const CartScreen = () => {
                         );
                       }
                     }}
-                    contentContainerStyle={{paddingBottom: 100}}
-                    ListEmptyComponent={ListEmptyComponent}
+                    ListEmptyComponent={
+                      isLoading === false ? (
+                        <ListEmptyComponent />
+                      ) : (
+                        <ActivityIndicator />
+                      )
+                    }
                     scrollEnabled={false}
                   />
-                  <Box
+                  {/* <Box
                     color="borderGrey"
                     backgroundColor="white"
                     borderRadius={4}
@@ -219,7 +224,7 @@ const CartScreen = () => {
                       placeholder="Enter Promo Code"
                       placeholderTextColor="gray"
                     />
-                  </Box>
+                  </Box> */}
                   <Box
                     justifyContent="flex-end"
                     flexDirection="row"

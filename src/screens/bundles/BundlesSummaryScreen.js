@@ -1,15 +1,37 @@
-import {StyleSheet} from 'react-native';
+import {Alert, StyleSheet} from 'react-native';
 import React from 'react';
 import {Box, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {FlashList} from '@shopify/flash-list';
 import FastImage from 'react-native-fast-image';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import {api} from '../../api/SecureAPI';
+import CommonLoading from '../../components/CommonLoading';
 
 const BundlesSummaryScreen = props => {
   const summaryBundleData = props.route?.params?.summaryBundleData;
-  const addToCart = props.route?.params?.addToCart;
-  console.log('addToCart: ', addToCart);
+  const configurableBundleId = props.route?.params?.configurableBundleId;
+  const postProductSlotsData = props.route?.params?.postProductSlotsData;
+
+  const addToCart = async () => {
+    CommonLoading.show();
+    const response = await api.post(
+      `carts/${configurableBundleId}/configured-bundles`,
+      postProductSlotsData,
+    );
+    if (response?.data?.status === 201) {
+      console.log('response?.data: success ', response?.data);
+      CommonLoading.hide();
+    } else {
+      console.log(
+        'response?.data: error',
+        response?.data?.data?.errors?.[0]?.detail,
+      );
+      Alert.alert(response?.data?.data?.errors?.[0]?.detail);
+      CommonLoading.hide();
+      //  Alert.alert("something error");
+    }
+  };
 
   const renderItem = (item, index) => {
     return (
@@ -50,7 +72,7 @@ const BundlesSummaryScreen = props => {
     <Box flex={1} backgroundColor="white">
       <CommonHeader title={'Bundles Summary'} />
       <Box flex={1} paddingHorizontal="paddingHorizontal">
-        {/* <FlashList
+        <FlashList
           data={summaryBundleData}
           renderItem={renderItem}
           estimatedItemSize={4}
@@ -60,7 +82,7 @@ const BundlesSummaryScreen = props => {
           onPress={() => {
             addToCart();
           }}
-        /> */}
+        />
       </Box>
     </Box>
   );
