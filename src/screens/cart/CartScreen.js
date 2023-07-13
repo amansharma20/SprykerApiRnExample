@@ -20,6 +20,7 @@ import LoginScreen from '../auth/LoginScreen';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import ConfiguredBundledCartItem from './ConfiguredBundledCartItem';
+import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
 
 const CartScreen = () => {
   const navigation = useNavigation();
@@ -32,6 +33,30 @@ const CartScreen = () => {
   const [allProductAvailableInCarts, setAllProductsAvailableInCarts] =
     useState(true);
   const dispatch = useDispatch();
+
+  const customerCarts = useSelector(
+    state => state.customerCartIdApiSlice?.customerCart?.data?.data || [],
+  );
+
+  useEffect(() => {
+    if (customerCarts.length === 0) {
+      // create customer carts .............
+      const data = {
+        type: 'carts',
+        attributes: {
+          priceMode: 'NET_MODE',
+          currency: 'EUR',
+          store: 'DE',
+          name: 'cart12',
+        },
+      };
+      dispatch(createCustomerCart({endpoint: 'carts', data: data})).then(
+        res => {
+          console.log('res: ', res?.data?.data);
+        },
+      );
+    }
+  }, [customerCarts]);
 
   const customerCartId = useSelector(
     state =>
@@ -95,6 +120,7 @@ const CartScreen = () => {
         const data = customerCartData.filter(
           item => item.configuredBundle?.groupKey === uuidObj.uuid,
         );
+
         const groupKey = customerCartData.find(
           item => item.configuredBundle?.groupKey === uuidObj.uuid,
         )?.configuredBundle?.groupKey;
