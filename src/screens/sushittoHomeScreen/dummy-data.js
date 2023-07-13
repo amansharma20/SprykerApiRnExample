@@ -10,8 +10,9 @@ export const DUMMYDATA = {
     },
     Menu: [
       {
+        id: 1,
         title: 'Recommended',
-        Dishes: [
+        data: [
           {
             name: 'Butter Garlic Prawns',
             description:
@@ -559,8 +560,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 2,
         title: 'Non-veg Appetizers',
-        Dishes: [
+        data: [
           {
             name: 'Butter Garlic Prawns',
             description:
@@ -623,8 +625,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 3,
         title: 'Veg Tiny Plates',
-        Dishes: [
+        data: [
           {
             name: 'Beiruti Hummus',
             description:
@@ -674,8 +677,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 4,
         title: 'Lemonades',
-        Dishes: [
+        data: [
           {
             name: 'Mint Lemonade',
             description: 'Lemon juice, sugar & tons of fresh mint\n',
@@ -700,8 +704,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 5,
         title: 'Iced Tea',
-        Dishes: [
+        data: [
           {
             name: 'Peach Iced Tea',
             inStock: true,
@@ -723,8 +728,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 6,
         title: 'Veg Pizza',
-        Dishes: [
+        data: [
           {
             name: 'Grandmama Special Pizza',
             description:
@@ -784,8 +790,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 7,
         title: 'Non Veg Pizza',
-        Dishes: [
+        data: [
           {
             name: 'Bbq Chicken Pizza',
             description:
@@ -813,8 +820,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 8,
         title: 'Burgers',
-        Dishes: [
+        data: [
           {
             name: 'The Veggie One',
             description:
@@ -872,8 +880,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 9,
         title: 'Sandwiches',
-        Dishes: [
+        data: [
           {
             name: 'Bombay Grill Sandwich',
             description:
@@ -893,8 +902,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 10,
         title: "Grandmama's Specials European",
-        Dishes: [
+        data: [
           {
             name: 'Grandmama Crusty Mac N Cheese',
             description:
@@ -993,8 +1003,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 11,
         title: 'Veg Indian Specials',
-        Dishes: [
+        data: [
           {
             name: 'Rajma Chawal',
             description:
@@ -1014,8 +1025,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 12,
         title: 'Non-veg Indian Specials',
-        Dishes: [
+        data: [
           {
             name: 'Keema Pav',
             description:
@@ -1035,8 +1047,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 13,
         title: "Grandmama's Asian Bowls",
-        Dishes: [
+        data: [
           {
             name: 'Green Thai Curry',
             description:
@@ -1048,8 +1061,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 14,
         title: 'Hot Coffee',
-        Dishes: [
+        data: [
           {
             name: 'Cappuccino',
             description: 'Espresso with 1/2 steamed milk & 1/2 foamed milk.\n',
@@ -1074,8 +1088,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 15,
         title: 'Hot Chocolate',
-        Dishes: [
+        data: [
           {
             name: 'Grandmamas Signature Hot Chocolate',
             inStock: true,
@@ -1091,8 +1106,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 16,
         title: 'Add Ons',
-        Dishes: [
+        data: [
           {
             name: 'Extra Pita Bread',
             inStock: true,
@@ -1114,8 +1130,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 17,
         title: 'Salads',
-        Dishes: [
+        data: [
           {
             name: 'Nutrition Power House Salad',
             description:
@@ -1150,8 +1167,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 18,
         title: 'Desserts',
-        Dishes: [
+        data: [
           {
             name: 'Hot Skillet Cherry Apple Pie',
             description:
@@ -1194,8 +1212,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 19,
         title: 'Sides',
-        Dishes: [
+        data: [
           {
             name: 'Garlic Bread',
             description:
@@ -1236,8 +1255,9 @@ export const DUMMYDATA = {
         ],
       },
       {
+        id: 20,
         title: 'Classic Shakes',
-        Dishes: [
+        data: [
           {
             name: 'Signature Cold Coffee',
             inStock: true,

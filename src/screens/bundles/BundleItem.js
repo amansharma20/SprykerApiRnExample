@@ -22,6 +22,8 @@ const BundleItem = ({
   selectedOptionsIndex,
   postBundleData,
   setPostBundleData,
+  summaryBundleData,
+  setSummaryBundleData,
   slotID,
   finalState,
 }) => {
@@ -29,6 +31,7 @@ const BundleItem = ({
 
   const Item = ({item}) => {
     const onPressItem = () => {
+      console.log('item: ', item);
       let newArr = [];
       if ((productsArray || item.index !== -1) && item.isSelected === false) {
         productsArray[item.index].isSelected = !item.isSelected;
@@ -38,7 +41,6 @@ const BundleItem = ({
         newArr.push(...productsArray);
         setProductsArray(newArr);
         if (selectedOptionsIndex !== -1) {
-          console.log('item.slotID: ', item.slotID);
           postBundleData[selectedOptionsIndex] = {
             sku: item.id,
             quantity: 1,
@@ -48,6 +50,14 @@ const BundleItem = ({
             item => typeof item === 'object' && item !== null,
           );
           setPostBundleData(postArr);
+
+          summaryBundleData[selectedOptionsIndex] = {
+            item,
+          };
+          let summaryArr = summaryBundleData.filter(
+            item => typeof item === 'object' && item !== null,
+          );
+          setSummaryBundleData(summaryArr);
         }
       }
     };

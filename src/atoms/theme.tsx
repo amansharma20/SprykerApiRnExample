@@ -359,14 +359,14 @@ export const theme = createTheme({
     },
     optimizedDark: {
       shadowOpacity: 0.5,
-      backgroundColor: 'background',
+      backgroundColor: 'white',
       shadowColor: Platform.select({
         android: 'black',
         ios: 'black',
       }),
       shadowOffset: {width: 2, height: 2},
       shadowRadius: 5,
-      borderRadius: 6,
+      // borderRadius: 6,
       elevation: 20,
     },
     optimizedLight: {
@@ -377,7 +377,7 @@ export const theme = createTheme({
       }),
       shadowOffset: {width: 0, height: 4},
       shadowRadius: 4,
-      borderRadius: 8,
+      // borderRadius: 8,
       elevation: 10,
     },
     optimizedLightBlue: {

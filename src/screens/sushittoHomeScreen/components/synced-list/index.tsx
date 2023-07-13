@@ -5,6 +5,7 @@ import {FlatList, SectionList, View} from 'react-native';
 import VerticalList from './vertical-list';
 import HorizontalList from './horizontal-list';
 import {IProps} from './types';
+import {Box} from '@atoms';
 
 const SyncedList = ({
   data,
@@ -71,7 +72,7 @@ const SyncedList = ({
   }, [rendered]);
 
   return (
-    <View>
+    <Box flex={1}>
       <HorizontalList
         contentContainerStyle={horizontalListContainerStyle}
         data={data}
@@ -83,21 +84,22 @@ const SyncedList = ({
         verticalScrollRef={verticalRef}
         horizontalListProps={horizontalListProps}
       />
-
-      <VerticalList
-        contentContainerStyle={verticalListContainerStyle}
-        data={data}
-        horizontalPressed={horizontalPressed}
-        horizontalScrollRef={horizontalRef}
-        mapping={mapping}
-        renderSectionHeader={renderSectionHeader}
-        renderVerticalItem={renderVerticalItem}
-        scrollRef={verticalRef}
-        selected={selected}
-        setSelected={setSelected}
-        verticalListProps={verticalListProps}
-      />
-    </View>
+      <Box flex={1}>
+        <VerticalList
+          contentContainerStyle={verticalListContainerStyle}
+          data={data}
+          horizontalPressed={horizontalPressed}
+          horizontalScrollRef={horizontalRef}
+          mapping={mapping}
+          renderSectionHeader={renderSectionHeader}
+          renderVerticalItem={renderVerticalItem}
+          scrollRef={verticalRef}
+          selected={selected}
+          setSelected={setSelected}
+          verticalListProps={verticalListProps}
+        />
+      </Box>
+    </Box>
   );
 };
 

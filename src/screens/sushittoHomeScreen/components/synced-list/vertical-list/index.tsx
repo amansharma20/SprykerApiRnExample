@@ -1,14 +1,17 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import React from 'react';
 import {
+  Dimensions,
   SectionList,
   SectionListData,
   StyleSheet,
-  Text,
   View,
   ViewToken,
 } from 'react-native';
 
 import {VerticalListProps} from '../types';
+import {FlashList} from '@shopify/flash-list';
+import {Box, theme, Text} from '@atoms';
 
 const VerticalList = ({
   data,
@@ -28,7 +31,10 @@ const VerticalList = ({
     viewableItems: ViewToken[];
   }) => {
     if (viewableItems[0] && !viewableItems[0].index && !horizontalPressed) {
-      const id = viewableItems[0].section.id;
+      // const id = viewableItems?.[0]?.key;
+      const id = viewableItems?.[0]?.section?.id;
+      console.log('viewableItems: ', viewableItems);
+      console.log('id: ', id);
       if (id !== selected) {
         setSelected(id);
         if (horizontalScrollRef?.current) {
@@ -100,34 +106,110 @@ const VerticalList = ({
   const getSectionListProps = () =>
     verticalListProps ? verticalListProps : {};
 
+  function flattenData(data) {
+    const flattenedData = [];
+
+    for (const item of data) {
+      flattenedData.push(item.title);
+
+      for (const subItem of item.data) {
+        flattenedData.push(subItem);
+      }
+    }
+
+    return flattenedData;
+  }
+
+  const flattenedData = flattenData(data);
+  // console.log('flattenedData: ', flattenedData);
+
+  const stickyHeaderIndices = flattenedData
+    .map((item, index) => {
+      if (typeof item === 'string') {
+        return index;
+      } else {
+        return null;
+      }
+    })
+    .filter(item => item !== null) as number[];
+
   return (
-    <>
-      {data?.length > 0 ? (
-        <>
-          <SectionList
-            contentContainerStyle={styles.contentContainerStyle}
-            initialNumToRender={40}
-            keyExtractor={keyExtractor}
-            onScrollToIndexFailed={() => {
-              fallBack();
-            }}
-            onViewableItemsChanged={onViewableItemsChanged}
-            ref={scrollRef}
-            renderItem={renderItem}
-            renderSectionHeader={renderHeader}
-            sections={data}
-            showsVerticalScrollIndicator={false}
-            stickySectionHeadersEnabled={false}
-            viewabilityConfig={{
-              itemVisiblePercentThreshold: 50,
-            }}
-            {...getSectionListProps()}
-          />
-        </>
-      ) : (
-        <></>
-      )}
-    </>
+    <Box flex={1}>
+      <SectionList
+        contentContainerStyle={styles.contentContainerStyle}
+        initialNumToRender={40}
+        keyExtractor={keyExtractor}
+        onScrollToIndexFailed={() => {
+          fallBack();
+        }}
+        onViewableItemsChanged={onViewableItemsChanged}
+        ref={scrollRef}
+        renderItem={renderItem}
+        renderSectionHeader={renderHeader}
+        sections={data}
+        showsVerticalScrollIndicator={false}
+        stickySectionHeadersEnabled={false}
+        viewabilityConfig={{
+          itemVisiblePercentThreshold: 50,
+        }}
+        {...getSectionListProps()}
+      />
+      {/* <Box flex={1} backgroundColor="white">
+        {flattenedData?.length > 0 ? (
+          <>
+            <FlashList
+              keyExtractor={keyExtractor}
+              onScrollToIndexFailed={() => {
+                fallBack();
+              }}
+              onViewableItemsChanged={onViewableItemsChanged}
+              ref={scrollRef}
+              showsVerticalScrollIndicator={false}
+              stickySectionHeadersEnabled={false}
+              viewabilityConfig={{
+                itemVisiblePercentThreshold: 50,
+              }}
+              {...getSectionListProps()}
+              data={flattenedData}
+              renderItem={({item}) => {
+                if (typeof item === 'string') {
+                  // Rendering header
+                  return (
+                    <Box
+                      paddingVertical="s4"
+                      backgroundColor="white"
+                      paddingHorizontal="paddingHorizontal">
+                      <Text fontWeight="700" fontSize={20}>
+                        {item}
+                      </Text>
+                    </Box>
+                  );
+                } else {
+                  // Render item
+                  return (
+                    <Box paddingHorizontal="paddingHorizontal">
+                      <Text>{item.name}</Text>
+                    </Box>
+                  );
+                }
+              }}
+              // stickyHeaderIndices={stickyHeaderIndices}
+              getItemType={item => {
+                // To achieve better performance, specify the type based on the item
+                return typeof item === 'string' ? 'sectionHeader' : 'row';
+              }}
+              estimatedItemSize={100}
+              estimatedListSize={{
+                height: Dimensions.get('window').height,
+                width: Dimensions.get('screen').width,
+              }}
+            />
+          </>
+        ) : (
+          <></>
+        )}
+      </Box> */}
+    </Box>
   );
 };
 
@@ -137,6 +219,7 @@ const styles = StyleSheet.create({
   },
   header: {
     color: 'white',
+    fontSize: 32,
   },
   headerContainer: {
     alignItems: 'center',

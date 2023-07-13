@@ -28,7 +28,7 @@ const SushittoHomeScreen = () => {
   const renderVerticalItem = (item: any) => {
     return (
       <View style={styles.verticalItemContainer}>
-        <Text>{item}</Text>
+        <Text>{item.name}</Text>
       </View>
     );
   };
@@ -46,7 +46,8 @@ const SushittoHomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <SyncedList
-        data={listData}
+        // data={listData}
+        data={DUMMYDATA.data.Menu}
         horizontalListContainerStyle={styles.horizontalListContainerStyle}
         renderHorizontalItem={renderHorizontalItem}
         renderSectionHeader={renderSectionHeader}

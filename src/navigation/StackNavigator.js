@@ -31,6 +31,7 @@ import SushittoHomeScreen from '../screens/sushittoHomeScreen/SushittoHomeScreen
 import BundlesScreen from '../screens/bundles/BundlesScreen';
 import ConfiguredBundleScreen from '../screens/configuredBundle/ConfiguredBundleScreen';
 import ConfigurableBundleSlotsScreen from '../screens/configuredBundle/ConfigurableBundleSlotsScreen';
+import BundlesSummaryScreen from '../screens/bundles/BundlesSummaryScreen';
 
 export const AuthContext = React.createContext();
 
@@ -248,6 +249,10 @@ export default function StackNavigator() {
         <Stack.Screen
           name="ConfigurableBundleSlotsScreen"
           component={ConfigurableBundleSlotsScreen}
+        />
+        <Stack.Screen
+          name="BundlesSummaryScreen"
+          component={BundlesSummaryScreen}
         />
       </Stack.Navigator>
     </AuthContext.Provider>

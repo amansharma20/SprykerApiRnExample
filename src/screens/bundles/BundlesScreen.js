@@ -1,10 +1,16 @@
-/* eslint-disable no-new */
 /* eslint-disable new-parens */
+/* eslint-disable no-new */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Box} from '@atoms';
-import {ActivityIndicator, Dimensions} from 'react-native';
+import {Box, Text} from '@atoms';
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import BundleItem from './BundleItem';
 import {commonApi} from '../../api/CommanAPI';
@@ -14,6 +20,8 @@ import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidBut
 import CommonLoading from '../../components/CommonLoading';
 import {api} from '../../api/SecureAPI';
 import Toast from 'react-native-toast-message';
+import DynamicSnapPointBottomSheet from '../../components/bottomsheets/DynamicSnapPointBottomSheet';
+import FastImage from 'react-native-fast-image';
 
 const BundlesScreen = props => {
   const configurableBundleId = props.route?.params?.configurableBundleId;
@@ -22,16 +30,23 @@ const BundlesScreen = props => {
   const navigation = useNavigation();
 
   const [postBundleData, setPostBundleData] = useState([]);
-  console.log(
-    'postBundleData: ',
-    postBundleData.filter(item => typeof item === 'object' && item !== null),
-  );
+  const [summaryBundleData, setSummaryBundleData] = useState([]);
+  console.log('summaryBundleData: ', summaryBundleData);
 
   const [finalState, setFinalState] = useState([]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [isSelected, setIsSelected] = useState([]);
+
+  const bottomSheetRef = useRef(null);
+
+  const handleExpandPress = useCallback(() => {
+    bottomSheetRef.current?.expand();
+  }, []);
+  const handleClosePress = useCallback(() => {
+    bottomSheetRef.current?.close();
+  }, []);
 
   // console.log('finalState[index]?.slotID: ', finalState[1]?.slotID);
   const renderBundleItems = ({item, index}) => {
@@ -46,6 +61,8 @@ const BundlesScreen = props => {
         isSelected={isSelected}
         setPostBundleData={setPostBundleData}
         postBundleData={postBundleData}
+        summaryBundleData={summaryBundleData}
+        setSummaryBundleData={setSummaryBundleData}
       />
     );
   };
@@ -80,6 +97,7 @@ const BundlesScreen = props => {
   };
 
   const addToCart = async () => {
+    console.log('postProductSlotsData: ', postProductSlotsData);
     CommonLoading.show();
     const response = await api.post(
       `carts/${configurableBundleId}/configured-bundles`,
@@ -109,7 +127,12 @@ const BundlesScreen = props => {
       } else {
         //   submitQuestions();
         console.log('submit');
-        addToCart();
+        // addToCart();
+        // handleExpandPress();
+        // navigation.navigate('BundlesSummaryScreen', {
+        //   summaryBundleData: summaryBundleData,
+        //   addToCart: addToCart,
+        // });
       }
       return newIndex;
     });
@@ -126,7 +149,7 @@ const BundlesScreen = props => {
     //   });
     //   console.log('error');
     // }
-  }, [currentIndex, finalState]);
+  }, [currentIndex, finalState, summaryBundleData]);
 
   // SLOTS
 
