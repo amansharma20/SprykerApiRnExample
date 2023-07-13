@@ -244,7 +244,7 @@ const ProductDetailsScreen = props => {
         });
       }
     });
-    console.log('productIds: ', productIds);
+    // console.log('productIds: ', productIds);
 
     const idExists = productIds.some(item => item.id === sku);
     console.log('idExists: ', idExists);
