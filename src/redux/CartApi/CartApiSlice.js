@@ -26,11 +26,12 @@ const getCustomerCartItemsAliSlice = createSlice({
       const cartItem = action?.payload?.data?.included;
       const newCartItems = [];
       cartItem?.map(item => {
+        console.log(' redux item: ', item);
         newCartItems.push({
           sku: item.attributes.sku,
           quantity: item.attributes.quantity,
           itemId: item.id,
-          itemPrice: item.attributes.calculations.sumPriceToPayAggregation,
+          itemPrice: item.attributes.calculations.sumGrossPrice,
           configuredBundleItem: item.attributes.configuredBundleItem,
           configuredBundle: item.attributes.configuredBundle,
         });

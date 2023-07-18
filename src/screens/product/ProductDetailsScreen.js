@@ -28,9 +28,11 @@ import {getCustomerWishlist} from '../../redux/wishlist/GetWishlistApiAsyncThunk
 import ShoppingListItem from '../../components/ShoppingListItem';
 import DynamicSnapPointBottomSheet from '../../components/bottomsheets/DynamicSnapPointBottomSheet';
 import {getProductsByWishlistAsyncThunk} from '../../redux/wishlist/ProductsWishlistApiAsyncThunk';
+import ProductOffer from './ProductOffer';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
+  // console.log('propDatasku: ', propData);
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -48,6 +50,7 @@ const ProductDetailsScreen = props => {
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
+  console.log('customerCart: ', customerCart);
 
   const customerWishlist = useSelector(
     state => state?.getWishlistApiSlice?.customerWishlistData?.data?.data || [],
@@ -66,7 +69,8 @@ const ProductDetailsScreen = props => {
   const [selectedShoppingListId, setSelectedShoppingListId] = useState(
     customerWishlist?.[0]?.id,
   );
-  console.log('selectedSkuId: ', selectedSkuId);
+  const [productOffers, setProductOffers] = useState([]);
+  const [offerForAddToCart, setOfferForAddToCart] = useState(null);
 
   const [isProductExistInShoppingList, setIsProductExistInShoppingList] =
     useState(false);
@@ -86,6 +90,8 @@ const ProductDetailsScreen = props => {
           attributes: {
             sku: selectedSkuId,
             quantity: 1,
+            productOfferReference: offerForAddToCart?.productOfferReference,
+            merchantReference: offerForAddToCart?.merchantReference,
             salesUnit: {
               id: 0,
               amount: 0,
@@ -94,7 +100,7 @@ const ProductDetailsScreen = props => {
           },
         },
       };
-      // setIsLoading(true);
+
       CommonLoading.show();
       const response = await api.post(
         `carts/${customerCart.id}/items`,
@@ -171,10 +177,6 @@ const ProductDetailsScreen = props => {
         Alert.alert('Error', response.data.data.errors?.[0]?.detail, [
           {
             text: 'OK',
-            // onPress: () =>
-            //   navigation.replace('OrderDetailsScreen', {
-            //     checkoutResponse: response?.data?.data?.data,
-            //   }),
           },
         ]);
       }
@@ -183,6 +185,7 @@ const ProductDetailsScreen = props => {
 
   useEffect(() => {
     setProdData(propData);
+    dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
     const fetchProductData = async () => {
       const response = await commonApi.get(
         `abstract-products/${propData?.abstractSku}?include=abstract-product-availabilities`,
@@ -201,7 +204,6 @@ const ProductDetailsScreen = props => {
         setIsLoading(false);
       }
     };
-
     fetchProductData();
   }, [propData]);
 
@@ -234,7 +236,6 @@ const ProductDetailsScreen = props => {
   }, [productData]);
 
   const checkIfAddedInShoppingList = sku => {
-    console.log('sku: ', sku);
     const productIds = [];
 
     productsByWishlist?.included?.forEach(element => {
@@ -244,10 +245,8 @@ const ProductDetailsScreen = props => {
         });
       }
     });
-    // console.log('productIds: ', productIds);
 
     const idExists = productIds.some(item => item.id === sku);
-    console.log('idExists: ', idExists);
 
     if (idExists) {
       setIsProductExistInShoppingList(true);
@@ -257,10 +256,22 @@ const ProductDetailsScreen = props => {
   };
 
   useEffect(() => {
-    checkIfAddedInShoppingList(
-      // productData?.attributes?.attributeMap?.product_concrete_ids[0],
-      selectedSkuId,
-    );
+    checkIfAddedInShoppingList(selectedSkuId);
+
+    const fetchProductOffers = async () => {
+      const response = await commonApi.get(
+        `concrete-products/${selectedSkuId}/product-offers`,
+        '',
+      );
+      if (response.data?.status === 200) {
+        console.warn('offers', response?.data?.data?.data);
+        setProductOffers(response?.data?.data?.data);
+      } else {
+        console.warn('no product offers for this sku');
+      }
+    };
+
+    fetchProductOffers();
   }, [selectedSkuId]);
 
   const productsByWishlist = useSelector(
@@ -299,9 +310,7 @@ const ProductDetailsScreen = props => {
 
   const Item = ({item, onPress, backgroundColor, textColor}) => (
     <TouchableOpacity
-      // onPress={onPress}
       onPress={() => {
-        // console.log(item);
         setSelectedSkuId(item?.sku);
       }}
       style={[styles.item, {backgroundColor}]}>
@@ -325,6 +334,15 @@ const ProductDetailsScreen = props => {
         textColor={color}
       />
     );
+  };
+
+  const productOfferDataForAddToCart = (offer, price) => {
+    console.log('clicked price: ', price);
+    setOfferForAddToCart({
+      productOfferReference: offer.id,
+      merchantReference: offer.attributes.merchantReference,
+      price: price?.attributes?.price,
+    });
   };
 
   return (
@@ -397,13 +415,28 @@ const ProductDetailsScreen = props => {
             <Text style={{fontWeight: 'bold'}}>Description : </Text>
             <Text>{productData?.attributes?.description}</Text>
             <Text mt="s6" style={{fontWeight: 'bold'}}>
-              Price : $ {prodData?.price}
+              {/* Price : $ {prodData?.price} */}
+              Price :
+              {offerForAddToCart != null
+                ? offerForAddToCart?.price
+                : prodData?.price}
             </Text>
             {!productAvailability ? (
               <Text color="red">Product is not available </Text>
             ) : (
               <Text color="green">In stock</Text>
             )}
+            <FlatList
+              data={productOffers}
+              renderItem={offers => {
+                return (
+                  <ProductOffer
+                    offers={offers}
+                    productOfferDataForAddToCart={productOfferDataForAddToCart}
+                  />
+                );
+              }}
+            />
           </Box>
         ) : (
           <ActivityIndicator size="large" color="#0064FD" />
@@ -419,24 +452,13 @@ const ProductDetailsScreen = props => {
           disabled={!productAvailability}
         />
         <Box mt="s8">
-          {/* {!isProductExistInShoppingList ? ( */}
           <TouchableOpacity
             style={styles.wishListContainer}
-            // onPress={onPressAddToShoppingList}
             onPress={selectShoppingList}>
             <Text style={{color: 'white', fontWeight: 'bold'}}>
               {isLoadingShopingList ? 'Loading...' : 'Add to Shopping List'}
             </Text>
           </TouchableOpacity>
-          {/* ) : (
-            <TouchableOpacity
-              style={styles.wishListContainer}
-              onPress={selectShoppingList}>
-              <Text style={{color: 'white', fontWeight: 'bold'}}>
-                Remove from Shopping List
-              </Text>
-            </TouchableOpacity>
-          )} */}
         </Box>
       </Box>
 
