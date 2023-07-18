@@ -1,11 +1,17 @@
-import React, {useEffect, useState} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useCallback, useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Box, theme, Text} from '@atoms';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {commonApi} from '../../api/CommanAPI';
 
-const ProductOffer = ({offers, productOfferDataForAddToCart}) => {
+const ProductOffer = ({
+  offers,
+  productOfferDataForAddToCart,
+  selectedOfferIndex,
+}) => {
   const offer = offers?.item;
+  const index = offers?.index;
   const [price, setPrice] = useState('');
 
   useEffect(() => {
@@ -16,20 +22,25 @@ const ProductOffer = ({offers, productOfferDataForAddToCart}) => {
       setPrice(offerPrice?.data?.data?.data?.[0]);
     };
     getOfferPrice();
-    productOfferDataForAddToCart(offer, price);
+    productOfferDataForAddToCart(offer, price, 0);
   }, [offer]);
 
-  const onPressOffer = offer => {
-    console.log('offer clicked: ', offer);
-    productOfferDataForAddToCart(offer, price);
+  const onPressOffer = () => {
+    productOfferDataForAddToCart(offer, price, index);
   };
+
   return (
-    <TouchableOpacity activeOpacity={0.8}>
+    <TouchableOpacity activeOpacity={0.8} onPress={onPressOffer}>
       <Box mb="s10" flexDirection="row">
         <BouncyCheckbox
-          isChecked={offer?.attributes?.isDefault}
+          // isChecked={
+          //   index === selectedOfferIndex || offer?.attributes?.isDefault
+          // }
+          isChecked={index === selectedOfferIndex}
+          disableBuiltInState={true}
+          // isChecked={index === selectedOfferIndex}
           onPress={() => {
-            onPressOffer(offer);
+            onPressOffer();
           }}
         />
         <Box

@@ -32,7 +32,6 @@ import ProductOffer from './ProductOffer';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
-  // console.log('propDatasku: ', propData);
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -50,7 +49,6 @@ const ProductDetailsScreen = props => {
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
-  console.log('customerCart: ', customerCart);
 
   const customerWishlist = useSelector(
     state => state?.getWishlistApiSlice?.customerWishlistData?.data?.data || [],
@@ -71,6 +69,10 @@ const ProductDetailsScreen = props => {
   );
   const [productOffers, setProductOffers] = useState([]);
   const [offerForAddToCart, setOfferForAddToCart] = useState(null);
+  console.log('offerForAddToCart: ', offerForAddToCart);
+
+  const [selectedOfferIndex, setSelectedOfferIndex] = useState(0);
+  console.log('selectedOfferIndex: ', selectedOfferIndex);
 
   const [isProductExistInShoppingList, setIsProductExistInShoppingList] =
     useState(false);
@@ -120,10 +122,6 @@ const ProductDetailsScreen = props => {
         });
         dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
       } else {
-        console.log(
-          'response.data.data.errors?.[0]?.detail: ',
-          response.data.data.errors?.[0]?.detail,
-        );
         Alert.alert('Error', response.data.data.errors?.[0]?.detail, [
           {
             text: 'OK',
@@ -264,10 +262,8 @@ const ProductDetailsScreen = props => {
         '',
       );
       if (response.data?.status === 200) {
-        console.warn('offers', response?.data?.data?.data);
         setProductOffers(response?.data?.data?.data);
       } else {
-        console.warn('no product offers for this sku');
       }
     };
 
@@ -336,8 +332,8 @@ const ProductDetailsScreen = props => {
     );
   };
 
-  const productOfferDataForAddToCart = (offer, price) => {
-    console.log('clicked price: ', price);
+  const productOfferDataForAddToCart = (offer, price, index) => {
+    setSelectedOfferIndex(index);
     setOfferForAddToCart({
       productOfferReference: offer.id,
       merchantReference: offer.attributes.merchantReference,
@@ -428,11 +424,13 @@ const ProductDetailsScreen = props => {
             )}
             <FlatList
               data={productOffers}
-              renderItem={offers => {
+              renderItem={(offers) => {
                 return (
                   <ProductOffer
                     offers={offers}
                     productOfferDataForAddToCart={productOfferDataForAddToCart}
+                    selectedOfferIndex={selectedOfferIndex}
+                    setSelectedOfferIndex={setSelectedOfferIndex}
                   />
                 );
               }}
