@@ -40,23 +40,28 @@ const CartScreen = () => {
 
   useEffect(() => {
     if (customerCarts.length === 0) {
-      // create customer carts .............
       const data = {
         type: 'carts',
         attributes: {
           priceMode: 'NET_MODE',
           currency: 'EUR',
           store: 'DE',
-          name: 'cart12',
+          name: 'new cart',
         },
       };
-      dispatch(createCustomerCart({endpoint: 'carts', data: data})).then(
-        res => {
-          console.log('res: ', res?.data?.data);
-        },
-      );
+
+      dispatch(
+        createCustomerCart({endpoint: 'carts', data: JSON.stringify(data)}),
+      ).then(res => {});
+      dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+        console.log('carts api call successful');
+      });
     }
-  }, [customerCarts]);
+
+    dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+      console.log('carts api call successful');
+    });
+  }, []);
 
   const customerCartId = useSelector(
     state =>
@@ -80,7 +85,6 @@ const CartScreen = () => {
       </Box>
     );
   };
-  // console.log('configuredBundleTemplateID: ', configuredBundleTemplateID);
 
   useEffect(() => {
     if (customerCartData.length !== 0 && customerCartId) {

@@ -13,26 +13,33 @@ import RNRestart from 'react-native-restart';
 import {useDispatch, useSelector} from 'react-redux';
 import {getOrderDetailsData} from '../../redux/orderDetailsApi/OrderDetailsApiAsyncThunk';
 import OrdertotalCost from './components/OrderTotalCost';
+import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 const OrderDetailsScreen = props => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [configuredBundledOrders, setConfiguredBundleOrders] = useState([]);
+  const [normalProducts, setNormalProducts] = useState([]);
 
   const orderId = props.route.params?.orderId;
-  // console.log('orderId: ', orderId);
   const checkoutResponse = props.route.params?.checkoutResponse;
 
   const orderReference =
     checkoutResponse?.attributes?.orderReference || orderId;
-  // console.log('orderReference: ', orderReference);
-
   const orderDetails = useSelector(
     state => state.getOrderDetailsDataApiSlice.orderDetailsData?.data,
   );
-  // console.log('orderDetails: ', orderDetails?.data?.attributes?.items);
-
   const orderItemsData = orderDetails?.data?.attributes?.items;
-  // const configuredBundleOrderedItems =[];
+
+  useEffect(() => {
+    setIsLoading(true);
+    dispatch(
+      getOrderDetailsData(`orders/${orderReference}?include=order-shipments`),
+    ).then(res => {
+      setIsLoading(false);
+      dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+    });
+  }, [dispatch, orderReference, orderId]);
+
   useEffect(() => {
     const uuidsSet = new Set();
     orderItemsData?.forEach(items => {
@@ -68,7 +75,32 @@ const OrderDetailsScreen = props => {
       return {templateName, foundObjects, quantity};
     });
     setConfiguredBundleOrders(newDataArray);
-  }, [orderId]);
+  }, [orderId, orderReference, orderItemsData]);
+
+  // const orderItemsData = orderDetails?.data?.attributes?.items;
+
+  useEffect(() => {
+    if (orderItemsData) {
+      const updatedItems = orderItemsData.reduce((accumulator, currentItem) => {
+        const existingItemIndex = accumulator.findIndex(
+          item => item?.sku === currentItem?.sku,
+        );
+        const existingItem = accumulator.find(
+          item => item?.sku === currentItem?.sku,
+        );
+        if (existingItemIndex !== -1) {
+          const existingItem = accumulator[existingItemIndex];
+          existingItem.quantity += currentItem.quantity;
+          existingItem.sumSubtotalAggregation +=
+            currentItem.sumSubtotalAggregation;
+        } else {
+          accumulator.push({...currentItem});
+        }
+        return accumulator;
+      }, []);
+      setNormalProducts(updatedItems);
+    }
+  }, [orderId, orderReference, orderItemsData]);
 
   const orderDetail = orderDetails?.data?.attributes;
   const orderShipment = orderDetails?.included;
@@ -76,17 +108,25 @@ const OrderDetailsScreen = props => {
   const renderItem = ({item}) => {
     if (item?.salesOrderConfiguredBundle != null) return;
     return (
-      <Box flexDirection="row">
-        <Image
-          style={styles.backImage}
-          source={{
-            uri: item?.metadata?.image,
-          }}
-        />
-        <Box flexDirection="column" ml="s40">
-          <Text>{item?.name}</Text>
-          <Text>Quantity: {item?.quantity}</Text>
-          <Text>Price: ${item?.sumSubtotalAggregation}</Text>
+      <Box
+        borderRadius={8}
+        borderColor="border"
+        borderWidth={1}
+        mb="s8"
+        padding="s8"
+        backgroundColor="white">
+        <Box flexDirection="row">
+          <Image
+            style={styles.backImage}
+            source={{
+              uri: item?.metadata?.image,
+            }}
+          />
+          <Box flexDirection="column" ml="s40" justifyContent="space-between">
+            <Text>{item?.name}</Text>
+            <Text>Quantity: {item?.quantity}</Text>
+            <Text>Price: ${item?.sumSubtotalAggregation}</Text>
+          </Box>
         </Box>
       </Box>
     );
@@ -94,6 +134,7 @@ const OrderDetailsScreen = props => {
 
   const configuredBundles = items => {
     const data = items?.foundObjects;
+
     return (
       <Box
         borderRadius={8}
@@ -106,7 +147,6 @@ const OrderDetailsScreen = props => {
           <Box>
             <Text>{items?.templateName}</Text>
           </Box>
-
           <Box>
             <Text>Quantity:{items?.quantity}</Text>
           </Box>
@@ -137,7 +177,7 @@ const OrderDetailsScreen = props => {
                       <Text>{item.name}</Text>
                     </Box>
                     <Text style={{fontWeight: 'bold', marginTop: 4}}>
-                      {item.sumPrice}
+                      $ {item.sumPrice}
                     </Text>
                   </Box>
                 </Box>
@@ -148,15 +188,6 @@ const OrderDetailsScreen = props => {
       </Box>
     );
   };
-
-  useEffect(() => {
-    setIsLoading(true);
-    dispatch(
-      getOrderDetailsData(`orders/${orderReference}?include=order-shipments`),
-    ).then(res => {
-      setIsLoading(false);
-    });
-  }, [dispatch, orderReference]);
 
   return (
     <ScrollView contentContainerStyle={{backgroundColor: 'white', flexGrow: 1}}>
@@ -180,7 +211,7 @@ const OrderDetailsScreen = props => {
                 contentContainerStyle={{flex: 1}}
               />
               <FlatList
-                data={orderItemsData}
+                data={normalProducts}
                 renderItem={renderItem}
                 contentContainerStyle={{flex: 1}}
               />

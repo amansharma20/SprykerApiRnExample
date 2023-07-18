@@ -1,0 +1,58 @@
+import React, {useEffect, useState} from 'react';
+import {TouchableOpacity} from 'react-native';
+import {Box, theme, Text} from '@atoms';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import {commonApi} from '../../api/CommanAPI';
+
+const ProductOffer = ({offers, productOfferDataForAddToCart}) => {
+  const offer = offers?.item;
+  const [price, setPrice] = useState('');
+
+  useEffect(() => {
+    const getOfferPrice = async () => {
+      const offerPrice = await commonApi.get(
+        `product-offers/${offer.id}/product-offer-prices`,
+      );
+      setPrice(offerPrice?.data?.data?.data?.[0]);
+    };
+    getOfferPrice();
+    productOfferDataForAddToCart(offer, price);
+  }, [offer]);
+
+  const onPressOffer = offer => {
+    console.log('offer clicked: ', offer);
+    productOfferDataForAddToCart(offer, price);
+  };
+  return (
+    <TouchableOpacity activeOpacity={0.8}>
+      <Box mb="s10" flexDirection="row">
+        <BouncyCheckbox
+          isChecked={offer?.attributes?.isDefault}
+          onPress={() => {
+            onPressOffer(offer);
+          }}
+        />
+        <Box
+          flex={1}
+          flexDirection="row"
+          marginHorizontal="s4"
+          flexShrink={1}
+          mb="s8"
+          borderWidth={1}
+          borderColor="border"
+          borderRadius={8}
+          padding="s8"
+          key={offer.attributes.id}>
+          <Box paddingLeft="s4" flexDirection="row">
+            <Box justifyContent="space-between">
+              <Text>{offer.id}</Text>
+              <Text>$ {price?.attributes?.price}</Text>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </TouchableOpacity>
+  );
+};
+
+export default ProductOffer;

@@ -5,7 +5,7 @@ export const createCustomerCart = createAsyncThunk(
   'createCart',
   async ({endpoint, data}, thunkAPI) => {
     try {
-      const response = await api.post(endpoint, data);
+      const response = await api.post(endpoint, JSON.stringify(data));
       return response.data;
     } catch (error) {
       return error;

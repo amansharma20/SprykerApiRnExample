@@ -8,6 +8,7 @@ import {ActivityIndicator, Alert, Button, ScrollView} from 'react-native';
 import {api} from '../../api/SecureAPI';
 import {useNavigation} from '@react-navigation/native';
 import CommonLoading from '../../components/CommonLoading';
+import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 
 const CheckoutScreen = props => {
   const navigation = useNavigation();
@@ -132,6 +133,7 @@ const CheckoutScreen = props => {
       if (response.data.status === 201) {
         // console.log('response: ', response);
         // console.log('response?.data?.data?.data: ', response?.data?.data?.data);
+        dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
         Alert.alert('Order Placed Successfully', '', [
           {
             text: 'OK',
