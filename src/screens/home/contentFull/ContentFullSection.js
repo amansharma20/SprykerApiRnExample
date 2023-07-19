@@ -21,8 +21,15 @@ const ContentFullSection = () => {
 
   const flatListRef = useRef();
 
-  const headerData = cmsData?.nextContentfulHeaderImageCollection?.items;
-  const midSectionData = cmsData?.nextContentfulMidSectionCollection?.items;
+  // const headerData = cmsData;
+  // console.log('headerData: ', headerData);
+  const headerData = cmsData?.items?.[0]?.heroBannerImageCollection?.items;
+  const midSectionData = [];
+  // console.log('midSectionData: ', midSectionData);
+  console.log(
+    'cmsData: ',
+    cmsData?.items?.[0]?.heroBannerImageCollection?.items,
+  );
 
   const handleScroll = event => {
     const {contentOffset} = event.nativeEvent;
@@ -33,9 +40,7 @@ const ContentFullSection = () => {
   const renderHeaderItem = ({item}) => {
     return (
       <Box>
-        <ImageBackground
-          source={{uri: item.heroBanner?.url}}
-          style={styles.itemContainer}>
+        <ImageBackground source={{uri: item.url}} style={styles.itemContainer}>
           <Box flex={1} justifyContent="flex-end" mb="s40">
             <></>
             <Text
@@ -158,32 +163,16 @@ const ContentFullSection = () => {
     const url =
       'https://graphql.contentful.com/content/v1/spaces/b7hw33ucy3y5/environments/master';
     const query = `{
-      nextContentfulHeaderImageCollection {
-        items {
-          description
-          heroBanner {
-            url
-          }
+
+   sushiittoHomeContentCollection{
+    items{
+      heroBannerImageCollection{
+        items{
+          url
         }
       }
-      nextContentfulMidSectionCollection {
-        items {
-          midSectionImageCollection {
-            items {
-              url
-            }
-          }
-          midSectionDescription
-          midSectionButtonTitle
-        }
-      }
-      nextContentfulBottomCollection {
-        items {
-          iconClass
-          iconTitle
-          iconDescription
-        }
-      }
+    }
+  }
     }`;
 
     const options = {
@@ -198,7 +187,9 @@ const ContentFullSection = () => {
     try {
       const response = await fetch(url, options);
       const data = await response.json();
-      setCmsData(data.data);
+      console.log('data: ', data?.data?.sushiittoHomeContentCollection);
+      setCmsData(data?.data?.sushiittoHomeContentCollection);
+      // setCmsData(data.data);
       // Process the response data as per your requirements
     } catch (error) {
       console.error('API request failed:', error);

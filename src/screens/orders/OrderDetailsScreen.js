@@ -141,10 +141,11 @@ const OrderDetailsScreen = props => {
         borderColor="border"
         borderWidth={1}
         mb="s8"
-        padding="s8"
+        padding="s12"
+        elevation={3}
         backgroundColor="white">
         <Box flexDirection="row" justifyContent="space-between">
-          <Box>
+          <Box paddingBottom="s8" paddingHorizontal="s8">
             <Text>{items?.templateName}</Text>
           </Box>
           <Box>
@@ -210,6 +211,9 @@ const OrderDetailsScreen = props => {
                 renderItem={({item}) => configuredBundles(item)}
                 contentContainerStyle={{flex: 1}}
               />
+              <Box style={styles.headingContainer}>
+                <Text style={styles.headingText}>Items</Text>
+              </Box>
               <FlatList
                 data={normalProducts}
                 renderItem={renderItem}
@@ -248,6 +252,15 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     width: '20%',
     height: 70,
+  },
+  headingContainer: {
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+  },
+  headingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
   },
 });
 export default OrderDetailsScreen;
