@@ -76,7 +76,7 @@ const BundlesSummaryScreen = props => {
           estimatedItemSize={4}
         />
         <CommonSolidButton
-          title={'Continue'}
+          title={'Add to cart'}
           onPress={() => {
             addToCart();
           }}
