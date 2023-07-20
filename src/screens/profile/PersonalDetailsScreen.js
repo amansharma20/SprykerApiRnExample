@@ -1,21 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useContext, useEffect, useState} from 'react';
-import {Box, Text} from '@atoms';
-import {api} from '../../api/SecureAPI';
-import {ActivityIndicator, Button} from 'react-native';
-import {AuthContext} from '../../navigation/StackNavigator';
+import {View, Text, ActivityIndicator, Button, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCustomerDetails} from '../../redux/profileApi/ProfileApiAsyncThunk';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
+import {AuthContext} from '../../navigation/StackNavigator';
 
 export default function PersonalDetailsScreen() {
   const {signOut} = useContext(AuthContext);
   const dispatch = useDispatch();
-
   const profileDataAttributes = useSelector(
     state =>
       state.getCustomerDetailsApiSlice.customerDetails?.data?.data?.[0]
-        ?.attributes || [],
+        ?.attributes || {},
   );
 
   const [isLoading, setIsLoading] = useState(false);
@@ -32,47 +28,81 @@ export default function PersonalDetailsScreen() {
   }, []);
 
   return (
-    <Box flex={1} backgroundColor="background">
+    <View style={styles.container}>
       {isLoading ? (
-        <Box flex={1}>
+        <View style={styles.loadingContainer}>
           <ActivityIndicator />
-        </Box>
+        </View>
       ) : (
         <>
-          <Box flex={1}>
-            <CommonHeader />
-            <Box flex={1} paddingHorizontal="paddingHorizontal">
-              <Box flexDirection="row" justifyContent="space-between">
-                <Text>First Name</Text>
-                <Text>{profileDataAttributes?.firstName}</Text>
-              </Box>
-              <Box flexDirection="row" justifyContent="space-between">
-                <Text>Last Name</Text>
-                <Text>{profileDataAttributes?.lastName}</Text>
-              </Box>
-              <Box flexDirection="row" justifyContent="space-between">
-                <Text>Salutation</Text>
-                <Text>{profileDataAttributes?.salutation}</Text>
-              </Box>
-              <Box flexDirection="row" justifyContent="space-between">
-                <Text>Email</Text>
-                <Text>{profileDataAttributes?.email}</Text>
-              </Box>
-              <Box flexDirection="row" justifyContent="space-between">
-                <Text>Gender</Text>
-                <Text>{profileDataAttributes?.gender}</Text>
-              </Box>
-              {/* <Box flexDirection="row" justifyContent="space-between">
-                <Text>Date Of Birth</Text>
-                <Text>{profileDataAttributes?.dateOfBirth}</Text>
-              </Box> */}
-            </Box>
-          </Box>
+          <CommonHeader title={'Personal Details'} />
+          <View style={styles.profileDetailsContainer}>
+            <ProfileRow
+              label="First Name"
+              value={profileDataAttributes.firstName}
+            />
+            <ProfileRow
+              label="Last Name"
+              value={profileDataAttributes.lastName}
+            />
+            <ProfileRow
+              label="Salutation"
+              value={profileDataAttributes.salutation}
+            />
+            <ProfileRow label="Email" value={profileDataAttributes.email} />
+            <ProfileRow label="Gender" value={profileDataAttributes.gender} />
+            {/* <ProfileRow label="Date Of Birth" value={profileDataAttributes.dateOfBirth} /> */}
+          </View>
         </>
       )}
-      <Box>
+      <View style={styles.logoutButtonContainer}>
         <Button title="Logout" onPress={onPressLogout} />
-      </Box>
-    </Box>
+      </View>
+    </View>
   );
 }
+
+const ProfileRow = ({label, value}) => {
+  return (
+    <View style={styles.profileRow}>
+      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.value}>{value}</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f7f7f7',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileDetailsContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  profileRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  value: {
+    fontSize: 16,
+    color: '#666',
+  },
+  logoutButtonContainer: {
+    padding: 20,
+  },
+});

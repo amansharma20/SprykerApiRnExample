@@ -98,6 +98,7 @@ const WishlistScreen = () => {
             title="Add new Shopping list"
             onPress={() => addNewWishlist()}
           />
+          <TouchableOpacity></TouchableOpacity>
           <Text mt="s8" style={styles.title}>
             Your Shopping List
           </Text>

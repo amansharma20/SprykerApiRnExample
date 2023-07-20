@@ -69,10 +69,9 @@ const ProductDetailsScreen = props => {
   );
   const [productOffers, setProductOffers] = useState([]);
   const [offerForAddToCart, setOfferForAddToCart] = useState(null);
-  console.log('offerForAddToCart: ', offerForAddToCart);
 
   const [selectedOfferIndex, setSelectedOfferIndex] = useState(0);
-  console.log('selectedOfferIndex: ', selectedOfferIndex);
+  // console.log('selectedOfferIndex: ', selectedOfferIndex);
 
   const [isProductExistInShoppingList, setIsProductExistInShoppingList] =
     useState(false);
@@ -84,6 +83,7 @@ const ProductDetailsScreen = props => {
       ? addToShoppingListHandler()
       : navigation.navigate('LoginScreen');
   };
+
   const addToCartHandler = async () => {
     if (selectedSkuId) {
       const productData = {
@@ -424,7 +424,7 @@ const ProductDetailsScreen = props => {
             )}
             <FlatList
               data={productOffers}
-              renderItem={(offers) => {
+              renderItem={offers => {
                 return (
                   <ProductOffer
                     offers={offers}
