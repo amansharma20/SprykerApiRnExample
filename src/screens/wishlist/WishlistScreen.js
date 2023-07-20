@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import Box from '../../atoms/box';
 import Text from '../../atoms/text';
@@ -57,6 +59,7 @@ const WishlistScreen = () => {
       setIsLoading(false);
     });
   }, []);
+
   const renderItem = item => {
     const wishlist = item?.item?.attributes;
     return (
@@ -76,49 +79,53 @@ const WishlistScreen = () => {
     );
   };
   return (
-    <>
-      <CommonHeader title="Shopping List" />
-      <Box style={styles.container}>
-        <Box>
-          <Box
-            backgroundColor="white"
-            borderRadius={4}
-            borderWidth={1}
-            mb="s6"
-            flexDirection="row">
-            <TextInput
-              placeholder="Enter Name here"
-              placeholderTextColor="gray"
-              onChangeText={text => {
-                setWishlistName(text);
-              }}
+    <ScrollView>
+      <Box flex={1} backgroundColor="white">
+        <CommonHeader title="Shopping List" />
+        <Box
+          flex={1}
+          backgroundColor="white"
+          paddingHorizontal="paddingHorizontal">
+          <Box>
+            <Box
+              backgroundColor="white"
+              borderRadius={8}
+              borderWidth={1}
+              mb="s6"
+              flexDirection="row">
+              <TextInput
+                placeholder="Enter Name here"
+                placeholderTextColor="gray"
+                onChangeText={text => {
+                  setWishlistName(text);
+                }}
+                style={{paddingVertical: 10, paddingHorizontal: 4}}
+              />
+            </Box>
+            <CommonSolidButton
+              title="Add new Shopping list"
+              onPress={() => addNewWishlist()}
             />
+            <Text mt="s8" style={styles.title}>
+              Your Shopping List
+            </Text>
+            {isLoading ? (
+              <ActivityIndicator />
+            ) : (
+              <FlatList
+                data={customerWishlist}
+                renderItem={renderItem}
+                contentContainerStyle={{paddingBottom: 10}}
+              />
+            )}
           </Box>
-          <CommonSolidButton
-            title="Add new Shopping list"
-            onPress={() => addNewWishlist()}
-          />
-          <TouchableOpacity></TouchableOpacity>
-          <Text mt="s8" style={styles.title}>
-            Your Shopping List
-          </Text>
-          {isLoading ? (
-            <ActivityIndicator />
-          ) : (
-            <FlatList data={customerWishlist} renderItem={renderItem} />
-          )}
         </Box>
       </Box>
-    </>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    paddingHorizontal: theme.spacing.paddingHorizontal,
-  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -130,6 +137,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     marginBottom: 8,
     backgroundColor: 'white',
+    borderRadius: 8,
   },
   wishlistItemName: {
     fontSize: 16,
