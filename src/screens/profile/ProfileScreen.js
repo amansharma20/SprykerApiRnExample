@@ -4,8 +4,11 @@ import {FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 import LoginScreen from '../auth/LoginScreen';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
+  const insets = useSafeAreaInsets();
+
   const navigation = useNavigation();
   const {isUserLoggedIn} = useIsUserLoggedIn();
   console.log('isUserLoggedIn: ', isUserLoggedIn);
@@ -86,7 +89,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <Box backgroundColor="background" flex={1}>
+    <Box style={{paddingTop: insets.top}} backgroundColor="background" flex={1}>
       {isUserLoggedIn ? (
         <>
           <Box flex={1}>

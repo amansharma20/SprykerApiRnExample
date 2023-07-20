@@ -5,10 +5,14 @@ import {commonApi} from '../../api/CommanAPI';
 import {AuthContext} from '../../navigation/StackNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function LoginScreen(props) {
   const {signIn} = useContext(AuthContext);
   const redirectToScreen = props?.route?.params?.redirectToScreen;
+
+  const insets = useSafeAreaInsets();
+  console.log('insets: ', insets);
 
   const navigation = useNavigation();
 
@@ -50,7 +54,11 @@ export default function LoginScreen(props) {
   };
 
   return (
-    <Box flex={1} padding="s16" backgroundColor="white">
+    <Box
+      style={{paddingTop: insets.top}}
+      flex={1}
+      padding="s16"
+      backgroundColor="white">
       <Text variant="bold24" mb="s16">
         Login to continue
       </Text>
