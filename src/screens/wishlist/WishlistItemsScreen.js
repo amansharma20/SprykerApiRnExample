@@ -11,11 +11,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import {RemoveIcon} from '../../assets/svgs';
 import {getCustomerWishlist} from '../../redux/wishlist/GetWishlistApiAsyncThunk';
 import {api} from '../../api/SecureAPI';
 import WishListItemQuantityScreen from './WishListItemQuantityScreen';
+import {FlashList} from '@shopify/flash-list';
+import {theme} from '@atoms';
 
 const WishlistItemsScreen = props => {
   const dispatch = useDispatch();
@@ -84,6 +87,7 @@ const WishlistItemsScreen = props => {
 
       const shoppingItems = () =>
         quantity.map(concreteProduct => {
+          // console.log('concreteProduct: ', concreteProduct);
           const matchingImage = image.find(
             img => img.id === concreteProduct.id,
           );
@@ -93,10 +97,13 @@ const WishlistItemsScreen = props => {
           const matchingPrice = price.find(
             prc => prc.id === concreteProduct.id,
           );
+          const name = concreteProductData.find(
+            item => item.id === concreteProduct.id,
+          );
 
           return {
             id: concreteProduct.id,
-            name: concreteProduct.name,
+            name: name.name,
             image: matchingImage?.image,
             quantity: matchingQuantity?.quantity || 0,
             price: matchingPrice?.price || 0,
@@ -135,7 +142,7 @@ const WishlistItemsScreen = props => {
         });
     };
     return (
-      <>
+      <Box style={styles.container}>
         <Box
           flex={1}
           flexDirection="row"
@@ -188,7 +195,7 @@ const WishlistItemsScreen = props => {
             </Box>
           </Box>
         </Box>
-      </>
+      </Box>
     );
   };
 
@@ -212,7 +219,7 @@ const WishlistItemsScreen = props => {
         </>
       ) : (
         <>
-          <FlatList
+          <FlashList
             data={filteredProducts}
             renderItem={item => {
               return <RenderItem item={item} />;
@@ -224,6 +231,11 @@ const WishlistItemsScreen = props => {
   );
 };
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: theme.spacing.paddingHorizontal,
+  },
   productImage: {
     width: 100,
     height: 100,
