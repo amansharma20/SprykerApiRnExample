@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
 import React, {useEffect, useState} from 'react';
 import {Box, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
@@ -16,42 +15,56 @@ const YourOrdersScreen = () => {
   const ordersData = useSelector(
     state => state.getOrdersDataApiSlice.ordersData?.data?.data || [],
   );
-  // console.log('ordersData: ', ordersData);
 
-  const renderItem = ({item, index}) => {
-    // console.log('item: ', item);
+  const renderItem = ({item}) => {
+    const isDelivered = item.attributes?.itemStates.includes('paid');
+    const orderDate = new Date(item.attributes?.createdAt).toLocaleDateString();
+
     return (
-      <Box
-        mb="s4"
-        padding="s4"
-        borderRadius={2}
-        borderColor="border"
-        borderWidth={1}
-        backgroundColor="snowy">
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('OrderDetailsScreen', {
-              orderId: 'DE--5198',
-            })
-          }>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('OrderDetailsScreen', {
+            orderId: item.id,
+          })
+        }>
+        <Box
+          bg="white"
+          padding="s4"
+          borderRadius={8}
+          borderWidth={1}
+          mb="s4"
+          borderColor="border">
           <Box flexDirection="row" justifyContent="space-between" mb="s2">
-            <Text>Order Id</Text>
-            <Text fontWeight="700">{item.id}</Text>
+            <Text fontSize={16} fontWeight="bold">
+              Order Id:
+            </Text>
+            <Text fontSize={16} fontWeight="bold">
+              {item.id}
+            </Text>
+          </Box>
+          <Box flexDirection="row" justifyContent="space-between" mb="s2">
+            <Text fontSize={14}>Order Date:</Text>
+            <Text fontSize={14} fontWeight="bold">
+              {orderDate}
+            </Text>
+          </Box>
+          <Box flexDirection="row" justifyContent="space-between" mb="s2">
+            <Text fontSize={14}>Grand Total:</Text>
+            <Text fontSize={14} fontWeight="bold">
+              ${item.attributes?.totals?.grandTotal}
+            </Text>
           </Box>
           <Box flexDirection="row" justifyContent="space-between">
-            <Text>Grand Total</Text>
-            <Text fontWeight="700">${item.attributes?.totals?.grandTotal}</Text>
+            <Text fontSize={14}>Status:</Text>
+            <Text
+              fontSize={14}
+              fontWeight="bold"
+              color={isDelivered ? 'green' : 'red'}>
+              {isDelivered ? 'Delivered' : 'Not Delivered'}
+            </Text>
           </Box>
-          <Box flexDirection="row" justifyContent="space-between">
-            <Text>Status </Text>
-            {item.attributes?.itemStates == 'paid' ? (
-              <Text fontWeight="700">Delivered</Text>
-            ) : (
-              ''
-            )}
-          </Box>
-        </TouchableOpacity>
-      </Box>
+        </Box>
+      </TouchableOpacity>
     );
   };
 
@@ -63,18 +76,24 @@ const YourOrdersScreen = () => {
   }, [dispatch]);
 
   return (
-    <Box flex={1} backgroundColor="white">
-      <CommonHeader title={'Your Orders'} />
-      {!isLoading ? (
-        <>
-          <Box flex={1} paddingHorizontal="paddingHorizontal">
-            <FlatList data={ordersData} renderItem={renderItem} />
-          </Box>
-        </>
-      ) : (
-        <>
+    <Box flex={1} bg="white">
+      <CommonHeader title="Your Orders" />
+      {isLoading ? (
+        <Box flex={1} alignItems="center" justifyContent="center">
           <ActivityIndicator />
-        </>
+        </Box>
+      ) : (
+        <Box flex={1} padding="paddingHorizontal">
+          {ordersData.length > 0 ? (
+            <FlatList
+              data={ordersData}
+              renderItem={renderItem}
+              keyExtractor={item => item.id}
+            />
+          ) : (
+            <Text>No orders found.</Text>
+          )}
+        </Box>
       )}
     </Box>
   );
