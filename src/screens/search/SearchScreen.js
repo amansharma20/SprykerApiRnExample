@@ -36,7 +36,7 @@ const SearchScreen = () => {
   return (
     <Box flex={1} backgroundColor="white">
       <Box paddingTop="s8" backgroundColor="white">
-        <CommonHeader />
+        <CommonHeader title={'Search'} />
       </Box>
       <Box paddingHorizontal="s16">
         <Box

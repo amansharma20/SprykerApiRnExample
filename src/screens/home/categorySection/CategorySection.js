@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {commonApi} from '../../../api/CommanAPI';
-import {Box} from '@atoms';
+import {Box, theme} from '@atoms';
 
 const CategorySection = () => {
   const navigation = useNavigation();
@@ -19,7 +19,7 @@ const CategorySection = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [categoriesData, setCategoriesData] = useState([]);
-  
+
   const firstItem = categoriesData?.[0]?.nodeId || null;
   const [expandedItem, setExpandedItem] = useState(firstItem);
   const animation = useRef(new Animated.Value(0)).current;
@@ -59,13 +59,22 @@ const CategorySection = () => {
   }, []); // Or [] if effect doesn't need props or state
 
   useEffect(() => {
-    categoriesData.push({
-      children: [],
-      name: 'Bundled Products',
-      // nodeId: 15,
-      // order: 80,
-      url: 'Bundled Products',
-    });
+    categoriesData.push(
+      {
+        children: [],
+        name: 'Bundled Products',
+        // nodeId: 15,
+        // order: 80,
+        url: 'Bundled Products',
+      },
+      {
+        children: [],
+        name: 'Configure Products',
+        // nodeId: 15,
+        // order: 80,
+        url: 'Configure Products',
+      },
+    );
   }, [categoriesData]);
 
   const renderSubCategory = ({item}) => {
@@ -114,37 +123,39 @@ const CategorySection = () => {
     };
 
     return (
-      <TouchableOpacity
-        style={styles.item}
-        onPress={onPressHeader}
-        activeOpacity={0.8}>
-        <View style={styles.itemContainer}>
-          <Text style={styles.itemText}>
-            {item.name}{' '}
-            {item?.children?.length !== 0 ? (
-              <>
-                <Text>({item?.children?.length})</Text>
-              </>
-            ) : (
-              <></>
-            )}
-          </Text>
-          <Text>{expandedItem === item.nodeId ? '-' : '+'}</Text>
-        </View>
+      <Box>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={onPressHeader}
+          activeOpacity={0.8}>
+          <View style={styles.itemContainer}>
+            <Text style={styles.itemText}>
+              {item.name}{' '}
+              {item?.children?.length !== 0 ? (
+                <>
+                  <Text>({item?.children?.length})</Text>
+                </>
+              ) : (
+                <></>
+              )}
+            </Text>
+            <Text>{expandedItem === item.nodeId ? '-' : '+'}</Text>
+          </View>
 
-        {expandedItem === item.nodeId && (
-          <>
-            <Animated.View style={[styles.expandedView, {expandStyle}]}>
-              <FlatList
-                data={item?.children}
-                renderItem={renderSubCategory}
-                keyExtractor={item => item.nodeId.toString()}
-                scrollEnabled={false}
-              />
-            </Animated.View>
-          </>
-        )}
-      </TouchableOpacity>
+          {expandedItem === item.nodeId && (
+            <>
+              <Animated.View style={[styles.expandedView, {expandStyle}]}>
+                <FlatList
+                  data={item?.children}
+                  renderItem={renderSubCategory}
+                  keyExtractor={item => item.nodeId.toString()}
+                  scrollEnabled={false}
+                />
+              </Animated.View>
+            </>
+          )}
+        </TouchableOpacity>
+      </Box>
     );
   };
 
@@ -183,10 +194,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   item: {
-    marginVertical: 8,
+    marginBottom: 16,
     padding: 16,
     backgroundColor: '#ffffff',
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   itemContainer: {justifyContent: 'space-between', flexDirection: 'row'},
   itemText: {
@@ -194,7 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   expandedView: {
-    marginTop: 8,
+    marginTop: 12,
     backgroundColor: '#f5f5f5',
     padding: 16,
     borderRadius: 8,
@@ -210,7 +223,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     padding: 8,
     backgroundColor: '#ffffff',
-    borderRadius: 4,
+    borderRadius: 8,
   },
 });
 

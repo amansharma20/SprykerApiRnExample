@@ -10,6 +10,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 const ITEM_WIDTH = Dimensions.get('window').width;
 const ITEM_HEIGHT = 200;
@@ -21,15 +22,8 @@ const ContentFullSection = () => {
 
   const flatListRef = useRef();
 
-  // const headerData = cmsData;
-  // console.log('headerData: ', headerData);
   const headerData = cmsData?.items?.[0]?.heroBannerImageCollection?.items;
   const midSectionData = [];
-  // console.log('midSectionData: ', midSectionData);
-  console.log(
-    'cmsData: ',
-    cmsData?.items?.[0]?.heroBannerImageCollection?.items,
-  );
 
   const handleScroll = event => {
     const {contentOffset} = event.nativeEvent;
@@ -40,7 +34,17 @@ const ContentFullSection = () => {
   const renderHeaderItem = ({item}) => {
     return (
       <Box>
-        <ImageBackground source={{uri: item.url}} style={styles.itemContainer}>
+        <Box
+          marginVertical="s20"
+          marginHorizontal="paddingHorizontal"
+          backgroundColor="white"
+          borderRadius={8}
+          flex={1}
+          shadowColor="black"
+          shadowOpacity={0.1}
+          shadowRadius={10}
+          elevation={7}>
+          {/* <ImageBackground source={{uri: item.url}} style={styles.itemContainer}>
           <Box flex={1} justifyContent="flex-end" mb="s40">
             <></>
             <Text
@@ -52,7 +56,19 @@ const ContentFullSection = () => {
               {item?.description}
             </Text>
           </Box>
-        </ImageBackground>
+        </ImageBackground> */}
+
+          <FastImage
+            source={{uri: item.url}}
+            style={{
+              width: ITEM_WIDTH - 32,
+              // height: ITEM_HEIGHT,
+              height: ITEM_WIDTH - 32,
+              borderRadius: 8,
+            }}
+            resizeMode="cover"
+          />
+        </Box>
       </Box>
     );
   };
@@ -214,36 +230,35 @@ const ContentFullSection = () => {
           scrollEventThrottle={16}
           snapToInterval={ITEM_WIDTH}
           decelerationRate="fast"
-          contentContainerStyle={{
-            paddingVertical: theme.spacing.s8,
-          }}
           onScroll={handleScroll}
         />
-
-        <Box
-          flexDirection="row"
-          position="absolute"
-          bottom={20}
-          width={'100%'}
-          justifyContent="center">
-          {headerData?.map((_, index) => (
-            <Box
-              width={8}
-              height={8}
-              borderRadius={4}
-              backgroundColor={index === currentIndex ? 'white' : 'lightGrey'}
-              marginHorizontal="s4"
-              key={index}
-              // style={[
-              //   styles.paginationDot,
-              //   index === currentIndex && styles.paginationDotActive,
-              // ]}
-            />
-          ))}
-        </Box>
+      </Box>
+      <Box
+        flexDirection="row"
+        // position="absolute"
+        // bottom={40}
+        width={'100%'}
+        justifyContent="center"
+        mb="s16">
+        {headerData?.map((_, index) => (
+          <Box
+            width={8}
+            height={8}
+            borderRadius={4}
+            backgroundColor={
+              index === currentIndex ? 'activeDot' : 'inactiveDot'
+            }
+            marginHorizontal="s4"
+            key={index}
+            // style={[
+            //   styles.paginationDot,
+            //   index === currentIndex && styles.paginationDotActive,
+            // ]}
+          />
+        ))}
       </Box>
 
-      <Box paddingHorizontal="paddingHorizontal" mt="s20">
+      {/* <Box paddingHorizontal="paddingHorizontal" mt="s20" backgroundColor='red'>
         <FlatList
           // ref={flatListRef}
           data={midSectionData}
@@ -260,7 +275,7 @@ const ContentFullSection = () => {
           }}
           // onScroll={handleScroll}
         />
-      </Box>
+      </Box> */}
     </Box>
   );
 };
@@ -277,11 +292,6 @@ const styles = StyleSheet.create({
     width: ITEM_WIDTH,
     height: ITEM_HEIGHT,
     flex: 1,
-  },
-  paginationContainer: {
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 10,
   },
   paginationDot: {
     width: 8,

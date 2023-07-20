@@ -33,7 +33,6 @@ const VerticalList = ({
     if (viewableItems[0] && !viewableItems[0].index && !horizontalPressed) {
       // const id = viewableItems?.[0]?.key;
       const id = viewableItems?.[0]?.section?.id;
-      console.log('viewableItems: ', viewableItems);
       console.log('id: ', id);
       if (id !== selected) {
         setSelected(id);

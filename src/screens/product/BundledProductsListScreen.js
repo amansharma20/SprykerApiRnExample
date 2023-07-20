@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/no-unstable-nested-components */
 import React, {useEffect, useState} from 'react';
 import {Box, Text} from '@atoms';
 import {
@@ -7,17 +9,19 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image,
+  Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {applicationProperties} from '../../utils/application.properties';
 import {commonApi} from '../../api/CommanAPI';
+import {FlashList} from '@shopify/flash-list';
 const BundledProductsListScreen = props => {
   const navigation = useNavigation();
 
   const title = props.route.params?.title;
   const [bundeledProductIds, setBundeledProductIds] = useState([
-    210, 211, 212, 214,
+    210, 211, 212, 214, 213, 215, 216, 217,
   ]);
   const [bundleProducts, setBundleProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,43 +32,37 @@ const BundledProductsListScreen = props => {
       item?.item?.[0]?.included?.[0]?.attributes.imageSets?.[0]?.images?.[0]
         ?.externalUrlSmall;
     return (
-      <Box>
-        <Box
-          flex={1}
-          marginHorizontal="s4"
-          flexShrink={1}
-          mb="s8"
-          borderWidth={1}
-          borderColor="border"
-          borderRadius={8}
-          padding="s8">
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('BundleProductDetailsScreen', {
-                bundleProduct: productItem,
-              });
-            }}>
-            <Box alignItems="center">
-              <Image source={{uri: productImage}} style={styles.productImage} />
-            </Box>
-            <Text style={styles.productTitle} numberOfLines={2}>
-              {productItem[0]?.data?.attributes?.name}
-            </Text>
-            {/* 
+      <Box
+        flex={1}
+        marginHorizontal="s4"
+        flexShrink={1}
+        mb="s8"
+        borderWidth={1}
+        borderColor="border"
+        borderRadius={8}
+        padding="s8">
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('BundleProductDetailsScreen', {
+              bundleProduct: productItem,
+            });
+          }}>
+          <Box alignItems="center">
+            <Image source={{uri: productImage}} style={styles.productImage} />
+          </Box>
+          <Text style={styles.productTitle} numberOfLines={1}>
+            {productItem[0]?.data?.attributes?.name}
+          </Text>
+          {/* 
             <Box>
               <Text style={styles.productPrice}>$ {item.price}</Text>
             </Box> */}
-          </TouchableOpacity>
-        </Box>
+        </TouchableOpacity>
       </Box>
     );
   };
   const renderItem = items => {
-    return (
-      <>
-        <BundleProductItem item={items} />
-      </>
-    );
+    return <BundleProductItem item={items} />;
   };
 
   useEffect(() => {
@@ -85,6 +83,7 @@ const BundledProductsListScreen = props => {
       getBundeledProducts(id);
     });
   }, []);
+
   return (
     <Box flex={1} backgroundColor="white">
       <CommonHeader title={title} />
@@ -92,11 +91,15 @@ const BundledProductsListScreen = props => {
         {/* <Text>BundledProductsListScreen</Text> */}
         {!isLoading ? (
           <>
-            <FlatList
-              data={bundleProducts}
-              renderItem={renderItem}
-              numColumns={2}
-            />
+            <Box flex={1}>
+              <FlashList
+                data={bundleProducts}
+                renderItem={renderItem}
+                numColumns={2}
+                contentContainerStyle={{paddingBottom: 40}}
+                showsVerticalScrollIndicator={false}
+              />
+            </Box>
           </>
         ) : (
           <>
@@ -120,6 +123,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
+    maxWidth: Dimensions.get('screen').width / 2 - 60,
   },
   productPrice: {
     fontSize: 14,

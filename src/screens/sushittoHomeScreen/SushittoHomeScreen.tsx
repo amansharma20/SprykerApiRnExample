@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {SyncedList} from './components';
 import {listData} from './mock-data';
 import {DUMMYDATA} from './dummy-data';
 
-const SushittoHomeScreen = () => {
+const SushittoHomeScreen = ({verticalRef}) => {
+  console.log('verticalRef: ', verticalRef);
+
   const renderHorizontalItem = (
     // @ts-ignore
     index: number,
@@ -52,6 +55,7 @@ const SushittoHomeScreen = () => {
         renderHorizontalItem={renderHorizontalItem}
         renderSectionHeader={renderSectionHeader}
         renderVerticalItem={renderVerticalItem}
+        verticalRef={verticalRef}
       />
     </SafeAreaView>
   );

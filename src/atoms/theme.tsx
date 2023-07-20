@@ -37,6 +37,9 @@ export const theme = createTheme({
     green: '#006400',
     bottomTabActiveColor: '#4486c6',
     lightGreen: '#1BB18B',
+    inactiveDot: '#CACACA',
+    activeDot: '#505050',
+    transparent: 'transparent',
     ...globalPallete,
   },
   spacing: {
