@@ -25,7 +25,6 @@ import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerC
 const CartScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
-  console.log('isLoading: ', isLoading);
   const [cartItemsArray, setCartItemsArray] = useState([]);
   const {isUserLoggedIn} = useIsUserLoggedIn();
   const [configuredBundleTemplateID, setConfiguredBundleTemplateID] = useState(
@@ -68,11 +67,12 @@ const CartScreen = () => {
     state =>
       state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
   );
+  console.log('customerCartId: ', customerCartId);
 
   const customerCartData = useSelector(
     state => state.getCustomerCartItemsAliSlice?.customerCart || [],
   );
-  console.log('customerCartData: ', customerCartData);
+  // console.log('customerCartData: ', customerCartData);
 
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
@@ -108,6 +108,7 @@ const CartScreen = () => {
         }
       });
       const uuids = Array.from(uuidsSet).map(uuid => ({uuid: uuid}));
+      console.log('uuids: ', uuids);
 
       const newDataArray = uuids.map(uuidObj => {
         const templateName = customerCartData.find(
@@ -135,6 +136,7 @@ const CartScreen = () => {
     };
     getConfiguredBundle();
   }, [customerCartData, customerCartId]);
+  // console.log('configuredBundleTemplateID', configuredBundleTemplateID[0].data);
 
   useEffect(() => {
     setIsLoading(true);
@@ -217,19 +219,6 @@ const CartScreen = () => {
                     }
                     scrollEnabled={false}
                   />
-                  {/* <Box
-                    color="borderGrey"
-                    backgroundColor="white"
-                    borderRadius={4}
-                    borderWidth={1}
-                    mb="s10"
-                    paddingVertical="s8"
-                    paddingHorizontal="s4">
-                    <TextInput
-                      placeholder="Enter Promo Code"
-                      placeholderTextColor="gray"
-                    />
-                  </Box> */}
                   <Box
                     justifyContent="flex-end"
                     flexDirection="row"

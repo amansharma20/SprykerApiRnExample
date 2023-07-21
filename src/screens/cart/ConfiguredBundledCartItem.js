@@ -14,8 +14,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RemoveIcon} from '../../assets/svgs';
 
 const ConfiguredBundledCartItem = ({data, customerCartId}) => {
-  //   console.log('customerCartId: ', customerCartId);
-  //   console.log('data: ', data);
   const dispatch = useDispatch();
 
   const [itemImages, setItemImages] = useState([]);
@@ -50,7 +48,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
       JSON.stringify(productCart),
     );
     const response = resp.data;
-    console.log('response: ', response?.data?.data);
+    // console.log('response: ', response?.data?.data);
     if (response) {
       dispatch(
         getCustomerCartItems(
@@ -87,6 +85,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
     const fetchProductData = async () => {
       const updatedItems = await Promise.all(
         data?.data?.map(async item => {
+          console.log('item: ', item.sku);
           const response = await commonApi.get(
             `concrete-products/${item.sku}?include=concrete-product-image-sets%2Cconcrete-product-prices`,
             '',
