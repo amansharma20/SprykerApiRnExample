@@ -1,4 +1,5 @@
-import {Alert, StyleSheet} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import {Alert, SafeAreaView, StyleSheet} from 'react-native';
 import React from 'react';
 import {Box, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
@@ -67,22 +68,24 @@ const BundlesSummaryScreen = props => {
   };
 
   return (
-    <Box flex={1} backgroundColor="white">
-      <CommonHeader title={'Bundles Summary'} />
-      <Box flex={1} paddingHorizontal="paddingHorizontal">
-        <FlashList
-          data={summaryBundleData}
-          renderItem={renderItem}
-          estimatedItemSize={4}
-        />
-        <CommonSolidButton
-          title={'Add to cart'}
-          onPress={() => {
-            addToCart();
-          }}
-        />
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <Box flex={1} backgroundColor="white">
+        <CommonHeader title={'Bundles Summary'} />
+        <Box flex={1} paddingHorizontal="paddingHorizontal">
+          <FlashList
+            data={summaryBundleData}
+            renderItem={renderItem}
+            estimatedItemSize={4}
+          />
+          <CommonSolidButton
+            title={'Add to cart'}
+            onPress={() => {
+              addToCart();
+            }}
+          />
+        </Box>
       </Box>
-    </Box>
+    </SafeAreaView>
   );
 };
 

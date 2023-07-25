@@ -14,6 +14,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getOrderDetailsData} from '../../redux/orderDetailsApi/OrderDetailsApiAsyncThunk';
 import OrdertotalCost from './components/OrderTotalCost';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
+
 const OrderDetailsScreen = props => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
