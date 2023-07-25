@@ -71,7 +71,7 @@ const ConfiguredBundleScreen = () => {
 
   return (
     <Box flex={1} backgroundColor="white">
-      <CommonHeader title="Configured Bundle" />
+      <CommonHeader title="Configurable Bundle" />
       {isLoading ? (
         <ActivityIndicator />
       ) : (

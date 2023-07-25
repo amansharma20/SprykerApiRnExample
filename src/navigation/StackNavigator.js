@@ -20,7 +20,7 @@ import YourOrdersScreen from '../screens/orders/YourOrdersScreen';
 import OrderDetailsScreen from '../screens/orders/OrderDetailsScreen';
 import CartScreen from '../screens/cart/CartScreen';
 import SearchScreen from '../screens/search/SearchScreen';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {CustomerCartIdApiAsyncThunk} from '../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import BundledProductsListScreen from '../screens/product/BundledProductsListScreen';
 import BundleProductDetailsScreen from '../screens/product/BundleProductDetailsScreen';
@@ -32,6 +32,7 @@ import BundlesScreen from '../screens/bundles/BundlesScreen';
 import ConfiguredBundleScreen from '../screens/configuredBundle/ConfiguredBundleScreen';
 import ConfigurableBundleSlotsScreen from '../screens/configuredBundle/ConfigurableBundleSlotsScreen';
 import BundlesSummaryScreen from '../screens/bundles/BundlesSummaryScreen';
+import {getProductsByWishlistAsyncThunk} from '../redux/wishlist/ProductsWishlistApiAsyncThunk';
 
 export const AuthContext = React.createContext();
 
@@ -42,6 +43,12 @@ export default function StackNavigator() {
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
   const reduxDispatch = useDispatch();
+
+  const customerWishlistFirstId = useSelector(
+    state =>
+      state?.getWishlistApiSlice?.customerWishlistData?.data?.data?.[0]?.id ||
+      [],
+  );
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -162,6 +169,11 @@ export default function StackNavigator() {
         console.log('carts api call successful');
       });
       reduxDispatch(getCustomerWishlist('shopping-lists'));
+      reduxDispatch(
+        getProductsByWishlistAsyncThunk(
+          `shopping-lists/${customerWishlistFirstId}?include=shopping-list-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-prices`,
+        ),
+      );
     }
   }, [state.userToken]);
 

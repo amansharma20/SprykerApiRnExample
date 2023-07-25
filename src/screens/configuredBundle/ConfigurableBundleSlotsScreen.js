@@ -127,7 +127,6 @@ const ConfigurableBundleSlotsScreen = props => {
 
     console.log('allProductsWithSlots: ', allProductsWithSlots);
 
-
     return (
       <Box>
         <CommonSolidButton

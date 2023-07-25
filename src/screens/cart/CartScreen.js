@@ -8,6 +8,7 @@ import {
   FlatList,
   ScrollView,
   TextInput,
+  Alert,
 } from 'react-native';
 import {Box, Text, theme} from '@atoms';
 import {useSelector, useDispatch} from 'react-redux';
@@ -21,6 +22,9 @@ import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/Custome
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import ConfiguredBundledCartItem from './ConfiguredBundledCartItem';
 import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
+import {api} from '../../api/SecureAPI';
+import axios from 'axios';
+import * as Keychain from 'react-native-keychain';
 
 const CartScreen = () => {
   const navigation = useNavigation();
@@ -37,6 +41,42 @@ const CartScreen = () => {
   const customerCarts = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data || [],
   );
+  const customerCartId = useSelector(
+    state =>
+      state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
+  );
+  console.log('customerCartId: ', customerCartId);
+
+  useEffect(() => {
+    const getCartItems = async () => {
+      let userToken = await Keychain.getGenericPassword();
+      let token = userToken.password;
+      console.log('token: ', token);
+
+      const res = await axios
+        .get(
+          `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+            validateStatus: () => true,
+          },
+        )
+        .catch(function (error) {
+          setIsLoading(false);
+          if (error) {
+            Alert.alert('Error', 'something went wrong', [
+              {
+                text: 'OK',
+              },
+            ]);
+          }
+        });
+      console.log('res', res?.data);
+    };
+    getCartItems();
+  }, []);
 
   useEffect(() => {
     if (customerCarts.length === 0) {
@@ -62,12 +102,6 @@ const CartScreen = () => {
       console.log('carts api call successful');
     });
   }, []);
-
-  const customerCartId = useSelector(
-    state =>
-      state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
-  );
-  console.log('customerCartId: ', customerCartId);
 
   const customerCartData = useSelector(
     state => state.getCustomerCartItemsAliSlice?.customerCart || [],
@@ -166,92 +200,99 @@ const CartScreen = () => {
   };
 
   return (
-    <Box flex={1} backgroundColor="white">
-      {isUserLoggedIn ? (
-        <>
-          <CommonHeader title={'Your Cart'} />
-          {isLoading ? (
-            <>
-              <ActivityIndicator />
-            </>
-          ) : (
-            <>
-              <ScrollView
-                contentContainerStyle={{
-                  flexGrow: 1,
-                  paddingHorizontal: theme.spacing.paddingHorizontal,
-                }}>
-                <Box>
-                  <FlatList
-                    data={configuredBundleTemplateID}
-                    renderItem={item => {
-                      const data = item?.item;
-                      return (
-                        <ConfiguredBundledCartItem
-                          data={data}
-                          customerCartId={customerCartId}
-                        />
-                      );
-                    }}
-                    scrollEnabled={false}
-                  />
-                  <FlatList
-                    data={customerCartData}
-                    // data={[]}
-                    renderItem={item => {
-                      const data = item?.item;
-                      if (data?.configuredBundle == null) {
-                        return (
-                          <CartItem
-                            item={item}
-                            customerCartData={customerCartData}
-                            checkProductAvailability={checkProductAvailability}
-                          />
-                        );
-                      }
-                    }}
-                    ListEmptyComponent={
-                      isLoading === false ? (
-                        <ListEmptyComponent />
-                      ) : (
-                        <ActivityIndicator />
-                      )
-                    }
-                    scrollEnabled={false}
-                  />
-                  <Box
-                    justifyContent="flex-end"
-                    flexDirection="row"
-                    paddingVertical="s8">
-                    <Text variant="bold24">Total : $ {grandTotal}</Text>
-                  </Box>
-                </Box>
-              </ScrollView>
-              {customerCartData?.length !== 0 ? (
-                <Box padding="s16">
-                  <CommonSolidButton
-                    title="Proceed to Checkout"
-                    disabled={!allProductAvailableInCarts}
-                    onPress={() =>
-                      navigation.navigate('CheckoutScreen', {
-                        cartId: customerCartId,
-                        cartItemsArray: cartItemsArray,
-                      })
-                    }
-                  />
-                </Box>
-              ) : (
-                <></>
-              )}
-            </>
-          )}
-        </>
-      ) : (
-        <>
-          <LoginScreen />
-        </>
-      )}
-    </Box>
+    <></>
+    // <Box flex={1} backgroundColor="white">
+    //   {isUserLoggedIn ? (
+    //     <>
+    //       <CommonHeader title={'Your Cart'} />
+    //       {isLoading ? (
+    //         <>
+    //           <ActivityIndicator />
+    //         </>
+    //       ) : (
+    //         <>
+    //           <ScrollView
+    //             contentContainerStyle={{
+    //               flexGrow: 1,
+    //               paddingHorizontal: theme.spacing.paddingHorizontal,
+    //             }}>
+    //             <Box>
+    //               <FlatList
+    //                 data={configuredBundleTemplateID}
+    //                 renderItem={item => {
+    //                   const data = item?.item;
+    //                   return (
+    //                     <ConfiguredBundledCartItem
+    //                       data={data}
+    //                       customerCartId={customerCartId}
+    //                     />
+    //                   );
+    //                 }}
+    //                 scrollEnabled={false}
+    //               />
+    //               <FlatList
+    //                 data={customerCartData}
+    //                 // data={[]}
+    //                 renderItem={item => {
+    //                   const data = item?.item;
+    //                   if (data?.configuredBundle == null) {
+    //                     return (
+    //                       <CartItem
+    //                         item={item}
+    //                         customerCartData={customerCartData}
+    //                         checkProductAvailability={checkProductAvailability}
+    //                       />
+    //                     );
+    //                   }
+    //                 }}
+    //                 ListEmptyComponent={
+    //                   isLoading === false ? (
+    //                     <ListEmptyComponent />
+    //                   ) : (
+    //                     <ActivityIndicator />
+    //                   )
+    //                 }
+    //                 scrollEnabled={false}
+    //               />
+    //               <Box
+    //                 justifyContent="flex-end"
+    //                 flexDirection="row"
+    //                 paddingVertical="s8">
+    //                 <Text variant="bold24">
+    //                   {customerCartData.length != 0 ? (
+    //                     <Text>Total : $ {grandTotal}</Text>
+    //                   ) : (
+    //                     ''
+    //                   )}
+    //                 </Text>
+    //               </Box>
+    //             </Box>
+    //           </ScrollView>
+    //           {customerCartData?.length !== 0 ? (
+    //             <Box padding="s16">
+    //               <CommonSolidButton
+    //                 title="Proceed to Checkout"
+    //                 disabled={!allProductAvailableInCarts}
+    //                 onPress={() =>
+    //                   navigation.navigate('CheckoutScreen', {
+    //                     cartId: customerCartId,
+    //                     cartItemsArray: cartItemsArray,
+    //                   })
+    //                 }
+    //               />
+    //             </Box>
+    //           ) : (
+    //             <></>
+    //           )}
+    //         </>
+    //       )}
+    //     </>
+    //   ) : (
+    //     <>
+    //       <LoginScreen />
+    //     </>
+    //   )}
+    // </Box>
   );
 };
 export default CartScreen;

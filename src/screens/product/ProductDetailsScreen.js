@@ -31,7 +31,6 @@ import axios from 'axios';
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
   const abstractSku = props.route.params.product.abstractSku;
-  console.log('abstractSku: ', abstractSku);
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -72,6 +71,18 @@ const ProductDetailsScreen = props => {
   const [productData, setProductData] = useState([]);
   const [isProductExistInShoppingList, setIsProductExistInShoppingList] =
     useState(false);
+
+  const title = productData?.[selectedVariantIndex]?.attributes?.name;
+  const image =
+    productData?.[selectedVariantIndex]?.image?.attributes?.imageSets?.[0]
+      ?.images?.[0]?.externalUrlLarge;
+  const name = productData?.[selectedVariantIndex]?.attributes?.name;
+  const brand =
+    productData?.[selectedVariantIndex]?.attributes?.attributes?.brand;
+  const description =
+    productData?.[selectedVariantIndex]?.attributes?.description;
+  const productOffer = productData?.[selectedVariantIndex]?.productOffers;
+
   const onPressAddToCart = () => {
     isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
   };
@@ -255,8 +266,8 @@ const ProductDetailsScreen = props => {
   const Row = ({title, value}) => {
     return (
       <Box flexDirection="row">
-        <Text style={{fontWeight: 'bold'}}>{title}</Text>
-        <Text>{value}</Text>
+        <Text variant="regular16">{title}</Text>
+        <Text variant="regular16">{value}</Text>
       </Box>
     );
   };
@@ -307,10 +318,7 @@ const ProductDetailsScreen = props => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CommonHeader
-        title={productData?.[selectedVariantIndex]?.attributes?.name}
-        showCartIcon
-      />
+      <CommonHeader title={title} showCartIcon />
       {isLoading ? (
         <ActivityIndicator />
       ) : (
@@ -326,25 +334,16 @@ const ProductDetailsScreen = props => {
                 <Image
                   style={styles.backImage}
                   source={{
-                    uri: productData?.[selectedVariantIndex]?.image?.attributes
-                      ?.imageSets?.[0]?.images?.[0]?.externalUrlLarge,
+                    uri: image,
                   }}
                 />
                 <Box>
-                  <Text style={{fontWeight: 'bold'}}>
-                    {productData?.[selectedVariantIndex]?.attributes?.name}
-                  </Text>
-                  <Row
-                    title={'Brand : '}
-                    value={
-                      productData?.[selectedVariantIndex]?.attributes
-                        ?.attributes?.brand
-                    }
-                  />
+                  {/* <Text variant="regular18">{name}</Text> */}
+                  <Row title={'Brand : '} value={brand} />
                   <Box>
                     {productData?.length >= 2 && (
                       <Box>
-                        <Text style={{fontWeight: 'bold'}}>
+                        <Text variant="regular16" style={{fontWeight: 'bold'}}>
                           Choose Variation :{' '}
                         </Text>
                         <FlatList
@@ -361,13 +360,13 @@ const ProductDetailsScreen = props => {
                     )}
                   </Box>
                 </Box>
-                <Text style={{fontWeight: 'bold'}}>Description : </Text>
-                <Text>
-                  {productData?.[selectedVariantIndex]?.attributes?.description}
+                <Text variant="regular16" style={{fontWeight: 'bold'}}>
+                  Description :{' '}
                 </Text>
-                <Text mt="s6" style={{fontWeight: 'bold'}}>
+                <Text>{description}</Text>
+                <Text mt="s6" variant="regular16" style={{fontWeight: 'bold'}}>
                   Price :
-                  {productData?.[selectedVariantIndex]?.productOffers != null
+                  {productOffer != null
                     ? 'show here offer price'
                     : productData?.[selectedVariantIndex]?.price?.attributes
                         ?.price}

@@ -56,13 +56,7 @@ export default function ProfileScreen() {
       },
     },
     {
-      name: 'BundlesScreen',
-      onPress: function () {
-        navigation.navigate('BundlesScreen');
-      },
-    },
-    {
-      name: 'ConfiguredBundle',
+      name: 'Configurable Bundle',
       onPress: function () {
         navigation.navigate('ConfiguredBundleScreen');
       },
