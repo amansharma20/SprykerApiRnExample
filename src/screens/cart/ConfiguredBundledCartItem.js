@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {Box, Text} from '@atoms';
 import {commonApi} from '../../api/CommanAPI';
@@ -115,17 +116,22 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
       borderWidth={1}
       mb="s8"
       padding="s8"
-      backgroundColor="white">
-      <Box flexDirection="row" justifyContent="space-between">
-        <Box>
-          <Text>{data?.templateName}</Text>
-        </Box>
-
+      backgroundColor="white"
+      flex={1}>
+      <Box
+        flexDirection="row"
+        flex={1}
+        alignItems="center"
+        justifyContent="space-between"
+        mb="s8">
+        <Text fontSize={16} fontWeight="600">
+          {data?.templateName}
+        </Text>
         <Box flexDirection="row" alignItems="center">
           <TouchableOpacity onPress={() => removeItem(data?.groupKey)}>
-            <Text style={{marginRight: 10}}>
+            <Box mr="s10">
               <RemoveIcon />
-            </Text>
+            </Box>
           </TouchableOpacity>
 
           {isLoading ? (
@@ -160,7 +166,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
         </Box>
       </Box>
 
-      {itemImages.map(item => {
+      {itemImages?.map(item => {
         // console.log('item: ', item);
         // setTemplatePrice(templatePrice + item.price * data.quantity);
         return (
@@ -170,10 +176,10 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
             borderWidth={1}
             mb="s8"
             padding="s8"
-            backgroundColor="white"
+            flex={1}
             key={item.sku}>
-            <Box flexDirection="row">
-              <Box alignItems="center" mr="s8">
+            <Box flexDirection="row" flex={1}>
+              <Box alignItems="center" mr="s8" flex={1}>
                 <Image
                   style={{height: 120, width: 120, resizeMode: 'contain'}}
                   source={{
@@ -181,23 +187,19 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
                   }}
                 />
               </Box>
-              <Box justifyContent="space-between">
-                <Box>
-                  <Box flexDirection="row">
-                    <Text>{item.name}</Text>
-                  </Box>
-                  <Text style={{fontWeight: 'bold', marginTop: 4}}>
-                    $ {item.price} x {data.quantity}{' '}
-                    {'                          '} {item.price * data.quantity}
-                  </Text>
-                  {/* <Text>x {data.quantity} </Text> */}
-                </Box>
-                <Box mb="s8">
-                  {/* <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
-                    <Text>
-                      <RemoveIcon />
+              <Box justifyContent="space-between" flex={1}>
+                <Box flex={1}>
+                  <Box flexShrink={1} flex={1}>
+                    <Text fontWeight="700">{item.name}</Text>
+                    <Text style={{fontWeight: '600', marginTop: 4}}>
+                      $ {item.price} x {data.quantity}
                     </Text>
-                  </TouchableOpacity> */}
+                  </Box>
+                  <Box flex={1} justifyContent="flex-end">
+                    <Text style={{fontWeight: 'bold', marginTop: 4}}>
+                      $ {item.price * data.quantity}
+                    </Text>
+                  </Box>
                 </Box>
               </Box>
             </Box>

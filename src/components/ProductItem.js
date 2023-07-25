@@ -179,6 +179,7 @@ export default function ProductItem({item, includedData, index}) {
       borderWidth={1}
       borderColor="border"
       borderRadius={8}
+      flex={1}
       padding="s8">
       <TouchableOpacity
         onPress={() => {

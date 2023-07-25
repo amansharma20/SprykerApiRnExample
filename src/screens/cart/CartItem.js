@@ -113,7 +113,7 @@ const CartItem = ({item, checkProductAvailability, customerCartData}) => {
       borderWidth={1}
       mb="s8"
       padding="s8"
-      backgroundColor="white">
+      flex={1}>
       {isLoading === true ? (
         <ActivityIndicator />
       ) : (
@@ -130,26 +130,28 @@ const CartItem = ({item, checkProductAvailability, customerCartData}) => {
               removeItemTrigger={removeItem}
             />
           </Box>
-          <Box justifyContent="space-between">
-            <Box>
-              <Box flexDirection="row">
-                <Text>{attributes?.data?.attributes?.name}</Text>
+          <Box justifyContent="space-between" flex={1}>
+            <Box flex={1}>
+              <Box mr="s8" flex={1} justifyContent="space-between">
+                <Box>
+                  <Text>{attributes?.data?.attributes?.name}</Text>
+                  <Text style={{fontWeight: 'bold', marginTop: 4}}>
+                    $ {cartItem.itemPrice}
+                  </Text>
+                </Box>
+                <Box>
+                  <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
+                    <Text>
+                      <RemoveIcon />
+                    </Text>
+                  </TouchableOpacity>
+                </Box>
               </Box>
-              <Text style={{fontWeight: 'bold', marginTop: 4}}>
-                $ {cartItem.itemPrice}
-              </Text>
               {!isProductAvailable && isProductAvailabilityLoading === false ? (
                 <Text color="red">Not Available</Text>
               ) : (
                 ''
               )}
-            </Box>
-            <Box mb="s8">
-              <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
-                <Text>
-                  <RemoveIcon />
-                </Text>
-              </TouchableOpacity>
             </Box>
           </Box>
         </Box>
