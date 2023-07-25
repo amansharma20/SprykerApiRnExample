@@ -50,7 +50,7 @@ export default function ProfileScreen() {
       onPress: function () {},
     },
     {
-      name: 'SushittoHomeScreen',
+      name: 'Sushitto Menu',
       onPress: function () {
         navigation.navigate('SushittoHomeScreen');
       },

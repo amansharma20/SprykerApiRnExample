@@ -42,7 +42,9 @@ const CartItem = ({item, checkProductAvailability, customerCartData}) => {
           ).then(() => {
             setIsLoading(false);
           });
-          dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+          dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+            setIsLoading(false);
+          });
         }
       });
   };

@@ -1,12 +1,49 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {SyncedList} from './components';
 import {listData} from './mock-data';
 import {DUMMYDATA} from './dummy-data';
+import {api} from '../../api/SecureAPI';
+import axios from 'axios';
+import CommonHeader from '../../components/CommonHeader/CommonHeader';
+import ProductItemNew from '../../components/ProductItemNew';
 
-const SushittoHomeScreen = ({verticalRef}) => {
-  console.log('verticalRef: ', verticalRef);
+const SushittoHomeScreen = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  console.log('isLoading: ', isLoading);
+
+  const [apiData, setApiData] = useState([]);
+  // console.log('apiData: ', apiData);
+
+  useEffect(() => {
+    setIsLoading(true);
+    try {
+      const fetchData = async () => {
+        await axios
+          .get(
+            'https://categoriestree-5g04sc.5sc6y6-2.usa-e2.cloudhub.io/catalogsearch',
+          )
+          .then(response => {
+            console.log('response.status: ', response.status);
+            // console.log('response: ', response);
+            console.log('response.data: ', response.data);
+            setApiData(response.data);
+            setIsLoading(false);
+          });
+      };
+      fetchData();
+    } catch (error) {
+      console.log('error: ', error);
+      setIsLoading(false);
+    }
+  }, []);
 
   const renderHorizontalItem = (
     // @ts-ignore
@@ -28,11 +65,18 @@ const SushittoHomeScreen = ({verticalRef}) => {
     );
   };
 
-  const renderVerticalItem = (item: any) => {
+  const renderVerticalItem = (item: any, index: Number) => {
     return (
-      <View style={styles.verticalItemContainer}>
-        <Text>{item.name}</Text>
-      </View>
+      <>
+        {/* <View style={styles.verticalItemContainer}>
+        <Text>{item.attributes?.name}</Text>
+      </View> */}
+        <ProductItemNew
+          item={item?.attributes}
+          includedData={undefined}
+          index={index}
+        />
+      </>
     );
   };
 
@@ -48,15 +92,24 @@ const SushittoHomeScreen = ({verticalRef}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SyncedList
-        // data={listData}
-        data={DUMMYDATA.data.Menu}
-        horizontalListContainerStyle={styles.horizontalListContainerStyle}
-        renderHorizontalItem={renderHorizontalItem}
-        renderSectionHeader={renderSectionHeader}
-        renderVerticalItem={renderVerticalItem}
-        verticalRef={verticalRef}
-      />
+      <CommonHeader title={'Sushiitto Menu'} onPress={undefined} showCartIcon />
+      {isLoading ? (
+        <>
+          <ActivityIndicator />
+        </>
+      ) : (
+        <>
+          <SyncedList
+            // data={listData}
+            // data={DUMMYDATA.data.Menu}
+            data={apiData}
+            horizontalListContainerStyle={styles.horizontalListContainerStyle}
+            renderHorizontalItem={renderHorizontalItem}
+            renderSectionHeader={renderSectionHeader}
+            renderVerticalItem={renderVerticalItem}
+          />
+        </>
+      )}
     </SafeAreaView>
   );
 };
@@ -65,6 +118,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 24,
+    backgroundColor: 'white',
   },
   header: {
     color: 'white',

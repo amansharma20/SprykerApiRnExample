@@ -21,7 +21,6 @@ const SyncedList = ({
 IProps) => {
   const horizontalRef = useRef<FlatList>(null);
   const verticalRef = useRef<SectionList>(null);
-  console.log('verticalRef: ', verticalRef);
   const [horizontalPressed, setHorizontalPressed] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [selected, setSelected] = useState<string | number>('');

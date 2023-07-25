@@ -78,6 +78,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
       ),
     ).then(error => {
       console.log('error: ', error);
+      setIsLoading(false);
     });
     dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
     console.log(response);
