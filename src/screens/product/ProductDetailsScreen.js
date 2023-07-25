@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -29,9 +26,12 @@ import ShoppingListItem from '../../components/ShoppingListItem';
 import DynamicSnapPointBottomSheet from '../../components/bottomsheets/DynamicSnapPointBottomSheet';
 import {getProductsByWishlistAsyncThunk} from '../../redux/wishlist/ProductsWishlistApiAsyncThunk';
 import ProductOffer from './ProductOffer';
+import axios from 'axios';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
+  const abstractSku = props.route.params.product.abstractSku;
+  console.log('abstractSku: ', abstractSku);
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -54,8 +54,6 @@ const ProductDetailsScreen = props => {
     state => state?.getWishlistApiSlice?.customerWishlistData?.data?.data || [],
   );
 
-  const [productData, setProductData] = useState();
-  const [variationData, setVariationData] = useState();
   const [prodData, setProdData] = useState(null);
   const [selectedId, setSelectedId] = useState(0);
   const [variationIdData, setVariationIdData] = useState();
@@ -68,16 +66,16 @@ const ProductDetailsScreen = props => {
     customerWishlist?.[0]?.id,
   );
   const [productOffers, setProductOffers] = useState([]);
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [offerForAddToCart, setOfferForAddToCart] = useState(null);
-
   const [selectedOfferIndex, setSelectedOfferIndex] = useState(0);
-  // console.log('selectedOfferIndex: ', selectedOfferIndex);
-
+  const [productData, setProductData] = useState([]);
   const [isProductExistInShoppingList, setIsProductExistInShoppingList] =
     useState(false);
   const onPressAddToCart = () => {
     isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
   };
+
   const onPressAddToShoppingList = () => {
     isUserLoggedIn
       ? addToShoppingListHandler()
@@ -115,7 +113,6 @@ const ProductDetailsScreen = props => {
           ),
         ).then(res => {
           if (res.payload.status === 200) {
-            // setIsLoading(false);
             alert('Added to Cart');
           }
           CommonLoading.hide();
@@ -125,14 +122,8 @@ const ProductDetailsScreen = props => {
         Alert.alert('Error', response.data.data.errors?.[0]?.detail, [
           {
             text: 'OK',
-            // onPress: () =>
-            //   navigation.replace('OrderDetailsScreen', {
-            //     checkoutResponse: response?.data?.data?.data,
-            //   }),
           },
         ]);
-        // alert('error', response.data.data.errors?.[0]?.detail);
-        // setIsLoading(false);
         CommonLoading.hide();
       }
     }
@@ -185,53 +176,27 @@ const ProductDetailsScreen = props => {
     setProdData(propData);
     dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
     const fetchProductData = async () => {
-      const response = await commonApi.get(
-        `abstract-products/${propData?.abstractSku}?include=abstract-product-availabilities`,
-        '',
-      );
-      if (response.data?.status === 200) {
-        setProductAvailability(
-          response?.data?.data?.included?.[0]?.attributes?.availability,
-        );
-        setProductData(response?.data?.data?.data);
-        setVariationIdData(
-          response?.data?.data?.data?.attributes?.attributeMap
-            ?.product_concrete_ids,
-        );
-      } else {
-        setIsLoading(false);
-      }
+      setIsLoading(true);
+      const res = await axios
+        .get(
+          `https://zaynproject-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/abstract-product?pid=${abstractSku}&include=concrete-product-image-sets%2Cconcrete-product-prices%2Cconcrete-product-availabilities%2Cproduct-labels%2Cproduct-options%2Cproduct-reviews%2Cproduct-measurement-units%2Csales-units%2Cbundled-products%2Cproduct-offers`,
+        )
+        .catch(function (error) {
+          setIsLoading(false);
+          if (error) {
+            Alert.alert('Error', 'something went wrong', [
+              {
+                text: 'OK',
+              },
+            ]);
+          }
+        });
+      setProductData(res?.data);
+      setSelectedSkuId(res?.data?.[0]?.id);
+      setIsLoading(false);
     };
     fetchProductData();
-  }, [propData]);
-
-  useEffect(() => {
-    var tempVar = [];
-    const handlerfunction = async () => {
-      if (productData) {
-        Object.keys(
-          productData?.attributes?.attributeMap?.attribute_variant_map,
-        )?.map((item, index) => {
-          tempVar.push({
-            id: index,
-            sku: productData?.attributes?.attributeMap?.product_concrete_ids[
-              index
-            ],
-            title: Object.keys(
-              productData?.attributes?.attributeMap?.attribute_variant_map[
-                item
-              ],
-            ).map(item1 => {
-              return productData?.attributes?.attributeMap
-                ?.attribute_variant_map[item][item1];
-            }),
-          });
-        });
-        setVariationData(tempVar);
-      }
-    };
-    handlerfunction();
-  }, [productData]);
+  }, [propData, abstractSku]);
 
   const checkIfAddedInShoppingList = sku => {
     const productIds = [];
@@ -296,35 +261,34 @@ const ProductDetailsScreen = props => {
     );
   };
 
-  if (!productData) {
+  const Item = ({item, onPress, backgroundColor, textColor}) => {
+    const attr = item?.attributes?.attributes;
+    const keys = Object.keys(attr);
+    const lastKey = keys[keys.length - 1];
+    const lastValue = attr[lastKey];
+
     return (
-      <Box flex={1} backgroundColor="white">
-        <ActivityIndicator />
-      </Box>
+      <TouchableOpacity
+        onPress={() => {
+          setSelectedSkuId(item?.id);
+        }}
+        style={[styles.item, {backgroundColor}]}>
+        <Text style={[styles.title, {color: textColor}]}>{lastValue}</Text>
+      </TouchableOpacity>
     );
-  }
-
-  const Item = ({item, onPress, backgroundColor, textColor}) => (
-    <TouchableOpacity
-      onPress={() => {
-        setSelectedSkuId(item?.sku);
-      }}
-      style={[styles.item, {backgroundColor}]}>
-      <Text style={[styles.title, {color: textColor}]}>{item.title}</Text>
-    </TouchableOpacity>
-  );
-
-  const renderItem = ({item, variationData}) => {
+  };
+  const renderItem = ({item, index}) => {
     const backgroundColor =
-      item.sku == selectedSkuId ? theme.colors.lightGrey : '#FFF';
-    const color = item.sku == selectedSkuId ? 'white' : 'black';
+      item.id == selectedSkuId ? theme.colors.lightGrey : '#FFF';
+    const color = item.id == selectedSkuId ? 'white' : 'black';
 
     return (
       <Item
         item={item}
         onPress={() => {
-          setSelectedSkuId(item?.sku);
-          checkIfAddedInShoppingList(item.id.toString(), item.sku);
+          setSelectedSkuId(item?.id);
+          setSelectedVariantIndex(index);
+          checkIfAddedInShoppingList(item.id.toString(), item.id);
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -343,152 +307,152 @@ const ProductDetailsScreen = props => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CommonHeader title={productData?.attributes?.name} showCartIcon />
-
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingHorizontal: theme.spacing.paddingHorizontal,
-          flexGrow: 1,
-        }}>
-        {prodData && productData ? (
-          <Box style={styles.productDetails}>
-            <Image
-              style={styles.backImage}
-              source={{
-                uri: prodData?.images[0]?.externalUrlLarge,
-              }}
-            />
-            <Box>
-              <Text style={{fontWeight: 'bold'}}>
-                {productData?.attributes?.name}
-              </Text>
-              <Row
-                title={'Brand : '}
-                value={productData?.attributes?.attributes?.brand}
-              />
-              {/* <Box>
-                  <Text>Product Id: </Text>
-                  <Text>Price: </Text>
-                  {Object.keys(productData?.attributes?.attributes)?.map(
-                    (item, index) => {
-                      return <Text key={index}>{item}</Text>;
-                    },
-                  )}
-                </Box>
+      <CommonHeader
+        title={productData?.[selectedVariantIndex]?.attributes?.name}
+        showCartIcon
+      />
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: theme.spacing.paddingHorizontal,
+              flexGrow: 1,
+            }}>
+            {prodData && productData ? (
+              <Box style={styles.productDetails}>
+                <Image
+                  style={styles.backImage}
+                  source={{
+                    uri: productData?.[selectedVariantIndex]?.image?.attributes
+                      ?.imageSets?.[0]?.images?.[0]?.externalUrlLarge,
+                  }}
+                />
                 <Box>
-                  <Text>: {prodData?.abstractSku}</Text>
-                  <Text>
-                    : $ {prodData?.price} {prodData?.currency}
+                  <Text style={{fontWeight: 'bold'}}>
+                    {productData?.[selectedVariantIndex]?.attributes?.name}
                   </Text>
-                  {Object.keys(productData?.attributes?.attributes)?.map(
-                    (item, index) => {
-                      return (
-                        <Text key={index}>
-                          : {productData?.attributes?.attributes[item]}
-                        </Text>
-                      );
-                    },
-                  )}
-                </Box> */}
-              <Box>
-                {variationData && variationData[1] && (
+                  <Row
+                    title={'Brand : '}
+                    value={
+                      productData?.[selectedVariantIndex]?.attributes
+                        ?.attributes?.brand
+                    }
+                  />
                   <Box>
-                    <Text style={{fontWeight: 'bold'}}>
-                      Choose Variation :{' '}
-                    </Text>
-                    <FlatList
-                      data={variationData}
-                      renderItem={({item}) => renderItem({item, variationData})}
-                      keyExtractor={item => item.id}
-                      extraData={selectedId}
-                      contentContainerStyle={styles.productList}
-                    />
+                    {productData?.length >= 2 && (
+                      <Box>
+                        <Text style={{fontWeight: 'bold'}}>
+                          Choose Variation :{' '}
+                        </Text>
+                        <FlatList
+                          data={productData}
+                          renderItem={({item, index}) =>
+                            renderItem({item, index})
+                          }
+                          // keyExtractor={item => item.id}
+                          // extraData={selectedId}
+                          keyExtractor={(item, index) => index.toString()}
+                          contentContainerStyle={styles.productList}
+                        />
+                      </Box>
+                    )}
                   </Box>
+                </Box>
+                <Text style={{fontWeight: 'bold'}}>Description : </Text>
+                <Text>
+                  {productData?.[selectedVariantIndex]?.attributes?.description}
+                </Text>
+                <Text mt="s6" style={{fontWeight: 'bold'}}>
+                  Price :
+                  {productData?.[selectedVariantIndex]?.productOffers != null
+                    ? 'show here offer price'
+                    : productData?.[selectedVariantIndex]?.price?.attributes
+                        ?.price}
+                </Text>
+                {productData?.[selectedVariantIndex]?.availability?.attributes
+                  ?.availability !== true ? (
+                  <Text color="red">Product is not available </Text>
+                ) : (
+                  <Text color="green">In stock</Text>
+                )}
+                {productData?.[selectedVariantIndex]?.productOffers != null ? (
+                  <FlatList
+                    data={productOffers}
+                    renderItem={offers => {
+                      return (
+                        <ProductOffer
+                          offers={offers}
+                          productOfferDataForAddToCart={
+                            productOfferDataForAddToCart
+                          }
+                          selectedOfferIndex={selectedOfferIndex}
+                          setSelectedOfferIndex={setSelectedOfferIndex}
+                        />
+                      );
+                    }}
+                  />
+                ) : (
+                  ''
                 )}
               </Box>
-            </Box>
-            <Text style={{fontWeight: 'bold'}}>Description : </Text>
-            <Text>{productData?.attributes?.description}</Text>
-            <Text mt="s6" style={{fontWeight: 'bold'}}>
-              {/* Price : $ {prodData?.price} */}
-              Price :
-              {offerForAddToCart != null
-                ? offerForAddToCart?.price
-                : prodData?.price}
-            </Text>
-            {!productAvailability ? (
-              <Text color="red">Product is not available </Text>
             ) : (
-              <Text color="green">In stock</Text>
+              <ActivityIndicator size="large" color="#0064FD" />
             )}
-            <FlatList
-              data={productOffers}
-              renderItem={offers => {
-                return (
-                  <ProductOffer
-                    offers={offers}
-                    productOfferDataForAddToCart={productOfferDataForAddToCart}
-                    selectedOfferIndex={selectedOfferIndex}
-                    setSelectedOfferIndex={setSelectedOfferIndex}
-                  />
-                );
-              }}
+          </ScrollView>
+
+          <Box paddingVertical="s16" paddingHorizontal="paddingHorizontal">
+            <CommonSolidButton
+              title={!isLoading ? 'Add to Cart' : 'Loading...'}
+              // onPress={addToCartHandler}
+              onPress={!isLoading ? onPressAddToCart : () => {}}
+              // onPress={onPressAddToCart}
+              disabled={!productAvailability}
             />
+            <Box mt="s8">
+              <TouchableOpacity
+                style={styles.wishListContainer}
+                onPress={selectShoppingList}>
+                <Text style={{color: 'white', fontWeight: 'bold'}}>
+                  {isLoadingShopingList ? 'Loading...' : 'Add to Shopping List'}
+                </Text>
+              </TouchableOpacity>
+            </Box>
           </Box>
-        ) : (
-          <ActivityIndicator size="large" color="#0064FD" />
-        )}
-      </ScrollView>
 
-      <Box paddingVertical="s16" paddingHorizontal="paddingHorizontal">
-        <CommonSolidButton
-          title={!isLoading ? 'Add to Cart' : 'Loading...'}
-          // onPress={addToCartHandler}
-          onPress={!isLoading ? onPressAddToCart : () => {}}
-          // onPress={onPressAddToCart}
-          disabled={!productAvailability}
-        />
-        <Box mt="s8">
-          <TouchableOpacity
-            style={styles.wishListContainer}
-            onPress={selectShoppingList}>
-            <Text style={{color: 'white', fontWeight: 'bold'}}>
-              {isLoadingShopingList ? 'Loading...' : 'Add to Shopping List'}
-            </Text>
-          </TouchableOpacity>
-        </Box>
-      </Box>
-
-      <DynamicSnapPointBottomSheet
-        handleExpandPress={handleExpandPress}
-        bottomSheetRef={bottomSheetRef}>
-        <Box flex={1} padding="s16">
-          <Text fontSize={18} fontWeight="600" pb="s12">
-            Please select the shopping list -
-          </Text>
-          <FlatList
-            data={customerWishlist}
-            renderItem={(item, index) => {
-              return (
-                <ShoppingListItem
-                  item={item}
-                  onPress={() => {
-                    setSelectedShoppingListId(item?.item?.id);
-                  }}
-                  index={index}
-                  selectedShoppingListId={selectedShoppingListId}
-                  showCheckMark={true}
-                />
-              );
-            }}
-          />
-          <CommonSolidButton
-            title={'Continue'}
-            onPress={onPressAddToShoppingList}
-          />
-        </Box>
-      </DynamicSnapPointBottomSheet>
+          <DynamicSnapPointBottomSheet
+            handleExpandPress={handleExpandPress}
+            bottomSheetRef={bottomSheetRef}>
+            <Box flex={1} padding="s16">
+              <Text fontSize={18} fontWeight="600" pb="s12">
+                Please select the shopping list -
+              </Text>
+              <FlatList
+                data={customerWishlist}
+                renderItem={(item, index) => {
+                  return (
+                    <ShoppingListItem
+                      item={item}
+                      onPress={() => {
+                        setSelectedShoppingListId(item?.item?.id);
+                      }}
+                      index={index}
+                      selectedShoppingListId={selectedShoppingListId}
+                      showCheckMark={true}
+                    />
+                  );
+                }}
+              />
+              <CommonSolidButton
+                title={'Continue'}
+                onPress={onPressAddToShoppingList}
+              />
+            </Box>
+          </DynamicSnapPointBottomSheet>
+        </>
+      )}
     </SafeAreaView>
   );
 };
