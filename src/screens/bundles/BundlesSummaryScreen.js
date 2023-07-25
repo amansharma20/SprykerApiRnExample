@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Alert, SafeAreaView, StyleSheet} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {FlashList} from '@shopify/flash-list';
@@ -9,19 +9,39 @@ import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidBut
 import {api} from '../../api/SecureAPI';
 import CommonLoading from '../../components/CommonLoading';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
+import {useDispatch} from 'react-redux';
 
 const BundlesSummaryScreen = props => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const summaryBundleData = props.route?.params?.summaryBundleData;
   const configurableBundleId = props.route?.params?.configurableBundleId;
   const postProductSlotsData = props.route?.params?.postProductSlotsData;
 
+  const customerCartId = useSelector(
+    state =>
+      state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
+  );
+
+  useEffect(() => {
+    dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+      console.log('carts api call successful');
+    });
+  }, [props]);
   const addToCart = async () => {
     CommonLoading.show();
+    console.log('postProductSlotsData: ', postProductSlotsData);
+
     const response = await api.post(
-      `carts/${configurableBundleId}/configured-bundles`,
+      `carts/${customerCartId}/configured-bundles`,
       postProductSlotsData,
     );
+
+    console.log('response: ', response?.data?.data);
+
     if (response?.data?.status === 201) {
       console.log('response?.data: success ', response?.data);
       navigation.navigate('CartScreen');

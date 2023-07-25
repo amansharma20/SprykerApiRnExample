@@ -14,7 +14,6 @@ const CartItem = ({item, checkProductAvailability, customerCartData}) => {
   const dispatch = useDispatch();
 
   const cartItem = item?.item;
-  console.log('cartItem: ', cartItem);
   const [attributes, setAttributes] = useState([]);
   const [productImage, setProductImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +26,6 @@ const CartItem = ({item, checkProductAvailability, customerCartData}) => {
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
-  // console.log('customerCart: ', customerCart.id);
 
   const removeItem = async itemId => {
     setIsLoading(true);
