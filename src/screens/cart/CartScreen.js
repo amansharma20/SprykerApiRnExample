@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   ActivityIndicator,
   Button,
@@ -21,8 +21,10 @@ import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/Custome
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import ConfiguredBundledCartItem from './ConfiguredBundledCartItem';
 import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
+import {AuthContext} from '../../navigation/StackNavigator';
 
 const CartScreen = () => {
+  const {signOut} = useContext(AuthContext);
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   console.log('isLoading: ', isLoading);
@@ -53,14 +55,26 @@ const CartScreen = () => {
 
       dispatch(
         createCustomerCart({endpoint: 'carts', data: JSON.stringify(data)}),
-      ).then(res => {});
-      dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
-        console.log('carts api call successful');
+      ).then(response => {
+        if (response.payload.status === 401) {
+          signOut();
+        }
+      });
+      dispatch(CustomerCartIdApiAsyncThunk('carts')).then(response => {
+        if (response.payload.status === 401) {
+          signOut();
+        } else {
+          console.log('carts api call successful');
+        }
       });
     }
 
-    dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
-      console.log('carts api call successful');
+    dispatch(CustomerCartIdApiAsyncThunk('carts')).then(response => {
+      if (response.payload.status === 401) {
+        signOut();
+      } else {
+        console.log('carts api call successful');
+      }
     });
   }, []);
 
