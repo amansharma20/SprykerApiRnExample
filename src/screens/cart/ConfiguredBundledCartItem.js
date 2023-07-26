@@ -12,10 +12,13 @@ import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import {useDispatch, useSelector} from 'react-redux';
 import {RemoveIcon} from '../../assets/svgs';
+import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 
 const ConfiguredBundledCartItem = ({data, customerCartId}) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+
+  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
 
   const changeQuantity = async (templateUUID, data, quantity) => {
     setIsLoading(true);
@@ -46,15 +49,24 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
     );
     const response = resp.data;
     if (response) {
-      dispatch(
-        getCustomerCartItems(
-          `carts/${customerCartId}?include=items%2Cbundle-items`,
-        ),
-      ).then(error => {
-        console.log('error: ', error);
+      dispatch(getCartDataNew(newCartApiUrl)).then(res => {
+        if (res.payload.status === 200) {
+          console.log('carts api call successful');
+          setIsLoading(false);
+        } else {
+          console.log('mulesoft carts api call not successful');
+          setIsLoading(false);
+        }
       });
+      // dispatch(
+      //   getCustomerCartItems(
+      //     `carts/${customerCartId}?include=items%2Cbundle-items`,
+      //   ),
+      // ).then(error => {
+      //   console.log('error: ', error);
+      // });
       dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
-      setIsLoading(false);
+      // setIsLoading(false);
     } else {
     }
   };
@@ -66,15 +78,26 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
       `carts/${customerCartId}/configured-bundles/${groupKey}`,
       '',
     );
-    setIsLoading(false);
+    // setIsLoading(false);
 
-    dispatch(
-      getCustomerCartItems(
-        `carts/${customerCartId}?include=items%2Cbundle-items`,
-      ),
-    ).then(error => {
-      console.log('error: ', error);
+    // dispatch(
+    //   getCustomerCartItems(
+    //     `carts/${customerCartId}?include=items%2Cbundle-items`,
+    //   ),
+    // ).then(error => {
+    //   console.log('error: ', error);
+    // });
+
+    dispatch(getCartDataNew(newCartApiUrl)).then(res => {
+      if (res.payload.status === 200) {
+        console.log('carts api call successful');
+        setIsLoading(false);
+      } else {
+        console.log('mulesoft carts api call not successful');
+        setIsLoading(false);
+      }
     });
+
     dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
     console.log(response);
   };

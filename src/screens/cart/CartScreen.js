@@ -17,12 +17,14 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import CartItem from './CartItem';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
+import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 
 const CartScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [cartItemsArray, setCartItemsArray] = useState([]);
-  const [cartItems, setCartItems] = useState(null);
+  // const [cartItems, setCartItems] = useState(null);
+  // console.log('cartItems: ', cartItems);
   const {isUserLoggedIn} = useIsUserLoggedIn();
 
   const [allProductAvailableInCarts, setAllProductsAvailableInCarts] =
@@ -37,60 +39,95 @@ const CartScreen = () => {
     state =>
       state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
   );
-  console.log('customerCartId: ', customerCartId);
 
   const customerCartData = useSelector(
     state => state.getCustomerCartItemsAliSlice?.customerCart || [],
   );
+  console.log('customerCartData: ', customerCartData.length);
 
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
 
-  useEffect(() => {
-    const getCartItems = async () => {
-      setIsLoading(true);
-      let userToken = await Keychain.getGenericPassword();
-      let token = userToken.password;
-      const res = await axios
-        .get(
-          `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`,
-          {
-            headers: {
-              Authorization: token,
-              'Content-Type': 'application/json',
-            },
-            validateStatus: () => true,
-          },
-        )
-        .catch(function (error) {
-          console.log('error: ', error);
-          setIsLoading(false);
-          if (error) {
-            Alert.alert('Error', 'something went wrong', [
-              {
-                text: 'OK',
-              },
-            ]);
-          }
-        });
+  const customerCartDataNew = useSelector(
+    state => state.getCartDataNewApiSlice?.cartDataNew.data,
+  );
+  console.log('customerCartDataNew: ', customerCartDataNew);
 
-      setCartItems(res?.data);
-      for (const item of res?.data?.normalProduct) {
-        const availability =
-          item?.['concrete-product-availabilities']?.availability;
-        if (!availability) {
-          setAllProductsAvailableInCarts(false);
-          break;
+  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
+
+  useEffect(() => {
+    if (customerCartId) {
+      dispatch(getCartDataNew(newCartApiUrl)).then(res => {
+        if (res.payload.status === 200) {
+          console.log('carts api call successful');
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+          console.log('mulesoft carts api call not successful');
         }
-      }
-      setIsLoading(false);
-    };
-    getCartItems();
+      });
+    }
   }, []);
+
+  // useEffect(() => {
+  //   if (customerCartDataNew?.length !== 0) {
+  //     for (const item of customerCartDataNew?.normalProduct) {
+  //       const availability =
+  //         item?.['concrete-product-availabilities']?.availability;
+  //       if (!availability) {
+  //         setAllProductsAvailableInCarts(false);
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }, [customerCartDataNew]);
+
+  // useEffect(() => {
+  //   const getCartItems = async () => {
+  //     setIsLoading(true);
+  //     let userToken = await Keychain.getGenericPassword();
+  //     let token = userToken.password;
+  //     const res = await axios
+  //       .get(
+  //         `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`,
+  //         {
+  //           headers: {
+  //             Authorization: token,
+  //             'Content-Type': 'application/json',
+  //           },
+  //           validateStatus: () => true,
+  //         },
+  //       )
+  //       .catch(function (error) {
+  //         console.log('error: ', error);
+  //         setIsLoading(false);
+  //         if (error) {
+  //           Alert.alert('Error', 'something went wrong', [
+  //             {
+  //               text: 'OK',
+  //             },
+  //           ]);
+  //         }
+  //       });
+
+  //     setCartItems(res?.data);
+  //     for (const item of res?.data?.normalProduct) {
+  //       const availability =
+  //         item?.['concrete-product-availabilities']?.availability;
+  //       if (!availability) {
+  //         setAllProductsAvailableInCarts(false);
+  //         break;
+  //       }
+  //     }
+  //     setIsLoading(false);
+  //   };
+  //   getCartItems();
+  // }, []);
 
   useEffect(() => {
     if (customerCarts.length === 0) {
+      console.log('customerCarts.length: ', customerCarts.length);
       const data = {
         type: 'carts',
         attributes: {
@@ -107,9 +144,9 @@ const CartScreen = () => {
         console.log('carts api call successful');
       });
     }
-    dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
-      console.log('carts api call successful');
-    });
+    // dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+    //   console.log('carts api call successful');
+    // });
   }, []);
 
   const grandTotal = customerCart?.attributes?.totals?.grandTotal;
@@ -122,18 +159,18 @@ const CartScreen = () => {
     );
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    if (customerCartId) {
-      dispatch(
-        getCustomerCartItems(
-          `carts/${customerCartId}?include=items%2Cbundle-items`,
-        ),
-      ).then(() => {
-        setIsLoading(false);
-      });
-    }
-  }, [dispatch, customerCartId, isUserLoggedIn]);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   if (customerCartId) {
+  //     dispatch(
+  //       getCustomerCartItems(
+  //         `carts/${customerCartId}?include=items%2Cbundle-items`,
+  //       ),
+  //     ).then(() => {
+  //       setIsLoading(false);
+  //     });
+  //   }
+  // }, [dispatch, customerCartId, isUserLoggedIn]);
 
   return (
     <Box flex={1} backgroundColor="white">
@@ -153,7 +190,7 @@ const CartScreen = () => {
                 }}>
                 <Box>
                   <FlatList
-                    data={cartItems?.configureBundle}
+                    data={customerCartDataNew?.configureBundle}
                     renderItem={item => {
                       const data = item?.item;
                       return (
@@ -166,7 +203,7 @@ const CartScreen = () => {
                     scrollEnabled={false}
                   />
                   <FlatList
-                    data={cartItems?.normalProduct}
+                    data={customerCartDataNew?.normalProduct}
                     renderItem={item => {
                       const data = item?.item;
 
@@ -195,7 +232,7 @@ const CartScreen = () => {
                   </Box>
                 </Box>
               </ScrollView>
-              {customerCartData?.length !== 0 ? (
+              {customerCartDataNew?.length !== 0 ? (
                 <Box padding="s16">
                   <CommonSolidButton
                     title="Proceed to Checkout"

@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import {RemoveIcon} from '../../assets/svgs';
 import CartItemQuantity from './CartItemQuantity';
+import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 
 const CartItem = ({item}) => {
   const image =
@@ -29,6 +30,8 @@ const CartItem = ({item}) => {
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
 
+  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart.id}`;
+
   const removeItem = async itemId => {
     setIsLoading(true);
     const response = await api
@@ -42,7 +45,14 @@ const CartItem = ({item}) => {
           ).then(() => {
             setIsLoading(false);
           });
-          dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+          // dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+          dispatch(getCartDataNew(newCartApiUrl)).then(res => {
+            if (res.payload.status === 200) {
+              console.log('carts api call successful');
+            } else {
+              console.log('mulesoft carts api call not successful');
+            }
+          });
         }
       });
   };

@@ -1,10 +1,17 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {Box, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCheckoutData} from '../../redux/checkoutDataApi/CheckoutApiAsyncThunk';
 import CommonOptionsSelector from '../../components/CommonOptionsSelector/CommonOptionsSelector';
-import {ActivityIndicator, Alert, Button, ScrollView} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Button,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
 import {api} from '../../api/SecureAPI';
 import {useNavigation} from '@react-navigation/native';
 import CommonLoading from '../../components/CommonLoading';
@@ -212,63 +219,65 @@ const CheckoutScreen = props => {
   }, [dispatch, cartId]);
 
   return (
-    <Box flex={1} backgroundColor="white">
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
-        <CommonHeader title={'Checkout'} />
-        {!isLoading ? (
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <Box flex={1} backgroundColor="white">
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <CommonHeader title={'Checkout'} />
+          {!isLoading ? (
+            <>
+              <Box paddingHorizontal="paddingHorizontal">
+                <Box mb="s16">
+                  <Text mb="s16" variant="regular16">
+                    Select Address
+                  </Text>
+                  <CommonOptionsSelector
+                    DATA={ADDRESSES_DATA}
+                    selectedIndex={selectedAddressIndex}
+                    setSelectedIndex={setSelectedAddressIndex}
+                    hideContinueButton
+                  />
+                </Box>
+                <Box mb="s16">
+                  <Text mb="s16" variant="regular16">
+                    Select shipment methods
+                  </Text>
+                  <CommonOptionsSelector
+                    DATA={SHIPMENTMETHODS_DATA}
+                    selectedIndex={selectedShipmentIndex}
+                    setSelectedIndex={setSelectedShipmentIndex}
+                    hideContinueButton
+                  />
+                </Box>
+                <Box mb="s16">
+                  <Text mb="s16" variant="regular16">
+                    Select payment method
+                  </Text>
+                  <CommonOptionsSelector
+                    DATA={PAYMENTMETHODS_DATA}
+                    selectedIndex={selectedPaymentIndex}
+                    setSelectedIndex={setSelectedPaymentIndex}
+                    hideContinueButton
+                  />
+                </Box>
+              </Box>
+            </>
+          ) : (
+            <>
+              <ActivityIndicator />
+            </>
+          )}
+        </ScrollView>
+        {!isOrderConfirmedLoading ? (
           <>
-            <Box paddingHorizontal="paddingHorizontal">
-              <Box mb="s16">
-                <Text mb="s16" variant="regular16">
-                  Select Address
-                </Text>
-                <CommonOptionsSelector
-                  DATA={ADDRESSES_DATA}
-                  selectedIndex={selectedAddressIndex}
-                  setSelectedIndex={setSelectedAddressIndex}
-                  hideContinueButton
-                />
-              </Box>
-              <Box mb="s16">
-                <Text mb="s16" variant="regular16">
-                  Select shipment methods
-                </Text>
-                <CommonOptionsSelector
-                  DATA={SHIPMENTMETHODS_DATA}
-                  selectedIndex={selectedShipmentIndex}
-                  setSelectedIndex={setSelectedShipmentIndex}
-                  hideContinueButton
-                />
-              </Box>
-              <Box mb="s16">
-                <Text mb="s16" variant="regular16">
-                  Select payment method
-                </Text>
-                <CommonOptionsSelector
-                  DATA={PAYMENTMETHODS_DATA}
-                  selectedIndex={selectedPaymentIndex}
-                  setSelectedIndex={setSelectedPaymentIndex}
-                  hideContinueButton
-                />
-              </Box>
-            </Box>
+            <Button title="Continue" onPress={orderConfirm} />
           </>
         ) : (
           <>
             <ActivityIndicator />
           </>
         )}
-      </ScrollView>
-      {!isOrderConfirmedLoading ? (
-        <>
-          <Button title="Continue" onPress={orderConfirm} />
-        </>
-      ) : (
-        <>
-          <ActivityIndicator />
-        </>
-      )}
-    </Box>
+      </Box>
+    </SafeAreaView>
   );
 };
 

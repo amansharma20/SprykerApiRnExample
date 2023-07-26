@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import CategorySection from './categorySection/CategorySection';
 import {Box, Text, theme} from '@atoms';
@@ -10,12 +11,19 @@ import FastImage from 'react-native-fast-image';
 import Icons from '../../assets/constants/Icons';
 import HomeHeader from './homeHeader/HomeHeader';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
+import {useDispatch, useSelector} from 'react-redux';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const ViewData = ['HomeHeader', 'ContentFullSection', 'CategorySection'];
   const insets = useSafeAreaInsets();
-  console.log('insets: ', insets);
+
+  const customerCartId = useSelector(
+    state =>
+      state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
+  );
 
   const renderHomeItems = useCallback(({item}) => {
     switch (item) {
@@ -32,6 +40,20 @@ const HomeScreen = () => {
         return <></>;
     }
   }, []);
+
+  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
+
+  useEffect(() => {
+    if (customerCartId) {
+      dispatch(getCartDataNew(newCartApiUrl)).then(res => {
+        if (res.payload.status === 200) {
+          console.log('carts api call successful');
+        } else {
+          console.log('mulesoft carts api call not successful');
+        }
+      });
+    }
+  }, [customerCartId]);
 
   return (
     <Box flex={1} backgroundColor="white">

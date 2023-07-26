@@ -12,9 +12,47 @@ import {useSelector} from 'react-redux';
 const CommonHeader = ({title, onPress, showCartIcon = false, ...props}) => {
   const {goToCart} = useGoToCart();
 
-  const cartItemsCount = useSelector(
-    state => state.getCustomerCartItemsAliSlice.itemsCount,
+  const customerCartDataNew = useSelector(
+    state => state.getCartDataNewApiSlice?.cartDataNew.data,
   );
+
+  function getTotalNormalProductsQuantity(arrayOfObjects) {
+    // Step 1: Use map() to extract an array of quantities
+    const quantities = arrayOfObjects?.map(
+      obj => obj?.itemData?.attributes?.quantity,
+    );
+
+    // Step 2: Use reduce() to sum up the quantities
+    const totalQuantity = quantities?.reduce(
+      (accumulator, currentQuantity) => accumulator + currentQuantity,
+      0,
+    );
+
+    return totalQuantity;
+  }
+
+  function getTotalConfiguredProductsQuantity(arrayOfObjects) {
+    // Step 1: Use map() to extract an array of quantities
+    const quantities = arrayOfObjects?.map(obj => obj?.groupquantity);
+
+    // Step 2: Use reduce() to sum up the quantities
+    const totalQuantity = quantities?.reduce(
+      (accumulator, currentQuantity) => accumulator + currentQuantity,
+      0,
+    );
+
+    return totalQuantity;
+  }
+
+  const cartItemsCount =
+    getTotalNormalProductsQuantity(customerCartDataNew?.normalProduct) +
+      getTotalConfiguredProductsQuantity(
+        customerCartDataNew?.configureBundle,
+      ) || null;
+
+  // const cartItemsCount = useSelector(
+  //   state => state.getCustomerCartItemsAliSlice.itemsCount,
+  // );
 
   const onPressCart = () => {
     goToCart();
