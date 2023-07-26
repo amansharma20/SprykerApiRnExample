@@ -85,7 +85,7 @@ IProps) => {
         verticalScrollRef={verticalRef}
         horizontalListProps={horizontalListProps}
       />
-      <Box flex={1}>
+      <Box flex={1} paddingHorizontal="s8">
         <VerticalList
           contentContainerStyle={verticalListContainerStyle}
           data={data}

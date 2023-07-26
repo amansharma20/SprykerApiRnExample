@@ -29,7 +29,6 @@ export const theme = createTheme({
     lightGrey: '#999999',
     border: '#E6E6E6',
     disabled: '#E6E6E6',
-    snowy: '#F1F1F1',
     grey: '#7C7C7C',
     inputGrey: '#F5F5F5',
     purple: '#6650A4',
@@ -40,6 +39,9 @@ export const theme = createTheme({
     inactiveDot: '#CACACA',
     activeDot: '#505050',
     transparent: 'transparent',
+    sushiittoRed: '#F50145',
+    veryLightRed: '#F7F1F3',
+    snowy: '#F9F9F9',
     ...globalPallete,
   },
   spacing: {

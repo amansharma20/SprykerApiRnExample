@@ -10,10 +10,16 @@ import FastImage from 'react-native-fast-image';
 import Icons from '../../assets/constants/Icons';
 import HomeHeader from './homeHeader/HomeHeader';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import SelectShippingMethod from '../../components/SelectShippingMethod/SelectShippingMethod';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const ViewData = ['HomeHeader', 'ContentFullSection', 'CategorySection'];
+  const ViewData = [
+    'HomeHeader',
+    'ContentFullSection',
+    'SelectShippingMethod',
+    'CategorySection',
+  ];
   const insets = useSafeAreaInsets();
   console.log('insets: ', insets);
 
@@ -24,6 +30,9 @@ const HomeScreen = () => {
 
       case 'ContentFullSection':
         return <ContentFullSection />;
+
+      case 'SelectShippingMethod':
+        return <SelectShippingMethod />;
 
       case 'CategorySection':
         return <CategorySection />;
