@@ -2,19 +2,10 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useState, useEffect} from 'react';
-import {
-  ActivityIndicator,
-  Button,
-  FlatList,
-  ScrollView,
-  TextInput,
-  Alert,
-} from 'react-native';
+import {ActivityIndicator, FlatList, ScrollView, Alert} from 'react-native';
 import {Box, Text, theme} from '@atoms';
 import {useSelector, useDispatch} from 'react-redux';
-import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
-import CartItem from './CartItem';
 import {useNavigation} from '@react-navigation/native';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 import LoginScreen from '../auth/LoginScreen';
@@ -22,20 +13,21 @@ import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/Custome
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import ConfiguredBundledCartItem from './ConfiguredBundledCartItem';
 import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
-import {api} from '../../api/SecureAPI';
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
+import CartItem from './CartItem';
+import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 
 const CartScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [cartItemsArray, setCartItemsArray] = useState([]);
+  const [cartItems, setCartItems] = useState(null);
   const {isUserLoggedIn} = useIsUserLoggedIn();
-  const [configuredBundleTemplateID, setConfiguredBundleTemplateID] = useState(
-    [],
-  );
+
   const [allProductAvailableInCarts, setAllProductsAvailableInCarts] =
     useState(true);
+
   const dispatch = useDispatch();
 
   const customerCarts = useSelector(
@@ -47,23 +39,32 @@ const CartScreen = () => {
   );
   console.log('customerCartId: ', customerCartId);
 
+  const customerCartData = useSelector(
+    state => state.getCustomerCartItemsAliSlice?.customerCart || [],
+  );
+
+  const customerCart = useSelector(
+    state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
+  );
+
   useEffect(() => {
     const getCartItems = async () => {
+      setIsLoading(true);
       let userToken = await Keychain.getGenericPassword();
       let token = userToken.password;
-      console.log('token: ', token);
-
       const res = await axios
         .get(
           `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`,
           {
             headers: {
               Authorization: token,
+              'Content-Type': 'application/json',
             },
             validateStatus: () => true,
           },
         )
         .catch(function (error) {
+          console.log('error: ', error);
           setIsLoading(false);
           if (error) {
             Alert.alert('Error', 'something went wrong', [
@@ -73,7 +74,17 @@ const CartScreen = () => {
             ]);
           }
         });
-      console.log('res', res?.data);
+
+      setCartItems(res?.data);
+      for (const item of res?.data?.normalProduct) {
+        const availability =
+          item?.['concrete-product-availabilities']?.availability;
+        if (!availability) {
+          setAllProductsAvailableInCarts(false);
+          break;
+        }
+      }
+      setIsLoading(false);
     };
     getCartItems();
   }, []);
@@ -89,7 +100,6 @@ const CartScreen = () => {
           name: 'new cart',
         },
       };
-
       dispatch(
         createCustomerCart({endpoint: 'carts', data: JSON.stringify(data)}),
       ).then(res => {});
@@ -97,20 +107,10 @@ const CartScreen = () => {
         console.log('carts api call successful');
       });
     }
-
     dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
       console.log('carts api call successful');
     });
   }, []);
-
-  const customerCartData = useSelector(
-    state => state.getCustomerCartItemsAliSlice?.customerCart || [],
-  );
-  // console.log('customerCartData: ', customerCartData);
-
-  const customerCart = useSelector(
-    state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
-  );
 
   const grandTotal = customerCart?.attributes?.totals?.grandTotal;
 
@@ -121,56 +121,6 @@ const CartScreen = () => {
       </Box>
     );
   };
-
-  useEffect(() => {
-    if (customerCartData.length !== 0 && customerCartId) {
-      let tempArr = [];
-      customerCartData?.map(item => {
-        tempArr.push(item.itemId);
-      });
-      setCartItemsArray(tempArr);
-    }
-    const getConfiguredBundle = () => {
-      const uuidsSet = new Set();
-
-      customerCartData?.forEach(items => {
-        if (items?.configuredBundle != null) {
-          const uuid = items?.configuredBundle?.groupKey;
-          if (uuid) {
-            uuidsSet.add(uuid);
-          }
-        }
-      });
-      const uuids = Array.from(uuidsSet).map(uuid => ({uuid: uuid}));
-      console.log('uuids: ', uuids);
-
-      const newDataArray = uuids.map(uuidObj => {
-        const templateName = customerCartData.find(
-          item => item.configuredBundle?.groupKey === uuidObj.uuid,
-        )?.configuredBundle?.template?.name;
-        const templateUUID = customerCartData.find(
-          item => item.configuredBundle?.groupKey === uuidObj.uuid,
-        )?.configuredBundle?.template?.uuid;
-        const slotUUID = customerCartData.find(
-          item => item.configuredBundle?.groupKey === uuidObj.uuid,
-        )?.configuredBundleItem?.slot?.uuid;
-        const quantity = customerCartData.find(
-          item => item.configuredBundle?.groupKey === uuidObj.uuid,
-        )?.configuredBundle?.quantity;
-        const data = customerCartData.filter(
-          item => item.configuredBundle?.groupKey === uuidObj.uuid,
-        );
-
-        const groupKey = customerCartData.find(
-          item => item.configuredBundle?.groupKey === uuidObj.uuid,
-        )?.configuredBundle?.groupKey;
-        return {templateName, quantity, templateUUID, slotUUID, data, groupKey};
-      });
-      setConfiguredBundleTemplateID(newDataArray);
-    };
-    getConfiguredBundle();
-  }, [customerCartData, customerCartId]);
-  // console.log('configuredBundleTemplateID', configuredBundleTemplateID[0].data);
 
   useEffect(() => {
     setIsLoading(true);
@@ -185,114 +135,91 @@ const CartScreen = () => {
     }
   }, [dispatch, customerCartId, isUserLoggedIn]);
 
-  // useEffect(() => {
-  //   if (isUserLoggedIn) {
-  //     dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
-  //       console.log('carts api call successful');
-  //     });
-  //   }
-  // }, [isUserLoggedIn]);
-
-  const checkProductAvailability = isAllProductAvailableInCarts => {
-    if (!isAllProductAvailableInCarts) {
-      setAllProductsAvailableInCarts(false);
-    }
-  };
-
   return (
-    <></>
-    // <Box flex={1} backgroundColor="white">
-    //   {isUserLoggedIn ? (
-    //     <>
-    //       <CommonHeader title={'Your Cart'} />
-    //       {isLoading ? (
-    //         <>
-    //           <ActivityIndicator />
-    //         </>
-    //       ) : (
-    //         <>
-    //           <ScrollView
-    //             contentContainerStyle={{
-    //               flexGrow: 1,
-    //               paddingHorizontal: theme.spacing.paddingHorizontal,
-    //             }}>
-    //             <Box>
-    //               <FlatList
-    //                 data={configuredBundleTemplateID}
-    //                 renderItem={item => {
-    //                   const data = item?.item;
-    //                   return (
-    //                     <ConfiguredBundledCartItem
-    //                       data={data}
-    //                       customerCartId={customerCartId}
-    //                     />
-    //                   );
-    //                 }}
-    //                 scrollEnabled={false}
-    //               />
-    //               <FlatList
-    //                 data={customerCartData}
-    //                 // data={[]}
-    //                 renderItem={item => {
-    //                   const data = item?.item;
-    //                   if (data?.configuredBundle == null) {
-    //                     return (
-    //                       <CartItem
-    //                         item={item}
-    //                         customerCartData={customerCartData}
-    //                         checkProductAvailability={checkProductAvailability}
-    //                       />
-    //                     );
-    //                   }
-    //                 }}
-    //                 ListEmptyComponent={
-    //                   isLoading === false ? (
-    //                     <ListEmptyComponent />
-    //                   ) : (
-    //                     <ActivityIndicator />
-    //                   )
-    //                 }
-    //                 scrollEnabled={false}
-    //               />
-    //               <Box
-    //                 justifyContent="flex-end"
-    //                 flexDirection="row"
-    //                 paddingVertical="s8">
-    //                 <Text variant="bold24">
-    //                   {customerCartData.length != 0 ? (
-    //                     <Text>Total : $ {grandTotal}</Text>
-    //                   ) : (
-    //                     ''
-    //                   )}
-    //                 </Text>
-    //               </Box>
-    //             </Box>
-    //           </ScrollView>
-    //           {customerCartData?.length !== 0 ? (
-    //             <Box padding="s16">
-    //               <CommonSolidButton
-    //                 title="Proceed to Checkout"
-    //                 disabled={!allProductAvailableInCarts}
-    //                 onPress={() =>
-    //                   navigation.navigate('CheckoutScreen', {
-    //                     cartId: customerCartId,
-    //                     cartItemsArray: cartItemsArray,
-    //                   })
-    //                 }
-    //               />
-    //             </Box>
-    //           ) : (
-    //             <></>
-    //           )}
-    //         </>
-    //       )}
-    //     </>
-    //   ) : (
-    //     <>
-    //       <LoginScreen />
-    //     </>
-    //   )}
-    // </Box>
+    <Box flex={1} backgroundColor="white">
+      {isUserLoggedIn ? (
+        <>
+          <CommonHeader title={'Your Cart'} />
+          {isLoading ? (
+            <>
+              <ActivityIndicator />
+            </>
+          ) : (
+            <>
+              <ScrollView
+                contentContainerStyle={{
+                  flexGrow: 1,
+                  paddingHorizontal: theme.spacing.paddingHorizontal,
+                }}>
+                <Box>
+                  <FlatList
+                    data={cartItems?.configureBundle}
+                    renderItem={item => {
+                      const data = item?.item;
+                      return (
+                        <ConfiguredBundledCartItem
+                          data={data}
+                          customerCartId={customerCartId}
+                        />
+                      );
+                    }}
+                    scrollEnabled={false}
+                  />
+                  <FlatList
+                    data={cartItems?.normalProduct}
+                    renderItem={item => {
+                      const data = item?.item;
+
+                      return <CartItem item={data} />;
+                    }}
+                    ListEmptyComponent={
+                      isLoading === false ? (
+                        <ListEmptyComponent />
+                      ) : (
+                        <ActivityIndicator />
+                      )
+                    }
+                    scrollEnabled={false}
+                  />
+                  <Box
+                    justifyContent="flex-end"
+                    flexDirection="row"
+                    paddingVertical="s8">
+                    <Text>
+                      {customerCartData.length != 0 ? (
+                        <Text variant="bold24">Total : $ {grandTotal}</Text>
+                      ) : (
+                        ''
+                      )}
+                    </Text>
+                  </Box>
+                </Box>
+              </ScrollView>
+              {customerCartData?.length !== 0 ? (
+                <Box padding="s16">
+                  <CommonSolidButton
+                    title="Proceed to Checkout"
+                    disabled={!allProductAvailableInCarts}
+                    onPress={() =>
+                      navigation.navigate('CheckoutScreen', {
+                        cartId: customerCartId,
+                        cartItemsArray: cartItemsArray,
+                      })
+                    }
+                  />
+                </Box>
+              ) : (
+                <></>
+              )}
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          <LoginScreen />
+        </>
+      )}
+    </Box>
   );
 };
 export default CartScreen;

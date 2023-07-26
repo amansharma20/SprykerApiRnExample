@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {api} from '../../api/SecureAPI';
 import {Box, Text} from '@atoms';
@@ -6,22 +5,25 @@ import {TouchableOpacity, Image} from 'react-native';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {ActivityIndicator, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import CartItemQuantity from './CartItemQuantity';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import {RemoveIcon} from '../../assets/svgs';
-import {FlatList} from 'react-native-gesture-handler';
-const CartItem = ({item, checkProductAvailability, customerCartData}) => {
-  const dispatch = useDispatch();
+import CartItemQuantity from './CartItemQuantity';
 
-  const cartItem = item?.item;
-  const [attributes, setAttributes] = useState([]);
-  const [productImage, setProductImage] = useState();
+const CartItem = ({item}) => {
+  const image =
+    item?.['concrete-product-image-sets']?.imageSets?.[0]?.images?.[0]
+      ?.externalUrlLarge;
+  const name = item?.['concrete-products']?.name;
+  const sku = item?.['concrete-products']?.sku;
+  const itemId = item?.itemData?.id;
+  var price = item?.itemData?.attributes?.calculations?.sumGrossPrice;
+  if (!price) {
+    price = item?.itemData?.attributes?.calculations?.sumPrice;
+  }
+  const availability = item?.['concrete-product-availabilities']?.availability;
+
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [configuredBundle, setConfiguredBundle] = useState([]);
-  const [isProductAvailabilityLoading, setIsProductAvailabilityLoading] =
-    useState(true);
-  const isProductAvailable =
-    attributes?.included?.[0]?.attributes?.availability;
 
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
@@ -45,65 +47,6 @@ const CartItem = ({item, checkProductAvailability, customerCartData}) => {
       });
   };
 
-  // configured bundle logic
-  // const isConfiguredBundle = true;
-  useEffect(() => {
-    const getProductDetails = async () => {
-      if (cartItem) {
-        await api
-          .get(
-            `concrete-products/${cartItem?.sku}?include=concrete-product-availabilities`,
-          )
-          .then(res => {
-            const attributesData = res?.data?.data;
-            if (
-              attributesData?.included?.[0]?.attributes?.availability == false
-            ) {
-              checkProductAvailability(false);
-            } else {
-              checkProductAvailability(true);
-            }
-            if (attributesData) {
-              setAttributes(attributesData);
-            }
-            setIsProductAvailabilityLoading(false);
-          });
-      }
-    };
-    getProductDetails();
-    // get image
-    const getProductImage = async () => {
-      await api
-        .get(`concrete-products/${cartItem?.sku}/concrete-product-image-sets`)
-        .then(res => {
-          const productImageResponse =
-            res?.data?.data?.data[0]?.attributes?.imageSets[0]?.images[0]
-              ?.externalUrlSmall;
-          if (productImageResponse) {
-            setProductImage(productImageResponse);
-          }
-        });
-    };
-    getProductImage();
-  }, [cartItem]);
-
-  // if (cartItem?.configuredBundle != null) {
-  //   return (
-  //     <Box>
-  //       <FlatList
-  //         data={configuredBundle}
-  //         renderItem={item => {
-  //           const data = item?.item;
-  //           return (
-  //             <Box>
-  //               <Text>{data?.templateName}</Text>
-  //             </Box>
-  //           );
-  //         }}
-  //       />
-  //     </Box>
-  //   );
-  // }
   return (
     <Box
       borderRadius={8}
@@ -120,30 +63,25 @@ const CartItem = ({item, checkProductAvailability, customerCartData}) => {
             <Image
               style={{height: 120, width: 120, resizeMode: 'contain'}}
               source={{
-                uri: productImage,
+                uri: image,
               }}
             />
-            <CartItemQuantity
-              cartItem={cartItem}
-              removeItemTrigger={removeItem}
-            />
+            <CartItemQuantity cartItem={item} removeItemTrigger={removeItem} />
           </Box>
           <Box justifyContent="space-between">
             <Box>
               <Box flexDirection="row">
-                <Text>{attributes?.data?.attributes?.name}</Text>
+                <Text>{name}</Text>
               </Box>
-              <Text style={{fontWeight: 'bold', marginTop: 4}}>
-                $ {cartItem.itemPrice}
-              </Text>
-              {!isProductAvailable && isProductAvailabilityLoading === false ? (
+              <Text style={{fontWeight: 'bold', marginTop: 4}}>$ {price}</Text>
+              {availability === false ? (
                 <Text color="red">Not Available</Text>
               ) : (
                 ''
               )}
             </Box>
             <Box mb="s8">
-              <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
+              <TouchableOpacity onPress={() => removeItem(itemId)}>
                 <Text>
                   <RemoveIcon />
                 </Text>

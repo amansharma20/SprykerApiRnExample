@@ -15,20 +15,17 @@ import {RemoveIcon} from '../../assets/svgs';
 
 const ConfiguredBundledCartItem = ({data, customerCartId}) => {
   const dispatch = useDispatch();
-
-  const [itemImages, setItemImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [templatePrice, setTemplatePrice] = useState(0);
 
   const changeQuantity = async (templateUUID, data, quantity) => {
     setIsLoading(true);
-    // console.log('slotUUID first: ', data[0]?.configuredBundle?.groupKey);
-    const groupKey = data[0]?.configuredBundle?.groupKey;
+    const groupKey = data[0]?.itemData?.attributes?.configuredBundle?.groupKey;
+
     const items = data.map(item => {
       return {
-        sku: item.sku,
+        sku: item.itemData?.attributes?.sku,
         quantity: quantity,
-        slotUuid: item.configuredBundleItem.slot.uuid,
+        slotUuid: item.itemData?.attributes?.configuredBundleItem?.slot?.uuid,
       };
     });
 
@@ -48,7 +45,6 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
       JSON.stringify(productCart),
     );
     const response = resp.data;
-    // console.log('response: ', response?.data?.data);
     if (response) {
       dispatch(
         getCustomerCartItems(
@@ -70,6 +66,8 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
       `carts/${customerCartId}/configured-bundles/${groupKey}`,
       '',
     );
+    setIsLoading(false);
+
     dispatch(
       getCustomerCartItems(
         `carts/${customerCartId}?include=items%2Cbundle-items`,
@@ -81,32 +79,6 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
     console.log(response);
   };
 
-  useEffect(() => {
-    const fetchProductData = async () => {
-      const updatedItems = await Promise.all(
-        data?.data?.map(async item => {
-          console.log('item: ', item.sku);
-          const response = await commonApi.get(
-            `concrete-products/${item.sku}?include=concrete-product-image-sets%2Cconcrete-product-prices`,
-            '',
-          );
-          const productImage =
-            response?.data?.data?.included?.[0]?.attributes?.imageSets?.[0]
-              ?.images?.[0]?.externalUrlLarge;
-          return {
-            ...item,
-            image: productImage,
-            name: response?.data?.data?.data?.attributes?.name,
-            price: response?.data?.data?.included?.[1]?.attributes?.price,
-          };
-        }),
-      );
-      setItemImages(updatedItems);
-    };
-
-    fetchProductData();
-  }, [data]);
-
   return (
     <Box
       borderRadius={8}
@@ -117,9 +89,8 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
       backgroundColor="white">
       <Box flexDirection="row" justifyContent="space-between">
         <Box>
-          <Text>{data?.templateName}</Text>
+          <Text>{data?.groupname}</Text>
         </Box>
-
         <Box flexDirection="row" alignItems="center">
           <TouchableOpacity onPress={() => removeItem(data?.groupKey)}>
             <Text style={{marginRight: 10}}>
@@ -133,23 +104,23 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
             <>
               <TouchableOpacity
                 onPress={() => {
-                  data?.quantity > 1
+                  data?.groupquantity > 1
                     ? changeQuantity(
-                        data?.templateUUID,
-                        itemImages,
-                        data?.quantity - 1,
+                        data?.templateUuid,
+                        data?.attributes,
+                        data?.groupquantity - 1,
                       )
                     : removeItem(data?.groupKey);
                 }}>
                 <Text style={styles.quantityText}>-</Text>
               </TouchableOpacity>
-              <Text style={styles.quantity}>{data?.quantity}</Text>
+              <Text style={styles.quantity}>{data?.groupquantity}</Text>
               <TouchableOpacity
                 onPress={() => {
                   changeQuantity(
-                    data?.templateUUID,
-                    itemImages,
-                    data?.quantity + 1,
+                    data?.templateUuid,
+                    data?.attributes,
+                    data?.groupquantity + 1,
                   );
                 }}>
                 <Text style={styles.quantityText}>+</Text>
@@ -159,8 +130,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
         </Box>
       </Box>
 
-      {itemImages.map(item => {
-        // console.log('item: ', item);
+      {data?.attributes.map(item => {
         // setTemplatePrice(templatePrice + item.price * data.quantity);
         return (
           <Box
@@ -176,27 +146,23 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
                 <Image
                   style={{height: 120, width: 120, resizeMode: 'contain'}}
                   source={{
-                    uri: item.image,
+                    uri: item?.['concrete-product-image-sets']?.imageSets?.[0]
+                      ?.images?.[0]?.externalUrlLarge,
                   }}
                 />
               </Box>
               <Box justifyContent="space-between">
                 <Box>
                   <Box flexDirection="row">
-                    <Text>{item.name}</Text>
+                    <Text>{item?.['concrete-products']?.name}</Text>
                   </Box>
                   <Text style={{fontWeight: 'bold', marginTop: 4}}>
-                    $ {item.price} x {data.quantity}{' '}
-                    {'                          '} {item.price * data.quantity}
+                    $ {item?.itemData?.attributes?.calculations?.sumGrossPrice}{' '}
+                    x {data?.groupquantity} {''}
+                    {''}
+                    {item?.itemData?.attributes?.calculations?.sumGrossPrice *
+                      data?.groupquantity}
                   </Text>
-                  {/* <Text>x {data.quantity} </Text> */}
-                </Box>
-                <Box mb="s8">
-                  {/* <TouchableOpacity onPress={() => removeItem(cartItem.itemId)}>
-                    <Text>
-                      <RemoveIcon />
-                    </Text>
-                  </TouchableOpacity> */}
                 </Box>
               </Box>
             </Box>

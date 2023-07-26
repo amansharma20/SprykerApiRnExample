@@ -10,6 +10,10 @@ import axios from 'axios';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 
 const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
+  console.log('cartItem: ', cartItem?.itemData?.id);
+  const quantity = cartItem?.itemData?.attributes?.quantity;
+  const itemId = cartItem?.itemData?.id;
+  const productSku = cartItem?.itemData?.attributes?.sku;
   const [isloading, setIsLoading] = useState(false);
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
@@ -54,13 +58,9 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
     <Box flexDirection="row" alignItems="center">
       <TouchableOpacity
         onPress={() =>
-          cartItem.quantity > 1
-            ? changeQuantity(
-                cartItem?.itemId,
-                cartItem?.quantity - 1,
-                cartItem?.sku,
-              )
-            : removeItemTrigger(cartItem?.itemId)
+          quantity > 1
+            ? changeQuantity(itemId, quantity - 1, productSku)
+            : removeItemTrigger(itemId)
         }
         style={styles.quantityButton}>
         <Text style={styles.quantityText}>-</Text>
@@ -68,12 +68,10 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
       {isloading ? (
         <ActivityIndicator />
       ) : (
-        <Text style={styles.quantity}>{cartItem.quantity}</Text>
+        <Text style={styles.quantity}>{quantity}</Text>
       )}
       <TouchableOpacity
-        onPress={() =>
-          changeQuantity(cartItem.itemId, cartItem.quantity + 1, cartItem?.sku)
-        }>
+        onPress={() => changeQuantity(itemId, quantity + 1, productSku)}>
         <Text style={styles.quantityText}>+</Text>
       </TouchableOpacity>
     </Box>
