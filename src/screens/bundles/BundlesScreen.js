@@ -31,7 +31,6 @@ const BundlesScreen = props => {
 
   const [postBundleData, setPostBundleData] = useState([]);
   const [summaryBundleData, setSummaryBundleData] = useState([]);
-  console.log('summaryBundleData: ', summaryBundleData);
 
   const [finalState, setFinalState] = useState([]);
 
@@ -192,7 +191,6 @@ const BundlesScreen = props => {
 
     return allProductsWithSlots;
   };
-
   useEffect(() => {
     const getConfiguredBundleSlotsByID = async configurableBundleId => {
       setIsLoading(true);
@@ -218,7 +216,7 @@ const BundlesScreen = props => {
 
   return (
     <Box flex={1} backgroundColor="white">
-      <CommonHeader title={'Configure Bundle'} onPress={onPressBack} />
+      <CommonHeader title={'Configurable Bundle'} onPress={onPressBack} />
       {/* <Button title="changeIndexPositive" onPress={changeIndexPositive} />
       <Button title="changeIndexNegative" onPress={onPressBack} /> */}
 

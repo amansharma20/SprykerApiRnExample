@@ -8,13 +8,21 @@ import {useDispatch, useSelector} from 'react-redux';
 import * as Keychain from 'react-native-keychain';
 import axios from 'axios';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
+import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 
 const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
+  console.log('cartItem: ', cartItem?.itemData?.id);
+  const quantity = cartItem?.itemData?.attributes?.quantity;
+  const itemId = cartItem?.itemData?.id;
+  const productSku = cartItem?.itemData?.attributes?.sku;
   const [isloading, setIsLoading] = useState(false);
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
   const dispatch = useDispatch();
+
+  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart.id}`;
+
   const changeQuantity = async (itemId, count, sku) => {
     setIsLoading(true);
 
@@ -38,14 +46,23 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
     );
     const response = resp.data;
     if (response) {
-      dispatch(
-        getCustomerCartItems(
-          `carts/${customerCart.id}?include=items%2Cbundle-items`,
-        ),
-      ).then(error => {
-        setIsLoading(false);
-      });
+      // dispatch(
+      //   getCustomerCartItems(
+      //     `carts/${customerCart.id}?include=items%2Cbundle-items`,
+      //   ),
+      // ).then(error => {
+      //   setIsLoading(false);
+      // });
       dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+      dispatch(getCartDataNew(newCartApiUrl)).then(res => {
+        if (res.payload.status === 200) {
+          console.log('carts api call successful');
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+          console.log('mulesoft carts api call not successful');
+        }
+      });
     } else {
     }
   };
@@ -54,13 +71,9 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
     <Box flexDirection="row" alignItems="center">
       <TouchableOpacity
         onPress={() =>
-          cartItem.quantity > 1
-            ? changeQuantity(
-                cartItem?.itemId,
-                cartItem?.quantity - 1,
-                cartItem?.sku,
-              )
-            : removeItemTrigger(cartItem?.itemId)
+          quantity > 1
+            ? changeQuantity(itemId, quantity - 1, productSku)
+            : removeItemTrigger(itemId)
         }
         style={styles.quantityButton}>
         <Text style={styles.quantityText}>-</Text>
@@ -68,12 +81,10 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
       {isloading ? (
         <ActivityIndicator />
       ) : (
-        <Text style={styles.quantity}>{cartItem.quantity}</Text>
+        <Text style={styles.quantity}>{quantity}</Text>
       )}
       <TouchableOpacity
-        onPress={() =>
-          changeQuantity(cartItem.itemId, cartItem.quantity + 1, cartItem?.sku)
-        }>
+        onPress={() => changeQuantity(itemId, quantity + 1, productSku)}>
         <Text style={styles.quantityText}>+</Text>
       </TouchableOpacity>
     </Box>

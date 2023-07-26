@@ -13,23 +13,23 @@ import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import {useDispatch, useSelector} from 'react-redux';
 import {RemoveIcon} from '../../assets/svgs';
+import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 
 const ConfiguredBundledCartItem = ({data, customerCartId}) => {
   const dispatch = useDispatch();
-
-  const [itemImages, setItemImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [templatePrice, setTemplatePrice] = useState(0);
+
+  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
 
   const changeQuantity = async (templateUUID, data, quantity) => {
     setIsLoading(true);
-    // console.log('slotUUID first: ', data[0]?.configuredBundle?.groupKey);
-    const groupKey = data[0]?.configuredBundle?.groupKey;
+    const groupKey = data[0]?.itemData?.attributes?.configuredBundle?.groupKey;
+
     const items = data.map(item => {
       return {
-        sku: item.sku,
+        sku: item.itemData?.attributes?.sku,
         quantity: quantity,
-        slotUuid: item.configuredBundleItem.slot.uuid,
+        slotUuid: item.itemData?.attributes?.configuredBundleItem?.slot?.uuid,
       };
     });
 
@@ -49,17 +49,25 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
       JSON.stringify(productCart),
     );
     const response = resp.data;
-    // console.log('response: ', response?.data?.data);
     if (response) {
-      dispatch(
-        getCustomerCartItems(
-          `carts/${customerCartId}?include=items%2Cbundle-items`,
-        ),
-      ).then(error => {
-        console.log('error: ', error);
+      dispatch(getCartDataNew(newCartApiUrl)).then(res => {
+        if (res.payload.status === 200) {
+          console.log('carts api call successful');
+          setIsLoading(false);
+        } else {
+          console.log('mulesoft carts api call not successful');
+          setIsLoading(false);
+        }
       });
+      // dispatch(
+      //   getCustomerCartItems(
+      //     `carts/${customerCartId}?include=items%2Cbundle-items`,
+      //   ),
+      // ).then(error => {
+      //   console.log('error: ', error);
+      // });
       dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
-      setIsLoading(false);
+      // setIsLoading(false);
     } else {
     }
   };
@@ -71,43 +79,29 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
       `carts/${customerCartId}/configured-bundles/${groupKey}`,
       '',
     );
-    dispatch(
-      getCustomerCartItems(
-        `carts/${customerCartId}?include=items%2Cbundle-items`,
-      ),
-    ).then(error => {
-      console.log('error: ', error);
-      setIsLoading(false);
+    // setIsLoading(false);
+
+    // dispatch(
+    //   getCustomerCartItems(
+    //     `carts/${customerCartId}?include=items%2Cbundle-items`,
+    //   ),
+    // ).then(error => {
+    //   console.log('error: ', error);
+    // });
+
+    dispatch(getCartDataNew(newCartApiUrl)).then(res => {
+      if (res.payload.status === 200) {
+        console.log('carts api call successful');
+        setIsLoading(false);
+      } else {
+        console.log('mulesoft carts api call not successful');
+        setIsLoading(false);
+      }
     });
+
     dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
     console.log(response);
   };
-
-  useEffect(() => {
-    const fetchProductData = async () => {
-      const updatedItems = await Promise.all(
-        data?.data?.map(async item => {
-          console.log('item: ', item.sku);
-          const response = await commonApi.get(
-            `concrete-products/${item.sku}?include=concrete-product-image-sets%2Cconcrete-product-prices`,
-            '',
-          );
-          const productImage =
-            response?.data?.data?.included?.[0]?.attributes?.imageSets?.[0]
-              ?.images?.[0]?.externalUrlLarge;
-          return {
-            ...item,
-            image: productImage,
-            name: response?.data?.data?.data?.attributes?.name,
-            price: response?.data?.data?.included?.[1]?.attributes?.price,
-          };
-        }),
-      );
-      setItemImages(updatedItems);
-    };
-
-    fetchProductData();
-  }, [data]);
 
   return (
     <Box
@@ -125,7 +119,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
         justifyContent="space-between"
         mb="s8">
         <Text fontSize={16} fontWeight="600">
-          {data?.templateName}
+          {data?.groupname}
         </Text>
         <Box flexDirection="row" alignItems="center">
           <TouchableOpacity onPress={() => removeItem(data?.groupKey)}>
@@ -140,23 +134,23 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
             <>
               <TouchableOpacity
                 onPress={() => {
-                  data?.quantity > 1
+                  data?.groupquantity > 1
                     ? changeQuantity(
-                        data?.templateUUID,
-                        itemImages,
-                        data?.quantity - 1,
+                        data?.templateUuid,
+                        data?.attributes,
+                        data?.groupquantity - 1,
                       )
                     : removeItem(data?.groupKey);
                 }}>
                 <Text style={styles.quantityText}>-</Text>
               </TouchableOpacity>
-              <Text style={styles.quantity}>{data?.quantity}</Text>
+              <Text style={styles.quantity}>{data?.groupquantity}</Text>
               <TouchableOpacity
                 onPress={() => {
                   changeQuantity(
-                    data?.templateUUID,
-                    itemImages,
-                    data?.quantity + 1,
+                    data?.templateUuid,
+                    data?.attributes,
+                    data?.groupquantity + 1,
                   );
                 }}>
                 <Text style={styles.quantityText}>+</Text>
@@ -166,8 +160,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
         </Box>
       </Box>
 
-      {itemImages?.map(item => {
-        // console.log('item: ', item);
+      {data?.attributes.map(item => {
         // setTemplatePrice(templatePrice + item.price * data.quantity);
         return (
           <Box
@@ -183,23 +176,23 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
                 <Image
                   style={{height: 120, width: 120, resizeMode: 'contain'}}
                   source={{
-                    uri: item.image,
+                    uri: item?.['concrete-product-image-sets']?.imageSets?.[0]
+                      ?.images?.[0]?.externalUrlLarge,
                   }}
                 />
               </Box>
-              <Box justifyContent="space-between" flex={1}>
-                <Box flex={1}>
-                  <Box flexShrink={1} flex={1}>
-                    <Text fontWeight="700">{item.name}</Text>
-                    <Text style={{fontWeight: '600', marginTop: 4}}>
-                      $ {item.price} x {data.quantity}
-                    </Text>
+              <Box justifyContent="space-between">
+                <Box>
+                  <Box flexDirection="row">
+                    <Text>{item?.['concrete-products']?.name}</Text>
                   </Box>
-                  <Box flex={1} justifyContent="flex-end">
-                    <Text style={{fontWeight: 'bold', marginTop: 4}}>
-                      $ {item.price * data.quantity}
-                    </Text>
-                  </Box>
+                  <Text style={{fontWeight: 'bold', marginTop: 4}}>
+                    $ {item?.itemData?.attributes?.calculations?.sumGrossPrice}{' '}
+                    x {data?.groupquantity} {''}
+                    {''}
+                    {item?.itemData?.attributes?.calculations?.sumGrossPrice *
+                      data?.groupquantity}
+                  </Text>
                 </Box>
               </Box>
             </Box>

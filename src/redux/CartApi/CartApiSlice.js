@@ -26,7 +26,6 @@ const getCustomerCartItemsAliSlice = createSlice({
       const cartItem = action?.payload?.data?.included;
       const newCartItems = [];
       cartItem?.map(item => {
-        console.log(' redux item: ', item);
         newCartItems.push({
           sku: item.attributes.sku,
           quantity: item.attributes.quantity,
