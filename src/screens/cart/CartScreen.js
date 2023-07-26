@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {ActivityIndicator, FlatList, ScrollView, Alert} from 'react-native';
 import {Box, Text, theme} from '@atoms';
 import {useSelector, useDispatch} from 'react-redux';
@@ -19,9 +19,13 @@ import * as Keychain from 'react-native-keychain';
 import CartItem from './CartItem';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
+import { useCartItemsCount } from '../../hooks/useCartItemsCount';
 
 const CartScreen = () => {
   const {signOut} = useContext(AuthContext);
+  const {cartItemsCount} = useCartItemsCount();
+  console.log('cartItemsCount: ', cartItemsCount);
+
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [cartItemsArray, setCartItemsArray] = useState([]);
@@ -242,7 +246,7 @@ const CartScreen = () => {
                   </Box>
                 </Box>
               </ScrollView>
-              {customerCartDataNew?.length !== 0 ? (
+              {cartItemsCount ? (
                 <Box padding="s16">
                   <CommonSolidButton
                     title="Proceed to Checkout"

@@ -17,17 +17,14 @@ import {useDispatch, useSelector} from 'react-redux';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const ViewData = [
     'HomeHeader',
     'ContentFullSection',
     'SelectShippingMethod',
     'CategorySection',
   ];
-
-const HomeScreen = () => {
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const ViewData = ['HomeHeader', 'ContentFullSection', 'CategorySection'];
   const insets = useSafeAreaInsets();
 
   const customerCartId = useSelector(

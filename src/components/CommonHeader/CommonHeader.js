@@ -7,52 +7,44 @@ import GoBackButton from '../GoBackButton/GoBackButton';
 import {CartIcon} from '../../assets/svgs';
 import {useGoToCart} from '../../hooks/useGoToCart';
 import {useSelector} from 'react-redux';
+import {useCartItemsCount} from '../../hooks/useCartItemsCount';
 // import GoBackButton from './GoBackButton/GoBackButton';
 
 const CommonHeader = ({title, onPress, showCartIcon = false, ...props}) => {
   const {goToCart} = useGoToCart();
+  const {cartItemsCount} = useCartItemsCount();
+  console.log('cartItemsCount: ', cartItemsCount);
 
-  const customerCartDataNew = useSelector(
-    state => state.getCartDataNewApiSlice?.cartDataNew.data,
-  );
-
-  function getTotalNormalProductsQuantity(arrayOfObjects) {
-    // Step 1: Use map() to extract an array of quantities
-    const quantities = arrayOfObjects?.map(
-      obj => obj?.itemData?.attributes?.quantity,
-    );
-
-    // Step 2: Use reduce() to sum up the quantities
-    const totalQuantity = quantities?.reduce(
-      (accumulator, currentQuantity) => accumulator + currentQuantity,
-      0,
-    );
-
-    return totalQuantity;
-  }
-
-  function getTotalConfiguredProductsQuantity(arrayOfObjects) {
-    // Step 1: Use map() to extract an array of quantities
-    const quantities = arrayOfObjects?.map(obj => obj?.groupquantity);
-
-    // Step 2: Use reduce() to sum up the quantities
-    const totalQuantity = quantities?.reduce(
-      (accumulator, currentQuantity) => accumulator + currentQuantity,
-      0,
-    );
-
-    return totalQuantity;
-  }
-
-  const cartItemsCount =
-    getTotalNormalProductsQuantity(customerCartDataNew?.normalProduct) +
-      getTotalConfiguredProductsQuantity(
-        customerCartDataNew?.configureBundle,
-      ) || null;
-
-  // const cartItemsCount = useSelector(
-  //   state => state.getCustomerCartItemsAliSlice.itemsCount,
+  // const customerCartDataNew = useSelector(
+  //   state => state.getCartDataNewApiSlice?.cartDataNew.data,
   // );
+
+  // function getTotalNormalProductsQuantity(arrayOfObjects) {
+  //   const quantities = arrayOfObjects?.map(
+  //     obj => obj?.itemData?.attributes?.quantity,
+  //   );
+  //   const totalQuantity = quantities?.reduce(
+  //     (accumulator, currentQuantity) => accumulator + currentQuantity,
+  //     0,
+  //   );
+
+  //   return totalQuantity;
+  // }
+
+  // function getTotalConfiguredProductsQuantity(arrayOfObjects) {
+  //   const quantities = arrayOfObjects?.map(obj => obj?.groupquantity);
+  //   const totalQuantity = quantities?.reduce(
+  //     (accumulator, currentQuantity) => accumulator + currentQuantity,
+  //     0,
+  //   );
+  //   return totalQuantity;
+  // }
+
+  // const cartItemsCount =
+  //   getTotalNormalProductsQuantity(customerCartDataNew?.normalProduct) +
+  //     getTotalConfiguredProductsQuantity(
+  //       customerCartDataNew?.configureBundle,
+  //     ) || null;
 
   const onPressCart = () => {
     goToCart();
