@@ -31,6 +31,7 @@ const BundlesSummaryScreen = props => {
       console.log('carts api call successful');
     });
   }, [props]);
+  
   const addToCart = async () => {
     CommonLoading.show();
     console.log('postProductSlotsData: ', postProductSlotsData);

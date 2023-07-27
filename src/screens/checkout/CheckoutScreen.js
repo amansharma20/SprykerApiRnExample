@@ -131,6 +131,7 @@ const CheckoutScreen = props => {
       },
     },
   };
+  console.log('orderData: ', orderData.data.attributes.shipments);
 
   const orderConfirm = async () => {
     // setIsOrderConfirmedLoading(true);
@@ -227,7 +228,7 @@ const CheckoutScreen = props => {
             <>
               <Box paddingHorizontal="paddingHorizontal">
                 <Box mb="s16">
-                  <Text mb="s16" variant="regular16">
+                  <Text mb="s8" variant="regular16">
                     Select Address
                   </Text>
                   <CommonOptionsSelector
