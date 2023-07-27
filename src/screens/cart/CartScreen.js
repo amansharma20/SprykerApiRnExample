@@ -14,12 +14,9 @@ import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidBut
 import ConfiguredBundledCartItem from './ConfiguredBundledCartItem';
 import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
 import {AuthContext} from '../../navigation/StackNavigator';
-import axios from 'axios';
-import * as Keychain from 'react-native-keychain';
 import CartItem from './CartItem';
-import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
-import { useCartItemsCount } from '../../hooks/useCartItemsCount';
+import {useCartItemsCount} from '../../hooks/useCartItemsCount';
 
 const CartScreen = () => {
   const {signOut} = useContext(AuthContext);
@@ -29,8 +26,6 @@ const CartScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [cartItemsArray, setCartItemsArray] = useState([]);
-  // const [cartItems, setCartItems] = useState(null);
-  // console.log('cartItems: ', cartItems);
   const {isUserLoggedIn} = useIsUserLoggedIn();
 
   const [allProductAvailableInCarts, setAllProductsAvailableInCarts] =
@@ -89,48 +84,6 @@ const CartScreen = () => {
   //   }
   // }, [customerCartDataNew]);
 
-  // useEffect(() => {
-  //   const getCartItems = async () => {
-  //     setIsLoading(true);
-  //     let userToken = await Keychain.getGenericPassword();
-  //     let token = userToken.password;
-  //     const res = await axios
-  //       .get(
-  //         `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`,
-  //         {
-  //           headers: {
-  //             Authorization: token,
-  //             'Content-Type': 'application/json',
-  //           },
-  //           validateStatus: () => true,
-  //         },
-  //       )
-  //       .catch(function (error) {
-  //         console.log('error: ', error);
-  //         setIsLoading(false);
-  //         if (error) {
-  //           Alert.alert('Error', 'something went wrong', [
-  //             {
-  //               text: 'OK',
-  //             },
-  //           ]);
-  //         }
-  //       });
-
-  //     setCartItems(res?.data);
-  //     for (const item of res?.data?.normalProduct) {
-  //       const availability =
-  //         item?.['concrete-product-availabilities']?.availability;
-  //       if (!availability) {
-  //         setAllProductsAvailableInCarts(false);
-  //         break;
-  //       }
-  //     }
-  //     setIsLoading(false);
-  //   };
-  //   getCartItems();
-  // }, []);
-
   useEffect(() => {
     if (customerCarts.length === 0) {
       console.log('customerCarts.length: ', customerCarts.length);
@@ -158,9 +111,6 @@ const CartScreen = () => {
         }
       });
     }
-    // dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
-    //   console.log('carts api call successful');
-    // });
   }, []);
 
   const grandTotal = customerCart?.attributes?.totals?.grandTotal;
@@ -172,19 +122,6 @@ const CartScreen = () => {
       </Box>
     );
   };
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   if (customerCartId) {
-  //     dispatch(
-  //       getCustomerCartItems(
-  //         `carts/${customerCartId}?include=items%2Cbundle-items`,
-  //       ),
-  //     ).then(() => {
-  //       setIsLoading(false);
-  //     });
-  //   }
-  // }, [dispatch, customerCartId, isUserLoggedIn]);
 
   return (
     <Box flex={1} backgroundColor="white">
@@ -237,7 +174,7 @@ const CartScreen = () => {
                     flexDirection="row"
                     paddingVertical="s8">
                     <Text>
-                      {customerCartData.length != 0 ? (
+                      {customerCartDataNew.length != 0 ? (
                         <Text variant="bold24">Total : $ {grandTotal}</Text>
                       ) : (
                         ''
