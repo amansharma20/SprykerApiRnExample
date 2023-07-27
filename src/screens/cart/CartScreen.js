@@ -21,7 +21,6 @@ import {useCartItemsCount} from '../../hooks/useCartItemsCount';
 const CartScreen = () => {
   const {signOut} = useContext(AuthContext);
   const {cartItemsCount} = useCartItemsCount();
-  console.log('cartItemsCount: ', cartItemsCount);
 
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +43,6 @@ const CartScreen = () => {
   const customerCartData = useSelector(
     state => state.getCustomerCartItemsAliSlice?.customerCart || [],
   );
-  console.log('customerCartData: ', customerCartData.length);
 
   const customerCart = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
@@ -53,7 +51,6 @@ const CartScreen = () => {
   const customerCartDataNew = useSelector(
     state => state.getCartDataNewApiSlice?.cartDataNew.data,
   );
-  console.log('customerCartDataNew: ', customerCartDataNew);
 
   const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
 
@@ -69,7 +66,26 @@ const CartScreen = () => {
         }
       });
     }
-  }, []);
+  }, [customerCartId]);
+
+  useEffect(() => {
+    if (customerCartDataNew?.length !== 0 && customerCartId) {
+      console.log('HERE');
+      let tempArr = [];
+
+      customerCartDataNew?.normalProduct?.map(item => {
+        tempArr.push(item.itemData.id);
+      });
+
+      customerCartDataNew?.configureBundle?.map(item => {
+        item.attributes.map(subItem => {
+          tempArr.push(subItem.itemData.attributes.groupKey);
+        });
+      });
+
+      setCartItemsArray(tempArr);
+    }
+  }, [customerCartDataNew]);
 
   // useEffect(() => {
   //   if (customerCartDataNew?.length !== 0) {
@@ -86,7 +102,6 @@ const CartScreen = () => {
 
   useEffect(() => {
     if (customerCarts.length === 0) {
-      console.log('customerCarts.length: ', customerCarts.length);
       const data = {
         type: 'carts',
         attributes: {

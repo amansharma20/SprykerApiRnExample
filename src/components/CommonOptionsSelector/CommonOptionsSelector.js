@@ -27,7 +27,6 @@ const CommonOptionsSelector = ({
         setFlatListArray(newArr);
       }
       if (handleClosePress) {
-        console.log('handleClosePress: ', handleClosePress);
         const wait = new Promise(resolve => setTimeout(resolve, 500));
         wait.then(() => {
           handleClosePress();
@@ -61,19 +60,27 @@ const CommonOptionsSelector = ({
             size={20}
           />
           <Box width={'100%'} flexShrink={1} justifyContent="center">
-            {item.firstName != '' ? (
-              <Text variant="bold14" lineHeight={20} numberOfLines={2}>
-                {item.firstName}
-              </Text>
+            {item.firstName != undefined ? (
+              <>
+                <Text variant="bold14" lineHeight={20} numberOfLines={2}>
+                  {item.firstName}
+                </Text>
+                <Text
+                  variant="regular14LightBlack"
+                  lineHeight={20}
+                  numberOfLines={2}>
+                  {item.title}
+                </Text>
+              </>
             ) : (
-              ''
+              <Text
+                variant="regular14LightBlack"
+                lineHeight={20}
+                numberOfLines={2}
+                fontWeight="700">
+                {item.title}
+              </Text>
             )}
-            <Text
-              variant="regular14LightBlack"
-              lineHeight={20}
-              numberOfLines={2}>
-              {item.title}
-            </Text>
           </Box>
         </Box>
       </TouchableOpacity>

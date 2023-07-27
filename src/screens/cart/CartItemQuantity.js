@@ -11,7 +11,6 @@ import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/Custome
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 
 const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
-  console.log('cartItem: ', cartItem?.itemData?.id);
   const quantity = cartItem?.itemData?.attributes?.quantity;
   const itemId = cartItem?.itemData?.id;
   const productSku = cartItem?.itemData?.attributes?.sku;
