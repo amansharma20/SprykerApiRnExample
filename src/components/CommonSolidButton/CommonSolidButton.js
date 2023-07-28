@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: 40,
-    backgroundColor: theme.colors.purple,
+    backgroundColor: theme.colors.zomatoRed,
     borderRadius: theme.spacing.lml,
     justifyContent: 'center',
     alignSelf: 'center',

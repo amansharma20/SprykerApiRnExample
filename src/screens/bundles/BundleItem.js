@@ -29,9 +29,8 @@ const BundleItem = ({
 }) => {
   const [productsArray, setProductsArray] = useState([]);
 
-  const Item = ({item}) => {
+  const Item = ({item, index}) => {
     const onPressItem = () => {
-      console.log('item: ', item);
       let newArr = [];
       if ((productsArray || item.index !== -1) && item.isSelected === false) {
         productsArray[item.index].isSelected = !item.isSelected;
@@ -107,23 +106,25 @@ const BundleItem = ({
     );
   };
 
-  const renderItem = ({item}) => <Item item={item} />;
+  const renderItem = ({item, index}) => <Item item={item} index={index} />;
 
-  const addQuestions = BundleData?.map((item, index) => {
+  const addProducts = BundleData?.map((item, index) => {
     return {
       id: item?.id,
       index: index,
       isSelected: false,
-      name: item.name,
-      price: item.price,
-      image: item?.image,
-      sku: item?.sku,
+      name: item?.['concrete-products']?.name,
+      price: item?.['concrete-product-prices']?.price,
+      image:
+        item?.['concrete-product-image-sets']?.imageSets?.[0]?.images?.[0]
+          ?.externalUrlLarge,
+      sku: item?.['concrete-products']?.sku,
       slotID: slotID,
     };
   });
 
   useEffect(() => {
-    setProductsArray(addQuestions);
+    setProductsArray(addProducts);
   }, []);
 
   return (

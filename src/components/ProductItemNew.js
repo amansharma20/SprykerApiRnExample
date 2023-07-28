@@ -59,7 +59,7 @@ export default function ProductItem({item, includedData, index}) {
     state => state?.getProductsByWishlistApiSlice?.productsByWishlist?.data,
   );
 
-  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart.id}`;
+  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart?.id}`;
 
   const onPressAddToCart = async () => {
     CommonLoading.show();
@@ -214,18 +214,22 @@ export default function ProductItem({item, includedData, index}) {
           </Box>
           <TouchableOpacity onPress={onPressAddToCart}>
             <Box
-              backgroundColor="purple"
-              padding="s4"
-              paddingHorizontal="s8"
+              backgroundColor="zomatoRed"
+              padding="s6"
+              paddingHorizontal="s16"
               borderRadius={8}
               flexDirection="row"
-              alignItems="center">
+              alignItems="center"
+              shadowColor="black"
+              shadowOpacity={0.1}
+              shadowRadius={5}
+              elevation={3}>
               <Text
-                fontSize={14}
+                fontSize={16}
                 color="white"
-                fontWeight="600"
+                fontWeight="700"
                 marginRight="s4">
-                Add
+                ADD
               </Text>
               <Image
                 source={Icons.addToCartIcon}

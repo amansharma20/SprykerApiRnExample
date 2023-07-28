@@ -40,6 +40,7 @@ export const theme = createTheme({
     activeDot: '#505050',
     transparent: 'transparent',
     sushiittoRed: '#F50145',
+    zomatoRed: '#ED5469',
     veryLightRed: '#F7F1F3',
     snowy: '#F9F9F9',
     ...globalPallete,

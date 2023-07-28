@@ -89,6 +89,7 @@ const VerticalList = ({
 
   const renderHeader = ({
     section,
+    index,
   }: {
     section: SectionListData<any>;
   }): React.ReactElement<
@@ -104,7 +105,7 @@ const VerticalList = ({
           justifyContent="flex-end"
           paddingVertical="s8">
           <Text fontSize={18} fontWeight="700">
-            {section.title}
+            {section.title} {`(${section.data.length})`}
           </Text>
         </Box>
       );

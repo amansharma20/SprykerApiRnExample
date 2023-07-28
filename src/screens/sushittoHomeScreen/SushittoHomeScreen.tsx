@@ -30,9 +30,6 @@ const SushittoHomeScreen = () => {
             'https://categoriestree-5g04sc.5sc6y6-2.usa-e2.cloudhub.io/catalogsearch',
           )
           .then(response => {
-            console.log('response.status: ', response.status);
-            // console.log('response: ', response);
-            console.log('response.data: ', response.data);
             setApiData(response.data);
             setIsLoading(false);
           });

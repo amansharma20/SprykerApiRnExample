@@ -34,6 +34,7 @@ import ConfigurableBundleSlotsScreen from '../screens/configuredBundle/Configura
 import BundlesSummaryScreen from '../screens/bundles/BundlesSummaryScreen';
 import {getProductsByWishlistAsyncThunk} from '../redux/wishlist/ProductsWishlistApiAsyncThunk';
 import {getCartDataNew} from '../redux/newCartApi/NewCartApiAsyncThunk';
+import BundlesScreenNew from '../screens/bundles/BundlesScreenNew';
 
 export const AuthContext = React.createContext();
 
@@ -255,6 +256,7 @@ export default function StackNavigator() {
           component={SushittoHomeScreen}
         />
         <Stack.Screen name="BundlesScreen" component={BundlesScreen} />
+        <Stack.Screen name="BundlesScreenNew" component={BundlesScreenNew} />
         <Stack.Screen
           name="ConfiguredBundleScreen"
           component={ConfiguredBundleScreen}

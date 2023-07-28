@@ -235,13 +235,13 @@ const CartScreen = () => {
 
                       return <CartItem item={data} />;
                     }}
-                    ListEmptyComponent={
-                      isLoading === false ? (
-                        <ListEmptyComponent />
-                      ) : (
-                        <ActivityIndicator />
-                      )
-                    }
+                    // ListEmptyComponent={
+                    //   isLoading === false ? (
+                    //     <ListEmptyComponent />
+                    //   ) : (
+                    //     <ActivityIndicator />
+                    //   )
+                    // }
                     scrollEnabled={false}
                   />
                   {cartItemsCount ? (
@@ -260,7 +260,9 @@ const CartScreen = () => {
                       </Box>
                     </>
                   ) : (
-                    <></>
+                    <>
+                      <ListEmptyComponent />
+                    </>
                   )}
                 </Box>
               </ScrollView>

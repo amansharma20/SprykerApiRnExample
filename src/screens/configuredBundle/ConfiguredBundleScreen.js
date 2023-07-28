@@ -29,7 +29,10 @@ const ConfiguredBundleScreen = () => {
       <>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('BundlesScreen', {
+            // navigation.navigate('BundlesScreen', {
+            //   configurableBundleId: bundle?.id,
+            // })
+            navigation.navigate('BundlesScreenNew', {
               configurableBundleId: bundle?.id,
             })
           }>
