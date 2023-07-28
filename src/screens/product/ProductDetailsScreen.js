@@ -423,7 +423,7 @@ const ProductDetailsScreen = props => {
               // onPress={onPressAddToCart}
               disabled={!productAvailability}
             />
-            <Box mt="s8">
+            {/* <Box mt="s8">
               <TouchableOpacity
                 style={styles.wishListContainer}
                 onPress={selectShoppingList}>
@@ -431,7 +431,7 @@ const ProductDetailsScreen = props => {
                   {isLoadingShopingList ? 'Loading...' : 'Add to Shopping List'}
                 </Text>
               </TouchableOpacity>
-            </Box>
+            </Box> */}
           </Box>
 
           <DynamicSnapPointBottomSheet

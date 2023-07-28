@@ -38,19 +38,21 @@ const CartItem = ({item}) => {
       .Delete(`carts/${customerCart.id}/items/${itemId}`)
       .then(res => {
         if (res.data.status == 204) {
-          dispatch(
-            getCustomerCartItems(
-              `carts/${customerCart.id}?include=items%2Cbundle-items`,
-            ),
-          ).then(() => {
-            setIsLoading(false);
-          });
+          // dispatch(
+          //   getCustomerCartItems(
+          //     `carts/${customerCart.id}?include=items%2Cbundle-items`,
+          //   ),
+          // ).then(() => {
+          //   setIsLoading(false);
+          // });
           // dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
           dispatch(getCartDataNew(newCartApiUrl)).then(res => {
             if (res.payload.status === 200) {
               console.log('carts api call successful');
+              setIsLoading(false);
             } else {
               console.log('mulesoft carts api call not successful');
+              setIsLoading(false);
             }
           });
         }

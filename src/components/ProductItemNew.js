@@ -12,6 +12,7 @@ import {CustomerCartIdApiAsyncThunk} from '../redux/customerCartIdApi/CustomerCa
 import CommonLoading from './CommonLoading';
 import {getCustomerWishlist} from '../redux/wishlist/GetWishlistApiAsyncThunk';
 import {getProductsByWishlistAsyncThunk} from '../redux/wishlist/ProductsWishlistApiAsyncThunk';
+import {getCartDataNew} from '../redux/newCartApi/NewCartApiAsyncThunk';
 
 export default function ProductItem({item, includedData, index}) {
   const navigation = useNavigation();
@@ -58,6 +59,8 @@ export default function ProductItem({item, includedData, index}) {
     state => state?.getProductsByWishlistApiSlice?.productsByWishlist?.data,
   );
 
+  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart.id}`;
+
   const onPressAddToCart = async () => {
     CommonLoading.show();
     const response = await api.post(
@@ -65,15 +68,25 @@ export default function ProductItem({item, includedData, index}) {
       productData,
     );
     if (response?.data?.status === 201) {
-      dispatch(
-        getCustomerCartItems(
-          `carts/${customerCart?.id}?include=items%2Cbundle-items`,
-        ),
-      ).then(res => {
+      // dispatch(
+      //   getCustomerCartItems(
+      //     `carts/${customerCart?.id}?include=items%2Cbundle-items`,
+      //   ),
+      // ).then(res => {
+      //   if (res.payload.status === 200) {
+      //     alert('Added to Cart');
+      //   }
+      //   CommonLoading.hide();
+      // });
+      dispatch(getCartDataNew(newCartApiUrl)).then(res => {
         if (res.payload.status === 200) {
+          console.log('carts api call successful');
           alert('Added to Cart');
+          CommonLoading.hide();
+        } else {
+          console.log('mulesoft carts api call not successful');
+          CommonLoading.hide();
         }
-        CommonLoading.hide();
       });
       dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
     } else {

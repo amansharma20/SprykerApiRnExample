@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useState, useEffect, useContext} from 'react';
-import {ActivityIndicator, FlatList, ScrollView, Alert} from 'react-native';
+import {ActivityIndicator, FlatList, ScrollView} from 'react-native';
 import {Box, Text, theme} from '@atoms';
 import {useSelector, useDispatch} from 'react-redux';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
@@ -14,10 +14,7 @@ import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidBut
 import ConfiguredBundledCartItem from './ConfiguredBundledCartItem';
 import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
 import {AuthContext} from '../../navigation/StackNavigator';
-import axios from 'axios';
-import * as Keychain from 'react-native-keychain';
 import CartItem from './CartItem';
-import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {useCartItemsCount} from '../../hooks/useCartItemsCount';
 
@@ -178,7 +175,7 @@ const CartScreen = () => {
     // });
   }, []);
 
-  const grandTotal = customerCart?.attributes?.totals?.grandTotal;
+  const grandTotal = customerCartDataNew?.attributes?.totals?.grandTotal;
 
   const ListEmptyComponent = () => {
     return (
@@ -247,18 +244,24 @@ const CartScreen = () => {
                     }
                     scrollEnabled={false}
                   />
-                  <Box
-                    justifyContent="flex-end"
-                    flexDirection="row"
-                    paddingVertical="s8">
-                    <Text>
-                      {customerCartDataNew.length != 0 ? (
-                        <Text variant="bold24">Total : $ {grandTotal}</Text>
-                      ) : (
-                        ''
-                      )}
-                    </Text>
-                  </Box>
+                  {cartItemsCount ? (
+                    <>
+                      <Box
+                        justifyContent="flex-end"
+                        flexDirection="row"
+                        paddingVertical="s8">
+                        <Text>
+                          {customerCartDataNew.length != 0 ? (
+                            <Text variant="bold24">Total : $ {grandTotal}</Text>
+                          ) : (
+                            ''
+                          )}
+                        </Text>
+                      </Box>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </Box>
               </ScrollView>
               {cartItemsCount ? (
