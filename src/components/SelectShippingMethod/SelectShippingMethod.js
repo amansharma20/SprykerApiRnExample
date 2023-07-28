@@ -6,7 +6,6 @@ import Icons from '../../assets/constants/Icons';
 
 const SelectShippingMethod = () => {
   const [selectedOption, setSelectedOption] = useState('delivery');
-  console.log('selectedOption: ', selectedOption);
 
   const IS_DELIVERY = selectedOption === 'delivery';
   const IS_PICK_UP = selectedOption === 'pickup';
@@ -17,7 +16,7 @@ const SelectShippingMethod = () => {
 
   return (
     <Box
-      flex={1}
+      // flex={1}
       justifyContent="center"
       alignItems="center"
       paddingVertical="s16"

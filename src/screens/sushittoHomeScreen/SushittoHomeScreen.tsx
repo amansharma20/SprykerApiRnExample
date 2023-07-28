@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect, useState} from 'react';
 import {
@@ -8,12 +9,10 @@ import {
   View,
 } from 'react-native';
 import {SyncedList} from './components';
-import {listData} from './mock-data';
-import {DUMMYDATA} from './dummy-data';
-import {api} from '../../api/SecureAPI';
 import axios from 'axios';
-import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import ProductItemNew from '../../components/ProductItemNew';
+import Box from '../../atoms/box';
+import HomeShimmers from '../../components/shimmers/HomeShimmers';
 
 const SushittoHomeScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -67,16 +66,13 @@ const SushittoHomeScreen = () => {
 
   const renderVerticalItem = (item: any, index: Number) => {
     return (
-      <>
-        {/* <View style={styles.verticalItemContainer}>
-        <Text>{item.attributes?.name}</Text>
-      </View> */}
+      <Box backgroundColor="white" paddingHorizontal="paddingHorizontal">
         <ProductItemNew
           item={item?.attributes}
           includedData={undefined}
           index={index}
         />
-      </>
+      </Box>
     );
   };
 
@@ -91,24 +87,23 @@ const SushittoHomeScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <CommonHeader title={'Sushiitto Menu'} onPress={undefined} showCartIcon />
+    <SafeAreaView style={[styles.container]}>
+      {/* <CommonHeader title={'Sushiitto Menu'} onPress={undefined} showCartIcon /> */}
+
       {isLoading ? (
         <>
-          <ActivityIndicator />
+          <HomeShimmers />
         </>
       ) : (
-        <>
-          <SyncedList
-            // data={listData}
-            // data={DUMMYDATA.data.Menu}
-            data={apiData}
-            horizontalListContainerStyle={styles.horizontalListContainerStyle}
-            renderHorizontalItem={renderHorizontalItem}
-            renderSectionHeader={renderSectionHeader}
-            renderVerticalItem={renderVerticalItem}
-          />
-        </>
+        <SyncedList
+          // data={listData}
+          // data={DUMMYDATA.data.Menu}
+          data={apiData}
+          horizontalListContainerStyle={styles.horizontalListContainerStyle}
+          // renderHorizontalItem={renderHorizontalItem}
+          // renderSectionHeader={renderSectionHeader}
+          renderVerticalItem={renderVerticalItem}
+        />
       )}
     </SafeAreaView>
   );
@@ -127,7 +122,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 8,
     paddingHorizontal: 24,
-    paddingTop: 24,
+    // paddingTop: 48,
+    backgroundColor: 'green',
+    height: 48,
   },
   horizontalItemWrapper: {
     borderRadius: 7,
@@ -141,7 +138,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     height: 23,
     justifyContent: 'center',
-    paddingHorizontal: 12,
     width: '100%',
   },
   itemContainer: {

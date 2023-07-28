@@ -27,6 +27,7 @@ import DynamicSnapPointBottomSheet from '../../components/bottomsheets/DynamicSn
 import {getProductsByWishlistAsyncThunk} from '../../redux/wishlist/ProductsWishlistApiAsyncThunk';
 import ProductOffer from './ProductOffer';
 import axios from 'axios';
+import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
@@ -83,6 +84,8 @@ const ProductDetailsScreen = props => {
     productData?.[selectedVariantIndex]?.attributes?.description;
   const productOffer = productData?.[selectedVariantIndex]?.productOffers;
 
+  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart.id}`;
+
   const onPressAddToCart = () => {
     isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
   };
@@ -118,15 +121,25 @@ const ProductDetailsScreen = props => {
         productData,
       );
       if (response?.data?.status === 201) {
-        dispatch(
-          getCustomerCartItems(
-            `carts/${customerCart.id}?include=items%2Cbundle-items`,
-          ),
-        ).then(res => {
+        // dispatch(
+        //   getCustomerCartItems(
+        //     `carts/${customerCart.id}?include=items%2Cbundle-items`,
+        //   ),
+        // ).then(res => {
+        //   if (res.payload.status === 200) {
+        //     alert('Added to Cart');
+        //   }
+        //   CommonLoading.hide();
+        // });
+        dispatch(getCartDataNew(newCartApiUrl)).then(res => {
           if (res.payload.status === 200) {
+            console.log('carts api call successful');
+            CommonLoading.hide();
             alert('Added to Cart');
+          } else {
+            CommonLoading.hide();
+            console.log('mulesoft carts api call not successful');
           }
-          CommonLoading.hide();
         });
         dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
       } else {

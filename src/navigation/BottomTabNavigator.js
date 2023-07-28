@@ -8,6 +8,7 @@ import CartScreen from '../screens/cart/CartScreen';
 import {HomeIcon} from '../assets/svgs';
 import {Image} from 'react-native';
 import Icons from '../assets/constants/Icons';
+import SushittoHomeScreen from '../screens/sushittoHomeScreen/SushittoHomeScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -30,7 +31,7 @@ export default function BottomTabNavigator() {
       screenOptions={{headerShown: false, tabBarActiveTintColor: '#4486c6'}}>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={SushittoHomeScreen}
         options={{
           tabBarIcon: ({focused, color}) => {
             return (
@@ -39,6 +40,17 @@ export default function BottomTabNavigator() {
           },
         }}
       />
+       {/* <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({focused, color}) => {
+            return (
+              <Icon source={Icons.homeIcon} focused={focused} color={color} />
+            );
+          },
+        }}
+      /> */}
       {/* <Tab.Screen name="Search" component={SearchScreen} /> */}
       <Tab.Screen
         name="Cart"

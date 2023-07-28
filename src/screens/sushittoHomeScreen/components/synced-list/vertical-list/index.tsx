@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Dimensions,
   SectionList,
   SectionListData,
   StyleSheet,
@@ -10,8 +9,11 @@ import {
 } from 'react-native';
 
 import {VerticalListProps} from '../types';
-import {FlashList} from '@shopify/flash-list';
-import {Box, theme, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
+import HomeHeader from '../../../../home/homeHeader/HomeHeader';
+import ContentFullSection from '../../../../home/contentFull/ContentFullSection';
+import SelectShippingMethod from '../../../../../components/SelectShippingMethod/SelectShippingMethod';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const VerticalList = ({
   data,
@@ -24,7 +26,13 @@ const VerticalList = ({
   selected,
   setSelected,
   verticalListProps,
+  headerPassed,
+  setHeaderPassed,
+  hideComponentWithAnimation,
+  showComponentWithAnimation,
 }: VerticalListProps) => {
+  const insets = useSafeAreaInsets();
+
   const onViewableItemsChanged = ({
     viewableItems,
   }: {
@@ -35,11 +43,13 @@ const VerticalList = ({
       const id = viewableItems?.[0]?.section?.id;
       if (id !== selected) {
         setSelected(id);
+        console.log('mapping[id]: ', mapping[id]);
         if (horizontalScrollRef?.current) {
+          console.log('HERE');
           horizontalScrollRef.current.scrollToIndex({
             animated: true,
             index: mapping[id],
-            viewPosition: 0.5,
+            viewPosition: 0,
           });
         }
       }
@@ -70,7 +80,7 @@ const VerticalList = ({
       return renderVerticalItem(item);
     } else {
       return (
-        <View style={styles.itemContainer}>
+        <View style={[styles.itemContainer]}>
           <Text>{item}</Text>
         </View>
       );
@@ -89,11 +99,14 @@ const VerticalList = ({
       return renderSectionHeader(section);
     } else {
       return (
-        <View style={styles.headerContainer}>
-          <View style={styles.innerHeaderContainer}>
-            <Text style={styles.header}>{section.title}</Text>
-          </View>
-        </View>
+        <Box
+          paddingHorizontal="s16"
+          justifyContent="flex-end"
+          paddingVertical="s8">
+          <Text fontSize={18} fontWeight="700">
+            {section.title}
+          </Text>
+        </Box>
       );
     }
   };
@@ -130,10 +143,36 @@ const VerticalList = ({
     })
     .filter(item => item !== null) as number[];
 
+  const handleScroll = event => {
+    const scrollOffsetY = event.nativeEvent.contentOffset.y;
+    const headerComponentHeight = 460; // Replace this with the actual height of your header component
+
+    // Check if the scroll offset has passed the header component
+    if (scrollOffsetY > headerComponentHeight) {
+      if (!headerPassed) {
+        setHeaderPassed(true);
+        showComponentWithAnimation();
+        console.log('Scrolled past the header component!');
+        // You can now perform any actions or state changes here
+        // to indicate that the header component is no longer visible.
+      }
+    } else {
+      if (headerPassed) {
+        setHeaderPassed(false);
+        hideComponentWithAnimation();
+        console.log('AYAY');
+      }
+    }
+  };
+
+  useEffect(() => {
+    hideComponentWithAnimation();
+  }, []);
+
   return (
     <Box flex={1}>
       <SectionList
-        contentContainerStyle={styles.contentContainerStyle}
+        contentContainerStyle={[styles.contentContainerStyle]}
         initialNumToRender={40}
         keyExtractor={keyExtractor}
         onScrollToIndexFailed={() => {
@@ -150,6 +189,15 @@ const VerticalList = ({
           itemVisiblePercentThreshold: 50,
         }}
         {...getSectionListProps()}
+        ListHeaderComponent={
+          <Box justifyContent="center">
+            <HomeHeader />
+            <ContentFullSection />
+            <SelectShippingMethod />
+          </Box>
+        }
+        onScroll={handleScroll}
+        ListHeaderComponentStyle={{paddingHorizontal: 0}}
       />
       {/* <Box flex={1} backgroundColor="white">
         {flattenedData?.length > 0 ? (
@@ -212,7 +260,7 @@ const VerticalList = ({
 
 const styles = StyleSheet.create({
   contentContainerStyle: {
-    paddingBottom: 80,
+    paddingBottom: 0,
   },
   header: {
     color: 'white',

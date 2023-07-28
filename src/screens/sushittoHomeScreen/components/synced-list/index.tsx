@@ -1,6 +1,7 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, SectionList, View} from 'react-native';
+import {FlatList, SectionList, Animated} from 'react-native';
 
 import VerticalList from './vertical-list';
 import HorizontalList from './horizontal-list';
@@ -27,8 +28,29 @@ IProps) => {
   const [mapping, setMapping] = useState({});
 
   const onSelect = useCallback(id => {
+    console.log('id: ', id);
     setSelected(id);
   }, []);
+
+  const slideAnimation = useRef(new Animated.Value(0)).current;
+  const [headerPassed, setHeaderPassed] = useState(false);
+  console.log('headerPassed: ', headerPassed);
+
+  const hideComponentWithAnimation = () => {
+    Animated.timing(slideAnimation, {
+      toValue: -500, // Replace with the height of the component you want to slide out
+      duration: 500, // Adjust the duration as desired
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const showComponentWithAnimation = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
 
   useEffect(() => {
     if (data?.length) {
@@ -74,18 +96,25 @@ IProps) => {
 
   return (
     <Box flex={1}>
-      <HorizontalList
-        contentContainerStyle={horizontalListContainerStyle}
-        data={data}
-        onSelect={onSelect}
-        renderHorizontalItem={renderHorizontalItem}
-        scrollRef={horizontalRef}
-        selected={selected}
-        setHorizontalPressed={setHorizontalPressed}
-        verticalScrollRef={verticalRef}
-        horizontalListProps={horizontalListProps}
-      />
-      <Box flex={1} paddingHorizontal="s8">
+      <Animated.View
+        style={{
+          transform: [{translateY: slideAnimation}],
+          position: 'absolute',
+          zIndex: 100,
+        }}>
+        <HorizontalList
+          contentContainerStyle={horizontalListContainerStyle}
+          data={data}
+          onSelect={onSelect}
+          renderHorizontalItem={renderHorizontalItem}
+          scrollRef={horizontalRef}
+          selected={selected}
+          setHorizontalPressed={setHorizontalPressed}
+          verticalScrollRef={verticalRef}
+          horizontalListProps={horizontalListProps}
+        />
+      </Animated.View>
+      <Box flex={1}>
         <VerticalList
           contentContainerStyle={verticalListContainerStyle}
           data={data}
@@ -98,6 +127,10 @@ IProps) => {
           selected={selected}
           setSelected={setSelected}
           verticalListProps={verticalListProps}
+          headerPassed={headerPassed}
+          setHeaderPassed={setHeaderPassed}
+          hideComponentWithAnimation={hideComponentWithAnimation}
+          showComponentWithAnimation={showComponentWithAnimation}
         />
       </Box>
     </Box>

@@ -39,7 +39,7 @@ const ContentFullSection = () => {
           marginHorizontal="paddingHorizontal"
           backgroundColor="white"
           borderRadius={8}
-          flex={1}
+          // flex={1}
           shadowColor="black"
           shadowOpacity={0.1}
           shadowRadius={10}
@@ -217,7 +217,7 @@ const ContentFullSection = () => {
   }, []);
 
   return (
-    <Box flex={1}>
+    <Box>
       <Box>
         <Animated.FlatList
           ref={flatListRef}

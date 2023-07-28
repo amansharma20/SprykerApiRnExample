@@ -161,8 +161,7 @@ export default function ProductItem({item, includedData, index}) {
 
   return (
     <Box
-      // flex={1}
-      marginHorizontal="s4"
+      backgroundColor="white"
       flexShrink={1}
       mb="s8"
       borderWidth={1}

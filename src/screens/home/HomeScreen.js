@@ -18,6 +18,12 @@ import {useDispatch, useSelector} from 'react-redux';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
+
+  const customerCartId = useSelector(
+    state =>
+      state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
+  );
 
   const ViewData = [
     'HomeHeader',
@@ -25,12 +31,6 @@ const HomeScreen = () => {
     'SelectShippingMethod',
     'CategorySection',
   ];
-  const insets = useSafeAreaInsets();
-
-  const customerCartId = useSelector(
-    state =>
-      state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
-  );
 
   const renderHomeItems = useCallback(({item}) => {
     switch (item) {

@@ -1,7 +1,9 @@
 import React from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {DataItem, HorizontalListProps} from '../types';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Text, theme} from '@atoms';
 
 const HorizontalList = ({
   contentContainerStyle,
@@ -14,6 +16,8 @@ const HorizontalList = ({
   verticalScrollRef,
   horizontalListProps,
 }: HorizontalListProps) => {
+  const insets = useSafeAreaInsets();
+
   const onItemPress = (id: number | string, i: number) => {
     setHorizontalPressed(true);
     onSelect(id);
@@ -23,13 +27,14 @@ const HorizontalList = ({
         itemIndex: 0,
         sectionIndex: i,
         viewPosition: 0,
+        viewOffset: 50,
       });
     }
     if (scrollRef?.current) {
       scrollRef.current.scrollToIndex({
         animated: true,
         index: i,
-        viewPosition: 0.5,
+        viewPosition: 0.25,
       });
     }
 
@@ -43,18 +48,18 @@ const HorizontalList = ({
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() => onItemPress(item.id, index)}>
-        {renderHorizontalItem ? (
-          renderHorizontalItem(index, selected === item.id, item)
-        ) : (
-          <View
-            style={
-              selected === item.id
-                ? [styles.itemContainer, styles.itemContainerSelected]
-                : styles.itemContainer
-            }>
-            <Text>{item.title}</Text>
-          </View>
-        )}
+        <View
+          style={
+            selected === item.id
+              ? [styles.itemContainer, styles.itemContainerSelected]
+              : styles.itemContainer
+          }>
+          <Text
+            fontSize={selected === item.id ? 18 : 14}
+            fontWeight={selected === item.id ? '700' : '500'}>
+            {item.title}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -63,8 +68,14 @@ const HorizontalList = ({
     horizontalListProps ? horizontalListProps : {};
 
   return (
-    <View style={{}}>
-      <View style={styles.container}>
+    <View>
+      <View
+        style={[
+          styles.container,
+          {
+            // paddingTop: insets.top + 0,
+          },
+        ]}>
         <FlatList
           bounces={false}
           contentContainerStyle={
@@ -95,16 +106,15 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     backgroundColor: 'white',
-    paddingLeft: 24,
+    paddingLeft: 16,
+    borderColor: theme.colors.border,
+    borderBottomWidth: 1,
   },
   itemContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 8,
   },
-  itemContainerSelected: {
-    borderBottomColor: '#252728',
-    borderBottomWidth: 2,
-  },
+  itemContainerSelected: {},
   linearGradient: {
     bottom: -5,
     height: 5,
