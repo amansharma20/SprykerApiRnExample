@@ -63,6 +63,7 @@ const ConfiguredBundleScreen = () => {
       const response = await commonApi.get(
         `configurable-bundle-templates?include=configurable-bundle-template-image-sets`,
       );
+      console.log('response: ', response);
       setConfiguredBundleTemplate(response?.data?.data);
       setIsLoading(false);
     };

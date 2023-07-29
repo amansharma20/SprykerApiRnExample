@@ -7,12 +7,11 @@ export const useGoToCart = () => {
   const navigation = useNavigation();
   const {state} = useContext(AuthContext);
   const isUserLoggedIn = state.userToken ? true : false;
-
   const goToCart = useCallback(() => {
     if (isUserLoggedIn) {
       navigation.navigate('CartScreen');
     } else {
-      navigation.navigate('LoginScreen');
+      // navigation.navigate('LoginScreen');
     }
   }, [isUserLoggedIn]);
 

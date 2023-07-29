@@ -35,8 +35,8 @@ const ProductListScreen = props => {
     setIncludedData(result.included);
     setPageOffset(pageOffset + 12);
     setIsLoading(false);
-    setLastPage(result?.data[0]?.attributes?.pagination.maxPage);
-    setCurrentPage(result?.data[0]?.attributes?.pagination.currentPage);
+    // setLastPage(result?.data[0]?.attributes?.pagination.maxPage);
+    // setCurrentPage(result?.data[0]?.attributes?.pagination.currentPage);
   };
 
   useEffect(() => {
@@ -45,17 +45,17 @@ const ProductListScreen = props => {
     }
   }, [nodeId]);
 
-  const loadMore = () => {
-    if (currentPage <= lastPage) {
-      getProducts();
-    }
-  };
+  // const loadMore = () => {
+  //   if (currentPage <= lastPage) {
+  //     getProducts();
+  //   }
+  // };
 
-  const renderItem = ({item, index}) => {
-    return (
+  const renderItem = ({item, index}) => (
+    <>
       <ProductItem item={item} includedData={includedData} index={index} />
-    );
-  };
+    </>
+  );
 
   return (
     <View style={styles.container}>
@@ -83,10 +83,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
+    // padding: 16,
   },
+
   productList: {
+    // justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
+
   row: {
     display: 'flex',
     flexDirection: 'row',

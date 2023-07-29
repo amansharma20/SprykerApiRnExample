@@ -12,14 +12,18 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import {useDispatch} from 'react-redux';
-
+import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 const BundlesSummaryScreen = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-
+  const {isUserLoggedIn} = useIsUserLoggedIn();
   const summaryBundleData = props.route?.params?.summaryBundleData;
   const configurableBundleId = props.route?.params?.configurableBundleId;
   const postProductSlotsData = props.route?.params?.postProductSlotsData;
+  console.log(
+    'postProductSlotsData: ',
+    postProductSlotsData?.data?.attributes?.items,
+  );
 
   const customerCartId = useSelector(
     state =>
@@ -31,11 +35,9 @@ const BundlesSummaryScreen = props => {
       console.log('carts api call successful');
     });
   }, [props]);
-  
+
   const addToCart = async () => {
     CommonLoading.show();
-    console.log('postProductSlotsData: ', postProductSlotsData);
-
     const response = await api.post(
       `carts/${customerCartId}/configured-bundles`,
       postProductSlotsData,
@@ -51,6 +53,11 @@ const BundlesSummaryScreen = props => {
       Alert.alert(response?.data?.data?.errors?.[0]?.detail);
       CommonLoading.hide();
     }
+  };
+
+  const addtoCartAsGuestUser = () => {
+    // CommonLoading.show();
+    console.log('comming');
   };
 
   const renderItem = (item, index) => {
@@ -98,12 +105,21 @@ const BundlesSummaryScreen = props => {
             renderItem={renderItem}
             estimatedItemSize={4}
           />
-          <CommonSolidButton
-            title={'Add to cart'}
-            onPress={() => {
-              addToCart();
-            }}
-          />
+          {isUserLoggedIn ? (
+            <CommonSolidButton
+              title={'Add to cart'}
+              onPress={() => {
+                addToCart();
+              }}
+            />
+          ) : (
+            <CommonSolidButton
+              title={'Add to Guest cart '}
+              onPress={() => {
+                addtoCartAsGuestUser();
+              }}
+            />
+          )}
         </Box>
       </Box>
     </SafeAreaView>

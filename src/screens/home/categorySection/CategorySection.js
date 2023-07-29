@@ -170,6 +170,13 @@ const CategorySection = () => {
           isLoading ? <ActivityIndicator /> : <Text>EMPTY LIST</Text>
         }
       />
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('ConfiguredBundleScreen');
+        }}>
+        <Text> Configurable Bundle</Text>
+      </TouchableOpacity>
+
       {/* {!isLoading ? (
         <>
           <FlatList

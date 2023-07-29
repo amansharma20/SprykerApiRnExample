@@ -17,6 +17,7 @@ import {AuthContext} from '../../navigation/StackNavigator';
 import CartItem from './CartItem';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {useCartItemsCount} from '../../hooks/useCartItemsCount';
+import GuestCartScreen from '../guestCart/GuestCartScreen';
 
 const CartScreen = () => {
   const {signOut} = useContext(AuthContext);
@@ -51,6 +52,8 @@ const CartScreen = () => {
   const customerCartDataNew = useSelector(
     state => state.getCartDataNewApiSlice?.cartDataNew.data,
   );
+
+  const grandTotal = customerCartDataNew?.attributes?.totals?.grandTotal;
 
   const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
 
@@ -128,8 +131,6 @@ const CartScreen = () => {
     }
   }, []);
 
-  const grandTotal = customerCart?.attributes?.totals?.grandTotal;
-
   const ListEmptyComponent = () => {
     return (
       <Box flex={1} justifyContent="center">
@@ -189,7 +190,7 @@ const CartScreen = () => {
                     flexDirection="row"
                     paddingVertical="s8">
                     <Text>
-                      {customerCartDataNew.length != 0 ? (
+                      {grandTotal != 0 ? (
                         <Text variant="bold24">Total : $ {grandTotal}</Text>
                       ) : (
                         ''
@@ -219,7 +220,7 @@ const CartScreen = () => {
         </>
       ) : (
         <>
-          <LoginScreen />
+          <GuestCartScreen />
         </>
       )}
     </Box>

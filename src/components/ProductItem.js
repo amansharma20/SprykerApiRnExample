@@ -7,18 +7,21 @@ import {Box, Text} from '@atoms';
 import Icons from '../assets/constants/Icons';
 import {api} from '../api/SecureAPI';
 import {useDispatch, useSelector} from 'react-redux';
-import {getCustomerCartItems} from '../redux/CartApi/CartApiAsyncThunk';
 import {CustomerCartIdApiAsyncThunk} from '../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import CommonLoading from './CommonLoading';
 import {getCustomerWishlist} from '../redux/wishlist/GetWishlistApiAsyncThunk';
 import {getProductsByWishlistAsyncThunk} from '../redux/wishlist/ProductsWishlistApiAsyncThunk';
 import {getCartDataNew} from '../redux/newCartApi/NewCartApiAsyncThunk';
-
+import {useIsUserLoggedIn} from '../hooks/useIsUserLoggedIn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {guestCartData} from '../redux/GuestCartApi/GuestCartApiAsyncThunk';
 export default function ProductItem({item, includedData, index}) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
+  const {isUserLoggedIn} = useIsUserLoggedIn();
 
   const [isProductExistInShoppingList, setIsProductExistInShoppingList] =
     useState(false);
@@ -40,6 +43,15 @@ export default function ProductItem({item, includedData, index}) {
           amount: 0,
         },
         productOptions: [null],
+      },
+    },
+  };
+  const guestCartDataRequest = {
+    data: {
+      type: 'guest-cart-items',
+      attributes: {
+        sku: concreteId,
+        quantity: 1,
       },
     },
   };
@@ -73,22 +85,18 @@ export default function ProductItem({item, includedData, index}) {
   const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart.id}`;
 
   const onPressAddToCart = async () => {
+    isUserLoggedIn
+      ? addToCartHandler()
+      : addToCartAsAGuestUser(guestCartDataRequest);
+  };
+
+  const addToCartHandler = async () => {
     CommonLoading.show();
     const response = await api.post(
       `carts/${customerCart.id}/items`,
       productData,
     );
     if (response?.data?.status === 201) {
-      // dispatch(
-      //   getCustomerCartItems(
-      //     `carts/${customerCart.id}?include=items%2Cbundle-items`,
-      //   ),
-      // ).then(res => {
-      //   if (res.payload.status === 200) {
-      //     alert('Added to Cart');
-      //   }
-      //   CommonLoading.hide();
-      // });
       dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
       dispatch(getCartDataNew(newCartApiUrl)).then(res => {
         if (res.payload.status === 200) {
@@ -106,9 +114,48 @@ export default function ProductItem({item, includedData, index}) {
     }
   };
 
+  const addToCartAsAGuestUser = async guestCartDataReq => {
+    CommonLoading.show();
+    const guestCustomerUniqueId = await AsyncStorage.getItem(
+      'guestCustomerUniqueId',
+    );
+    const url = `https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-cart-items`;
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Anonymous-Customer-Unique-Id': guestCustomerUniqueId,
+    };
+    await axios
+      .post(url, guestCartDataReq, {headers: headers})
+      .then(response => {
+        // if (response?.status === 201) {
+        //   Alert.alert('Added to cart');
+        // } else if (response?.status === 404) {
+        //   Alert.alert('Cart not found');
+        //   return;
+        // } else if (response?.status === 422) {
+        //   Alert.alert('Product not found');
+        //   return;
+        // } else {
+        //   Alert.alert('Bad Request');
+        //   return;
+        // }
+        dispatch(
+          guestCartData({
+            endpoint:
+              'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
+            data: headers,
+          }),
+        ).then(() => {});
+        CommonLoading.hide();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        CommonLoading.hide();
+      });
+  };
+
   const checkIfAddedInShoppingList = () => {
     const productIds = [];
-
     productsByWishlist?.included?.forEach(element => {
       if (element.type === 'concrete-products') {
         productIds.push({
