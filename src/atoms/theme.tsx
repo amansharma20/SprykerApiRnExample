@@ -231,7 +231,6 @@ export const theme = createTheme({
       fontSize: 14,
       fontFamily: FONT.PrimaryBold,
       color: 'darkText',
-      fontWeight: '700',
     },
     bold20: {
       fontSize: 20,

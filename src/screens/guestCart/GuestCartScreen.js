@@ -1,24 +1,33 @@
 import {Box, Text, theme} from '@atoms';
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-  ScrollView,
-} from 'react-native';
+import {FlatList, ActivityIndicator, ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GuestCartItem from './GuestCartItems';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import ConfiguredBundleGuestCart from './ConfiguredBundleGuestCartScreen';
+import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import {useGuestCartItemsCount} from '../../hooks/useGuestCartItemsCount';
+import {useNavigation} from '@react-navigation/native';
+
 const GuestCartScreen = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {guestCartItemsCount} = useGuestCartItemsCount();
+
   const normalProducts = useSelector(
     state => state.getGuestCartDataApiSlice?.guestCartData,
   );
+
+  const grandTotal = useSelector(
+    state =>
+      state.getGuestCartDataApiSlice?.itemTotal?.[0]?.attributes?.totals
+        ?.grandTotal,
+  );
+
   const configuredBundles = useSelector(
     state => state.getGuestCartDataApiSlice?.configuredBundle,
   );
@@ -49,6 +58,7 @@ const GuestCartScreen = () => {
     };
     guestCart();
   }, []);
+
   return (
     <Box flex={1} backgroundColor="white">
       <CommonHeader title={'Your Cart'} />
@@ -77,6 +87,41 @@ const GuestCartScreen = () => {
                 return <ConfiguredBundleGuestCart data={data} />;
               }}
             />
+
+            {guestCartItemsCount ? (
+              <>
+                <Box
+                  justifyContent="flex-end"
+                  flexDirection="row"
+                  paddingVertical="s8">
+                  <Text>
+                    {guestCartData.length != 0 ? (
+                      <Text variant="bold24">Total : $ {grandTotal}</Text>
+                    ) : (
+                      ''
+                    )}
+                  </Text>
+                </Box>
+              </>
+            ) : (
+              <>{/* <ListEmptyComponent /> */}</>
+            )}
+
+            {guestCartItemsCount ? (
+              <Box>
+                <CommonSolidButton
+                  title="Proceed to Checkout"
+                  // disabled={!allProductAvailableInCarts}
+                  onPress={() => {
+                    navigation.navigate('LoginScreen', {
+                      hideGuestUserCta: true,
+                    });
+                  }}
+                />
+              </Box>
+            ) : (
+              <></>
+            )}
           </ScrollView>
         </>
       )}

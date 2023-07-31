@@ -6,14 +6,12 @@ import {Box, Text} from '@atoms';
 import {SCREEN_WIDTH} from '@gorhom/bottom-sheet';
 import {useCartItemsCount} from '../../../hooks/useCartItemsCount';
 import {useSelector} from 'react-redux';
-import {CartIcon} from '../../../assets/svgs';
 import Icons from '../../../assets/constants/Icons';
 import {useNavigation} from '@react-navigation/native';
 
 const HomeCartPopUp = () => {
   const navigation = useNavigation();
   const {cartItemsCount} = useCartItemsCount();
-  console.log('cartItemsCount: ', cartItemsCount);
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -21,8 +19,14 @@ const HomeCartPopUp = () => {
     state => state.getCartDataNewApiSlice?.cartDataNew.data,
   );
 
-  const grandTotal = customerCartDataNew?.attributes?.totals?.grandTotal;
-  console.log('grandTotal: ', grandTotal);
+  const guestCartGrandTotal = useSelector(
+    state =>
+      state.getGuestCartDataApiSlice?.itemTotal?.[0]?.attributes?.totals
+        ?.grandTotal || null,
+  );
+
+  const grandTotal =
+    customerCartDataNew?.attributes?.totals?.grandTotal || guestCartGrandTotal;
 
   const slideAnimation = useRef(new Animated.Value(0)).current;
 

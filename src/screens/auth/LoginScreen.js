@@ -10,18 +10,16 @@ import {commonApi} from '../../api/CommanAPI';
 import {AuthContext} from '../../navigation/StackNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import HomeHeader from '../home/homeHeader/HomeHeader';
 import PoweredBySpryker from '../../components/PoweredBySpryker';
 import {CrossIcon} from '../../assets/svgs';
+import CommonOutlineButton from '../../components/CommonOutlineButton/CommonOutlineButton';
 
 export default function LoginScreen(props) {
   const {signIn} = useContext(AuthContext);
   const redirectToScreen = props?.route?.params?.redirectToScreen;
-
-  const insets = useSafeAreaInsets();
-  console.log('insets: ', insets);
+  const hideGuestUserCta = props?.route?.params?.hideGuestUserCta || false;
 
   const navigation = useNavigation();
 
@@ -30,7 +28,6 @@ export default function LoginScreen(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const onPressSubmit = async () => {
-    console.log('redirectToScreen', redirectToScreen);
     setIsLoading(true);
     const apiData = {
       grant_type: 'password',
@@ -111,18 +108,26 @@ export default function LoginScreen(props) {
           <>
             {/* <Button title="SUBMIT" onPress={onPressSubmit} /> */}
             <CommonSolidButton title="LOGIN" onPress={onPressSubmit} />
+
+            {hideGuestUserCta === true ? (
+              <></>
+            ) : (
+              <>
+                <Box paddingVertical="s16" alignItems="center">
+                  <Text>OR</Text>
+                </Box>
+                <CommonOutlineButton
+                  title={'Continue as a Guest User'}
+                  onPress={() => navigation.navigate('Home')}
+                />
+              </>
+            )}
           </>
         ) : (
           <>
             <ActivityIndicator color={theme.colors.sushiittoRed} />
           </>
         )}
-      </Box>
-      <Box justifyContent="flex-end" mt="s8">
-        <Button
-          title="Continue as a Guest User"
-          onPress={() => navigation.navigate('Home')}
-        />
       </Box>
       <Box justifyContent="flex-end" flex={1} pb="s16">
         <PoweredBySpryker />

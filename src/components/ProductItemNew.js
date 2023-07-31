@@ -20,6 +20,10 @@ import {getCartDataNew} from '../redux/newCartApi/NewCartApiAsyncThunk';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {useIsUserLoggedIn} from '../hooks/useIsUserLoggedIn';
 import {createCustomerCart} from '../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import CommonLoading from './CommonLoading';
+import {guestCartData} from '../redux/GuestCartApi/GuestCartApiAsyncThunk';
 
 export default function ProductItem({item, includedData, index}) {
   const navigation = useNavigation();
@@ -129,6 +133,73 @@ export default function ProductItem({item, includedData, index}) {
         );
         setIsLoading(false);
       }
+    }
+  };
+
+  const addToCartAsAGuestUser = async guestCartDataReq => {
+    // CommonLoading.show();
+    setIsLoading(true);
+    const guestCustomerUniqueId = await AsyncStorage.getItem(
+      'guestCustomerUniqueId',
+    );
+    const url = `https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-cart-items`;
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Anonymous-Customer-Unique-Id': guestCustomerUniqueId,
+    };
+    await axios
+      .post(url, guestCartDataReq, {headers: headers})
+      .then(response => {
+        // if (response?.status === 201) {
+        //   Alert.alert('Added to cart');
+        // } else if (response?.status === 404) {
+        //   Alert.alert('Cart not found');
+        //   return;
+        // } else if (response?.status === 422) {
+        //   Alert.alert('Product not found');
+        //   return;
+        // } else {
+        //   Alert.alert('Bad Request');
+        //   return;
+        // }
+        dispatch(
+          guestCartData({
+            endpoint:
+              'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
+            data: headers,
+          }),
+        ).then(() => {
+          setIsLoading(false);
+        });
+        // CommonLoading.hide();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        CommonLoading.hide();
+        setIsLoading(false);
+      });
+  };
+
+  const onPressAddToCartGuestUser = async () => {
+    const guestCartDataReq = {
+      data: {
+        type: 'guest-cart-items',
+        attributes: {
+          sku: concreteId,
+          quantity: 1,
+        },
+      },
+    };
+    const guestCustomerUniqueId = await AsyncStorage.getItem(
+      'guestCustomerUniqueId',
+    );
+
+    if (!guestCustomerUniqueId) {
+      const guestUserUniqueId = 'id' + Math.random().toString(16).slice(2);
+      AsyncStorage.setItem('guestCustomerUniqueId', guestUserUniqueId);
+      addToCartAsAGuestUser(guestCartDataReq);
+    } else {
+      addToCartAsAGuestUser(guestCartDataReq);
     }
   };
 
@@ -256,7 +327,9 @@ export default function ProductItem({item, includedData, index}) {
 
           {/* ADD BUTTON */}
           <TouchableOpacity
-            onPress={isUserLoggedIn ? onPressAddToCart : goToLogin}
+            onPress={
+              isUserLoggedIn ? onPressAddToCart : onPressAddToCartGuestUser
+            }
             // onPress={() => {
             //   setSelectedId(!selectedId);
             // }}
@@ -283,7 +356,7 @@ export default function ProductItem({item, includedData, index}) {
                 <>
                   <ActivityIndicator
                     style={{width: 24, height: 24}}
-                    color={theme.colors.sushiittoRed}
+                    color={theme.colors.white}
                   />
                 </>
               ) : (

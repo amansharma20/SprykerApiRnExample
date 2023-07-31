@@ -5,6 +5,10 @@ export const useCartItemsCount = () => {
     state => state.getCartDataNewApiSlice?.cartDataNew.data,
   );
 
+  const guestCartData = useSelector(
+    state => state.getGuestCartDataApiSlice?.guestCartData,
+  );
+
   function getTotalNormalProductsQuantity(arrayOfObjects) {
     const quantities = arrayOfObjects?.map(
       obj => obj?.itemData?.attributes?.quantity,
@@ -26,11 +30,27 @@ export const useCartItemsCount = () => {
     return totalQuantity;
   }
 
+  function getTotalGuestProductsQuantity(arrayOfObjects) {
+    const quantities = arrayOfObjects?.map(obj => obj?.quantity);
+    const totalQuantity = quantities?.reduce(
+      (accumulator, currentQuantity) => accumulator + currentQuantity,
+      0,
+    );
+
+    return totalQuantity;
+  }
+
+  const guestCartItemsCount =
+    getTotalGuestProductsQuantity(guestCartData) || null;
+  console.log('guestCartItemsCount: ', guestCartItemsCount);
+
   const cartItemsCount =
     getTotalNormalProductsQuantity(customerCartDataNew?.normalProduct) +
       getTotalConfiguredProductsQuantity(
         customerCartDataNew?.configureBundle,
-      ) || null;
+      ) ||
+    guestCartItemsCount ||
+    null;
 
   return {cartItemsCount};
 };

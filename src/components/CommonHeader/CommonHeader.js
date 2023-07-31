@@ -1,30 +1,27 @@
 /* eslint-disable react-native/no-inline-styles */
 import {SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
 import {Box, Text, theme} from '@atoms';
 import GoBackButton from '../GoBackButton/GoBackButton';
 import {CartIcon} from '../../assets/svgs';
 import {useGoToCart} from '../../hooks/useGoToCart';
-import {useSelector} from 'react-redux';
 // import GoBackButton from './GoBackButton/GoBackButton';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
+import {useGuestCartItemsCount} from '../../hooks/useGuestCartItemsCount';
+import {useCartItemsCount} from '../../hooks/useCartItemsCount';
+import {useNavigation} from '@react-navigation/native';
 
 const CommonHeader = ({title, onPress, showCartIcon = false, ...props}) => {
+  const navigation = useNavigation();
   const {goToCart} = useGoToCart();
   const {isUserLoggedIn} = useIsUserLoggedIn();
 
-  var cartItemsCount = 0;
-  if (isUserLoggedIn) {
-    cartItemsCount = useSelector(
-      state => state.getCustomerCartItemsAliSlice.itemsCount,
-    );
-  } else {
-    // logic for guest cart if exist otherwise 0
-    cartItemsCount = 0;
-  }
+  const {cartItemsCount} = useCartItemsCount();
+
+
   const onPressCart = () => {
-    goToCart();
+    // goToCart();
+    navigation.navigate('CartScreen');
   };
 
   return (
@@ -56,7 +53,7 @@ const CommonHeader = ({title, onPress, showCartIcon = false, ...props}) => {
                       borderRadius: 100,
                       marginLeft: 16,
                     }}>
-                    <Text fontSize={12} fontWeight="700">
+                    <Text fontSize={12} fontWeight="700" ml="s2">
                       {cartItemsCount ?? 0}
                     </Text>
                   </Box>

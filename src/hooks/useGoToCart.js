@@ -11,7 +11,7 @@ export const useGoToCart = () => {
     if (isUserLoggedIn) {
       navigation.navigate('CartScreen');
     } else {
-      // navigation.navigate('LoginScreen');
+      navigation.navigate('LoginScreen');
     }
   }, [isUserLoggedIn]);
 

@@ -136,8 +136,6 @@ const CartScreen = () => {
     }
   }, []);
 
-  const grandTotal = customerCartDataNew?.attributes?.totals?.grandTotal;
-
   const ListEmptyComponent = () => {
     return (
       <Box flex={1} justifyContent="center">

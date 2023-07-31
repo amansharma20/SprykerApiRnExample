@@ -12,6 +12,7 @@ import getProductsByWishlistApiSlice from './wishlist/ProductsWishlistApiSlice';
 import CreateCustomerCartApiSlice from './createCustomerCart/CreateCustomerCartApiSlice';
 import getCartDataNewApiSlice from './newCartApi/NewCartApiSlice';
 import getGuestCartDataApiSlice from './GuestCartApi/GuestCartApiSlice';
+
 const allReducers = combineReducers({
   getCustomerDetailsApiSlice,
   getCustomerCartItemsAliSlice,
