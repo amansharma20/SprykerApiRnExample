@@ -3,25 +3,15 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Box, Text} from '@atoms';
-import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
+import {Box} from '@atoms';
+import {ActivityIndicator, Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import BundleItem from './BundleItem';
 import {commonApi} from '../../api/CommanAPI';
 import {FlashList} from '@shopify/flash-list';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
-import CommonLoading from '../../components/CommonLoading';
-import {api} from '../../api/SecureAPI';
 import Toast from 'react-native-toast-message';
-import DynamicSnapPointBottomSheet from '../../components/bottomsheets/DynamicSnapPointBottomSheet';
-import FastImage from 'react-native-fast-image';
 
 const BundlesScreen = props => {
   const configurableBundleId = props.route?.params?.configurableBundleId;

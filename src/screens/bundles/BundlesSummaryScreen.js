@@ -31,7 +31,7 @@ const BundlesSummaryScreen = props => {
       console.log('carts api call successful');
     });
   }, [props]);
-  
+
   const addToCart = async () => {
     CommonLoading.show();
     console.log('postProductSlotsData: ', postProductSlotsData);
@@ -74,7 +74,7 @@ const BundlesSummaryScreen = props => {
             />
           </Box>
           <Box paddingLeft="s4" justifyContent="space-between">
-            <Box flexShrink={1} maxWidth={'80%'}>
+            <Box flexShrink={1} maxWidth={'100%'}>
               <Text style={styles.productTitle} numberOfLines={2}>
                 {item?.item?.item?.name}
               </Text>

@@ -7,6 +7,7 @@ export const addedToWishlistIcon = require('../icons/addedToWishlist.png');
 export const sushittoIcon = require('../icons/sushittoIcon.png');
 export const deliveryIcon = require('../icons/deliveryIcon.png');
 export const pickUpIcon = require('../icons/pickUpIcon.png');
+export const cartIconSolid = require('../icons/cartIconSolid.png');
 
 export default {
   homeIcon,
@@ -18,4 +19,5 @@ export default {
   sushittoIcon,
   deliveryIcon,
   pickUpIcon,
+  cartIconSolid,
 };

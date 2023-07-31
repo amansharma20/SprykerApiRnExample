@@ -8,8 +8,8 @@ import {applicationProperties} from '../../utils/application.properties';
 const ProductListScreen = props => {
   const {nodeId, title} = props.route.params;
   const [products, setProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [lastPage, setLastPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [lastPage, setLastPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [pageOffset, setPageOffset] = useState(0);
 
@@ -35,8 +35,8 @@ const ProductListScreen = props => {
     setIncludedData(result.included);
     setPageOffset(pageOffset + 12);
     setIsLoading(false);
-    setLastPage(result?.data[0]?.attributes?.pagination.maxPage);
-    setCurrentPage(result?.data[0]?.attributes?.pagination.currentPage);
+    // setLastPage(result?.data[0]?.attributes?.pagination.maxPage);
+    // setCurrentPage(result?.data[0]?.attributes?.pagination.currentPage);
   };
 
   useEffect(() => {
@@ -45,11 +45,11 @@ const ProductListScreen = props => {
     }
   }, [nodeId]);
 
-  const loadMore = () => {
-    if (currentPage <= lastPage) {
-      getProducts();
-    }
-  };
+  // const loadMore = () => {
+  //   if (currentPage <= lastPage) {
+  //     getProducts();
+  //   }
+  // };
 
   const renderItem = ({item, index}) => {
     return (

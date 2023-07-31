@@ -2,7 +2,12 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useState, useEffect, useContext} from 'react';
-import {ActivityIndicator, FlatList, ScrollView} from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
 import {Box, Text, theme} from '@atoms';
 import {useSelector, useDispatch} from 'react-redux';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
@@ -199,98 +204,102 @@ const CartScreen = () => {
   // }, [dispatch, customerCartId, isUserLoggedIn]);
 
   return (
-    <Box flex={1} backgroundColor="white">
-      {isUserLoggedIn ? (
-        <>
-          <CommonHeader title={'Your Cart'} />
-          {isLoading ? (
-            <>
-              <ActivityIndicator />
-            </>
-          ) : (
-            <>
-              <ScrollView
-                contentContainerStyle={{
-                  flexGrow: 1,
-                  paddingHorizontal: theme.spacing.paddingHorizontal,
-                }}>
-                <Box>
-                  <FlatList
-                    data={customerCartDataNew?.configureBundle}
-                    renderItem={item => {
-                      const data = item?.item;
-                      return (
-                        <ConfiguredBundledCartItem
-                          data={data}
-                          customerCartId={customerCartId}
-                        />
-                      );
-                    }}
-                    scrollEnabled={false}
-                  />
-                  <FlatList
-                    data={customerCartDataNew?.normalProduct}
-                    renderItem={item => {
-                      const data = item?.item;
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <Box flex={1} backgroundColor="white">
+        {isUserLoggedIn ? (
+          <>
+            <CommonHeader title={'Your Cart'} />
+            {isLoading ? (
+              <>
+                <ActivityIndicator />
+              </>
+            ) : (
+              <>
+                <ScrollView
+                  contentContainerStyle={{
+                    flexGrow: 1,
+                    paddingHorizontal: theme.spacing.paddingHorizontal,
+                  }}>
+                  <Box>
+                    <FlatList
+                      data={customerCartDataNew?.configureBundle}
+                      renderItem={item => {
+                        const data = item?.item;
+                        return (
+                          <ConfiguredBundledCartItem
+                            data={data}
+                            customerCartId={customerCartId}
+                          />
+                        );
+                      }}
+                      scrollEnabled={false}
+                    />
+                    <FlatList
+                      data={customerCartDataNew?.normalProduct}
+                      renderItem={item => {
+                        const data = item?.item;
 
-                      return <CartItem item={data} />;
-                    }}
-                    // ListEmptyComponent={
-                    //   isLoading === false ? (
-                    //     <ListEmptyComponent />
-                    //   ) : (
-                    //     <ActivityIndicator />
-                    //   )
-                    // }
-                    scrollEnabled={false}
-                  />
-                  {cartItemsCount ? (
-                    <>
-                      <Box
-                        justifyContent="flex-end"
-                        flexDirection="row"
-                        paddingVertical="s8">
-                        <Text>
-                          {customerCartDataNew.length != 0 ? (
-                            <Text variant="bold24">Total : $ {grandTotal}</Text>
-                          ) : (
-                            ''
-                          )}
-                        </Text>
-                      </Box>
-                    </>
-                  ) : (
-                    <>
-                      <ListEmptyComponent />
-                    </>
-                  )}
-                </Box>
-              </ScrollView>
-              {cartItemsCount ? (
-                <Box padding="s16">
-                  <CommonSolidButton
-                    title="Proceed to Checkout"
-                    disabled={!allProductAvailableInCarts}
-                    onPress={() =>
-                      navigation.navigate('CheckoutScreen', {
-                        cartId: customerCartId,
-                        cartItemsArray: cartItemsArray,
-                      })
-                    }
-                  />
-                </Box>
-              ) : (
-                <></>
-              )}
-            </>
-          )}
-        </>
-      ) : (
-        <>
-          <LoginScreen />
-        </>
-      )}
-    </Box>
+                        return <CartItem item={data} />;
+                      }}
+                      // ListEmptyComponent={
+                      //   isLoading === false ? (
+                      //     <ListEmptyComponent />
+                      //   ) : (
+                      //     <ActivityIndicator />
+                      //   )
+                      // }
+                      scrollEnabled={false}
+                    />
+                    {cartItemsCount ? (
+                      <>
+                        <Box
+                          justifyContent="flex-end"
+                          flexDirection="row"
+                          paddingVertical="s8">
+                          <Text>
+                            {customerCartDataNew.length != 0 ? (
+                              <Text variant="bold24">
+                                Total : $ {grandTotal}
+                              </Text>
+                            ) : (
+                              ''
+                            )}
+                          </Text>
+                        </Box>
+                      </>
+                    ) : (
+                      <>
+                        <ListEmptyComponent />
+                      </>
+                    )}
+                  </Box>
+                </ScrollView>
+                {cartItemsCount ? (
+                  <Box padding="s16">
+                    <CommonSolidButton
+                      title="Proceed to Checkout"
+                      disabled={!allProductAvailableInCarts}
+                      onPress={() =>
+                        navigation.navigate('CheckoutScreen', {
+                          cartId: customerCartId,
+                          cartItemsArray: cartItemsArray,
+                        })
+                      }
+                    />
+                  </Box>
+                ) : (
+                  <></>
+                )}
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <LoginScreen />
+          </>
+        )}
+      </Box>
+    </SafeAreaView>
   );
 };
 export default CartScreen;

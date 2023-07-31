@@ -1,18 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {SyncedList} from './components';
 import axios from 'axios';
 import ProductItemNew from '../../components/ProductItemNew';
 import Box from '../../atoms/box';
 import HomeShimmers from '../../components/shimmers/HomeShimmers';
+import HomeCartPopUp from './components/HomeCartPopUp';
 
 const SushittoHomeScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -102,6 +97,7 @@ const SushittoHomeScreen = () => {
           renderVerticalItem={renderVerticalItem}
         />
       )}
+      <HomeCartPopUp />
     </SafeAreaView>
   );
 };

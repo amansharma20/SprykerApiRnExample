@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Box, Text} from '@atoms';
-import {commonApi} from '../../api/CommanAPI';
 import {api} from '../../api/SecureAPI';
 import {
   ActivityIndicator,
@@ -9,9 +8,8 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {RemoveIcon} from '../../assets/svgs';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 
@@ -172,7 +170,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
             flex={1}
             key={item.sku}>
             <Box flexDirection="row" flex={1}>
-              <Box alignItems="center" mr="s8" flex={1}>
+              <Box alignItems="center" mr="s8" height={120} width={120}>
                 <Image
                   style={{height: 120, width: 120, resizeMode: 'contain'}}
                   source={{
@@ -181,11 +179,11 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
                   }}
                 />
               </Box>
-              <Box justifyContent="space-between">
+              <Box flex={1}>
                 <Box>
-                  <Box flexDirection="row">
-                    <Text>{item?.['concrete-products']?.name}</Text>
-                  </Box>
+                  <Text>{item?.['concrete-products']?.name}</Text>
+                </Box>
+                <Box>
                   <Text style={{fontWeight: 'bold', marginTop: 4}}>
                     $ {item?.itemData?.attributes?.calculations?.sumGrossPrice}{' '}
                     x {data?.groupquantity} {''}

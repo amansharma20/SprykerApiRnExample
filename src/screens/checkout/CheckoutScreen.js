@@ -16,6 +16,7 @@ import {api} from '../../api/SecureAPI';
 import {useNavigation} from '@react-navigation/native';
 import CommonLoading from '../../components/CommonLoading';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
+import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 
 const CheckoutScreen = props => {
   const navigation = useNavigation();
@@ -269,9 +270,9 @@ const CheckoutScreen = props => {
           )}
         </ScrollView>
         {!isOrderConfirmedLoading ? (
-          <>
-            <Button title="Continue" onPress={orderConfirm} />
-          </>
+          <Box paddingHorizontal="paddingHorizontal">
+            <CommonSolidButton title="Continue" onPress={orderConfirm} />
+          </Box>
         ) : (
           <>
             <ActivityIndicator />

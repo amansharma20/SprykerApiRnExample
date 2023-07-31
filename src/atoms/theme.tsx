@@ -4,12 +4,12 @@ import {Platform} from 'react-native';
 const globalPallete = {};
 
 export const FONT = {
-  PrimaryExtraLight: 'TitilliumWeb-ExtraLight', // 200
-  PrimaryLight: 'TitilliumWeb-Light', // 300
-  Primary: 'TitilliumWeb-Regular', // 400
-  PrimarySemiBold: 'TitilliumWeb-SemiBold', // 600
-  PrimaryBold: 'TitilliumWeb-Bold', // 700
-  PrimaryHeavy: 'TitilliumWeb-Black', // 900
+  PrimaryExtraLight: 'Metropolis-ExtraLight', // 200
+  PrimaryLight: 'Metropolis-Light', // 300
+  Primary: 'Metropolis-Regular', // 400
+  PrimarySemiBold: 'Metropolis-SemiBold', // 600
+  PrimaryBold: 'Metropolis-Bold', // 700
+  PrimaryHeavy: 'Metropolis-Black', // 900
 };
 
 export const theme = createTheme({
@@ -39,10 +39,14 @@ export const theme = createTheme({
     inactiveDot: '#CACACA',
     activeDot: '#505050',
     transparent: 'transparent',
-    sushiittoRed: '#F50145',
-    zomatoRed: '#ED5469',
+    sushiittoRed: '#E40047',
+    // sushiittoRed: '#F50145',
+    // zomatoRed: '#ED5469',
+    zomatoRed: '#E40047',
     veryLightRed: '#F7F1F3',
+    darkRed: '#83042A',
     snowy: '#F9F9F9',
+    lightBlueBg: '#E8F5FF',
     ...globalPallete,
   },
   spacing: {
@@ -95,235 +99,235 @@ export const theme = createTheme({
     // new
     regular10: {
       fontSize: 10,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'darkText',
     },
     regular10Lightblack: {
       fontSize: 10,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'lightBlack',
     },
     regular12Lightblack: {
       fontSize: 12,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'lightBlack',
     },
     regular12: {
       fontSize: 12,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'darkText',
     },
     regular12LightBlack: {
       fontSize: 12,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'lightBlack',
     },
     regular12Grey: {
       fontSize: 12,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'grey',
     },
     regular14: {
       fontSize: 14,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'darkText',
     },
     regular14LightBlack: {
       fontSize: 14,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'lightBlack',
     },
     regular14LightGrey: {
       fontSize: 14,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'lightGrey',
     },
     regular16: {
       fontSize: 16,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'darkText',
     },
     regular16LightBlack: {
       fontSize: 16,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'lightBlack',
     },
     regular18: {
       fontSize: 18,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'darkText',
     },
     semiBold9: {
       fontSize: 9,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'darkBlueText',
     },
     semiBold12: {
       fontSize: 12,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'darkBlueText',
     },
     bottomTabText: {
       fontSize: 10,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'darkBlueText',
     },
     semiBold12DarkText: {
       fontSize: 12,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'darkText',
     },
     semiBold12LightBlack: {
       fontSize: 12,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'lightBlack',
     },
     semiBold10: {
       fontSize: 10,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'darkBlueText',
     },
     semiBold16: {
       fontSize: 16,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'darkBlueText',
     },
     semiBold18: {
       fontSize: 18,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'darkBlueText',
     },
     semiBold24: {
       fontSize: 24,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'darkBlueText',
     },
     semiBold14: {
       fontSize: 14,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'darkBlueText',
     },
     semiBold14Green: {
       fontSize: 14,
-      // fontFamily: FONT.PrimarySemiBold,
+      fontFamily: FONT.PrimarySemiBold,
       color: 'green',
     },
     bold8: {
       fontSize: 8,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     bold10: {
       fontSize: 10,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     bold12: {
       fontSize: 12,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     bold14: {
       fontSize: 14,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
       fontWeight: '700',
     },
     bold20: {
       fontSize: 20,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     bold20DarkBlue: {
       fontSize: 20,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkBlueText',
     },
     bold24: {
       fontSize: 24,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
       fontWeight: '700',
     },
     bold14LightBlack: {
       fontSize: 14,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'lightBlack',
     },
     semiBold14LightBlack: {
       fontSize: 14,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'lightBlack',
     },
     bold14Green: {
       fontSize: 14,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'green',
     },
     bold16: {
       fontSize: 16,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     bold16Green: {
       fontSize: 16,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'green',
     },
     bold16DarkBlue: {
       fontSize: 16,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkBlueText',
     },
     bold16LightBlack: {
       fontSize: 16,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     bold18: {
       fontSize: 18,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
       fontWeight: '700',
     },
     bold18LightBlack: {
       fontSize: 18,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'lightBlack',
     },
     darkBlueBold18: {
       fontSize: 18,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkBlueText',
     },
     bold22: {
       fontSize: 22,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     bold28: {
       fontSize: 28,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     bold40: {
       fontSize: 40,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     bold32: {
       fontSize: 32,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     bold36: {
       fontSize: 36,
-      // fontFamily: FONT.PrimaryBold,
+      fontFamily: FONT.PrimaryBold,
       color: 'darkText',
     },
     normal: {
       fontSize: 14,
-      // fontFamily: FONT.Primary,
+      fontFamily: FONT.Primary,
       color: 'black',
     },
     onBoardingText: {

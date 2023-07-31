@@ -28,6 +28,7 @@ import {getProductsByWishlistAsyncThunk} from '../../redux/wishlist/ProductsWish
 import ProductOffer from './ProductOffer';
 import axios from 'axios';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
@@ -135,7 +136,11 @@ const ProductDetailsScreen = props => {
           if (res.payload.status === 200) {
             console.log('carts api call successful');
             CommonLoading.hide();
-            alert('Added to Cart');
+            Toast.show({
+              type: 'success',
+              text1: 'Added to cart 🎉',
+              position: 'top',
+            });
           } else {
             CommonLoading.hide();
             console.log('mulesoft carts api call not successful');
@@ -356,7 +361,7 @@ const ProductDetailsScreen = props => {
                   <Box>
                     {productData?.length >= 2 && (
                       <Box>
-                        <Text variant="regular16" style={{fontWeight: 'bold'}}>
+                        <Text variant="bold16" mt="s4">
                           Choose Variation :{' '}
                         </Text>
                         <FlatList
@@ -373,16 +378,15 @@ const ProductDetailsScreen = props => {
                     )}
                   </Box>
                 </Box>
-                <Text variant="regular16" style={{fontWeight: 'bold'}}>
+                <Text variant="bold16" marginVertical="s4">
                   Description :{' '}
                 </Text>
                 <Text>{description}</Text>
                 <Text mt="s6" variant="regular16" style={{fontWeight: 'bold'}}>
-                  Price :
+                  Price -{' '}
                   {productOffer != null
                     ? 'show here offer price'
-                    : productData?.[selectedVariantIndex]?.price?.attributes
-                        ?.price}
+                    : `$${productData?.[selectedVariantIndex]?.price?.attributes?.price}`}
                 </Text>
                 {productData?.[selectedVariantIndex]?.availability?.attributes
                   ?.availability !== true ? (

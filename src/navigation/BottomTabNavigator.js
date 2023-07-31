@@ -40,7 +40,7 @@ export default function BottomTabNavigator() {
           },
         }}
       />
-       {/* <Tab.Screen
+      {/* <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
@@ -52,7 +52,7 @@ export default function BottomTabNavigator() {
         }}
       /> */}
       {/* <Tab.Screen name="Search" component={SearchScreen} /> */}
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Cart"
         component={CartScreen}
         options={{
@@ -60,7 +60,7 @@ export default function BottomTabNavigator() {
             <Icon source={Icons.cartIcon} focused={focused} color={color} />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}

@@ -1,22 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import {Alert, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Box, Text} from '@atoms';
 import Icons from '../assets/constants/Icons';
 import {api} from '../api/SecureAPI';
 import {useDispatch, useSelector} from 'react-redux';
-import {getCustomerCartItems} from '../redux/CartApi/CartApiAsyncThunk';
 import {CustomerCartIdApiAsyncThunk} from '../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
-import CommonLoading from './CommonLoading';
 import {getCustomerWishlist} from '../redux/wishlist/GetWishlistApiAsyncThunk';
 import {getProductsByWishlistAsyncThunk} from '../redux/wishlist/ProductsWishlistApiAsyncThunk';
 import {getCartDataNew} from '../redux/newCartApi/NewCartApiAsyncThunk';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import {useIsUserLoggedIn} from '../hooks/useIsUserLoggedIn';
+import {createCustomerCart} from '../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
 
 export default function ProductItem({item, includedData, index}) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const {isUserLoggedIn} = useIsUserLoggedIn();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const concreteId = item?.attributeMap?.product_concrete_ids?.[0];
 
@@ -62,37 +72,68 @@ export default function ProductItem({item, includedData, index}) {
   const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart?.id}`;
 
   const onPressAddToCart = async () => {
-    CommonLoading.show();
-    const response = await api.post(
-      `carts/${customerCart.id}/items`,
-      productData,
-    );
-    if (response?.data?.status === 201) {
-      // dispatch(
-      //   getCustomerCartItems(
-      //     `carts/${customerCart?.id}?include=items%2Cbundle-items`,
-      //   ),
-      // ).then(res => {
-      //   if (res.payload.status === 200) {
-      //     alert('Added to Cart');
-      //   }
-      //   CommonLoading.hide();
-      // });
-      dispatch(getCartDataNew(newCartApiUrl)).then(res => {
-        if (res.payload.status === 200) {
-          console.log('carts api call successful');
-          alert('Added to Cart');
-          CommonLoading.hide();
-        } else {
-          console.log('mulesoft carts api call not successful');
-          CommonLoading.hide();
-        }
-      });
-      dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+    setIsLoading(true);
+    if (customerCart?.id) {
+      const response = await api.post(
+        `carts/${customerCart?.id}/items`,
+        productData,
+      );
+      if (response?.data?.status === 201) {
+        // dispatch(
+        //   getCustomerCartItems(
+        //     `carts/${customerCart?.id}?include=items%2Cbundle-items`,
+        //   ),
+        // ).then(res => {
+        //   if (res.payload.status === 200) {
+        //     alert('Added to Cart');
+        //   }
+        //   CommonLoading.hide();
+        // });
+        dispatch(getCartDataNew(newCartApiUrl)).then(res => {
+          if (res.payload.status === 200) {
+            console.log('carts api call successful');
+            // alert('Added to Cart');
+            // CommonLoading.hide();
+            Toast.show({
+              type: 'success',
+              text1: 'Added to cart 🎉',
+              position: 'top',
+            });
+            setIsLoading(false);
+          } else {
+            console.log('mulesoft carts api call not successful');
+            // CommonLoading.hide();
+            setIsLoading(false);
+          }
+        });
+        dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
+      } else {
+        alert('error', response.data.data.errors?.[0]?.detail);
+        // CommonLoading.hide();
+        setIsLoading(false);
+      }
     } else {
-      alert('error', response.data.data.errors?.[0]?.detail);
-      CommonLoading.hide();
+      if (customerCart == undefined) {
+        console.log('HERE: ');
+        const data = {
+          type: 'carts',
+          attributes: {
+            priceMode: 'NET_MODE',
+            currency: 'EUR',
+            store: 'DE',
+            name: 'new cart',
+          },
+        };
+        dispatch(
+          createCustomerCart({endpoint: 'carts', data: JSON.stringify(data)}),
+        );
+        setIsLoading(false);
+      }
     }
+  };
+
+  const goToLogin = () => {
+    navigation.navigate('LoginScreen');
   };
 
   const checkIfAddedInShoppingList = () => {
@@ -212,7 +253,14 @@ export default function ProductItem({item, includedData, index}) {
               $ {item.price}
             </Text>
           </Box>
-          <TouchableOpacity onPress={onPressAddToCart}>
+
+          {/* ADD BUTTON */}
+          <TouchableOpacity
+            onPress={isUserLoggedIn ? onPressAddToCart : goToLogin}
+            // onPress={() => {
+            //   setSelectedId(!selectedId);
+            // }}
+          >
             <Box
               backgroundColor="zomatoRed"
               padding="s6"
@@ -231,12 +279,25 @@ export default function ProductItem({item, includedData, index}) {
                 marginRight="s4">
                 ADD
               </Text>
-              <Image
-                source={Icons.addToCartIcon}
-                style={{width: 24, height: 24, tintColor: 'white'}}
-              />
+              {isLoading === true ? (
+                <>
+                  <ActivityIndicator
+                    style={{width: 24, height: 24}}
+                    color={'white'}
+                  />
+                </>
+              ) : (
+                <>
+                  <Image
+                    source={Icons.addToCartIcon}
+                    style={{width: 24, height: 24, tintColor: 'white'}}
+                  />
+                </>
+              )}
             </Box>
           </TouchableOpacity>
+
+          {/* QUANTITY BUTTONS */}
         </Box>
       </TouchableOpacity>
     </Box>

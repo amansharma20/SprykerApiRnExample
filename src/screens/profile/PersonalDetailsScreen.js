@@ -1,9 +1,16 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Text, ActivityIndicator, Button, StyleSheet} from 'react-native';
+import {
+  View,
+  ActivityIndicator,
+  Button,
+  StyleSheet,
+  SafeAreaView,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCustomerDetails} from '../../redux/profileApi/ProfileApiAsyncThunk';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {AuthContext} from '../../navigation/StackNavigator';
+import Text from '../../atoms/text';
 
 export default function PersonalDetailsScreen() {
   const {signOut} = useContext(AuthContext);
@@ -28,7 +35,7 @@ export default function PersonalDetailsScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {isLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator />
@@ -58,7 +65,7 @@ export default function PersonalDetailsScreen() {
       <View style={styles.logoutButtonContainer}>
         <Button title="Logout" onPress={onPressLogout} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -74,7 +81,7 @@ const ProfileRow = ({label, value}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: 'white',
   },
   loadingContainer: {
     flex: 1,

@@ -72,12 +72,14 @@ const CartItem = ({item}) => {
       ) : (
         <Box flexDirection="row">
           <Box alignItems="center" mr="s8">
-            <Image
-              style={{height: 120, width: 120, resizeMode: 'contain'}}
-              source={{
-                uri: image,
-              }}
-            />
+            <Box height={120} width={120}>
+              <Image
+                style={{height: 120, width: 120, resizeMode: 'contain'}}
+                source={{
+                  uri: image,
+                }}
+              />
+            </Box>
             <CartItemQuantity cartItem={item} removeItemTrigger={removeItem} />
           </Box>
           <Box justifyContent="space-between">

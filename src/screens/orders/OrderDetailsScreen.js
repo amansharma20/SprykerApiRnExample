@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {Box, Text} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
@@ -8,12 +9,15 @@ import {
   ScrollView,
   StyleSheet,
   Image,
+  SafeAreaView,
 } from 'react-native';
 import RNRestart from 'react-native-restart';
 import {useDispatch, useSelector} from 'react-redux';
 import {getOrderDetailsData} from '../../redux/orderDetailsApi/OrderDetailsApiAsyncThunk';
 import OrdertotalCost from './components/OrderTotalCost';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
+import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import {CheckCircle} from '../../assets/svgs';
 
 const OrderDetailsScreen = props => {
   const dispatch = useDispatch();
@@ -123,10 +127,12 @@ const OrderDetailsScreen = props => {
               uri: item?.metadata?.image,
             }}
           />
-          <Box flexDirection="column" ml="s40" justifyContent="space-between">
-            <Text>{item?.name}</Text>
-            <Text>Quantity: {item?.quantity}</Text>
-            <Text>Price: ${item?.sumSubtotalAggregation}</Text>
+          <Box flexDirection="column" ml="s40">
+            <Text variant="bold14" mb="s2">
+              {item?.name}
+            </Text>
+            <Text mb="s2">Quantity: {item?.quantity}</Text>
+            <Text mb="s2">Price: ${item?.sumSubtotalAggregation}</Text>
           </Box>
         </Box>
       </Box>
@@ -146,11 +152,11 @@ const OrderDetailsScreen = props => {
         elevation={3}
         backgroundColor="white">
         <Box flexDirection="row" justifyContent="space-between">
-          <Box paddingBottom="s8" paddingHorizontal="s8">
-            <Text>{items?.templateName}</Text>
+          <Box paddingBottom="s8">
+            <Text variant="bold14">{items?.templateName}</Text>
           </Box>
           <Box>
-            <Text>Quantity:{items?.quantity}</Text>
+            <Text variant="bold14">Quantity:{items?.quantity}</Text>
           </Box>
         </Box>
 
@@ -175,8 +181,8 @@ const OrderDetailsScreen = props => {
                 </Box>
                 <Box justifyContent="space-between">
                   <Box>
-                    <Box flexDirection="row">
-                      <Text>{item.name}</Text>
+                    <Box>
+                      <Text variant="bold14">{item.name}</Text>
                     </Box>
                     <Text style={{fontWeight: 'bold', marginTop: 4}}>
                       $ {item.sumPrice}
@@ -192,55 +198,65 @@ const OrderDetailsScreen = props => {
   };
 
   return (
-    <ScrollView contentContainerStyle={{backgroundColor: 'white', flexGrow: 1}}>
-      <CommonHeader title={'Order Details'} />
-      <Box paddingHorizontal="paddingHorizontal">
-        {!isLoading ? (
-          <>
-            <Box>
-              <Text textAlign="center">
-                Thank You! Your order has been placed successfully, your Order
-                ID is -{orderReference}
-              </Text>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <ScrollView
+        contentContainerStyle={{backgroundColor: 'white', flexGrow: 1}}>
+        <CommonHeader title={'Order Details'} />
+        <Box paddingHorizontal="paddingHorizontal">
+          {!isLoading ? (
+            <>
+              <Box>
+                <Box
+                  backgroundColor="lightBlueBg"
+                  padding="s16"
+                  borderRadius={8}
+                  alignItems="center">
+                  <CheckCircle />
+                  <Text textAlign="center" mt="s8" variant="semiBold14">
+                    <Text variant="bold16">Thankyou!</Text> {'\n'} Your order
+                    has been placed successfully, your Order ID is -
+                    {orderReference}
+                  </Text>
+                </Box>
 
-              <Text mb="s2" marginVertical="s16" style={{fontWeight: 'bold'}}>
-                Your Order -
-              </Text>
-              <Text mb="s16" style={styles.horizontalLine} />
-              <FlatList
-                data={configuredBundledOrders}
-                renderItem={({item}) => configuredBundles(item)}
-                contentContainerStyle={{flex: 1}}
-              />
-              <Box style={styles.headingContainer}>
-                <Text style={styles.headingText}>Items</Text>
-              </Box>
-              <FlatList
-                data={normalProducts}
-                renderItem={renderItem}
-                contentContainerStyle={{flex: 1}}
-              />
-              <Text style={styles.horizontalLine} />
-              <OrdertotalCost
-                orderDetail={orderDetail}
-                orderShipment={orderShipment}
-                orderId={orderId}
-              />
-              <Box mb="s12">
-                <Button
-                  title="Go to home"
-                  onPress={() => RNRestart.Restart()}
+                <Text marginVertical="s16" style={{fontWeight: 'bold'}}>
+                  Your Order -
+                </Text>
+                <FlatList
+                  data={configuredBundledOrders}
+                  renderItem={({item}) => configuredBundles(item)}
+                  contentContainerStyle={{flex: 1}}
+                />
+                <Box style={styles.headingContainer}>
+                  <Text style={styles.headingText}>Items</Text>
+                </Box>
+                <FlatList
+                  data={normalProducts}
+                  renderItem={renderItem}
+                  contentContainerStyle={{flex: 1}}
+                />
+                <Text style={styles.horizontalLine} />
+                <OrdertotalCost
+                  orderDetail={orderDetail}
+                  orderShipment={orderShipment}
+                  orderId={orderId}
                 />
               </Box>
-            </Box>
-          </>
-        ) : (
-          <>
-            <ActivityIndicator />
-          </>
-        )}
+            </>
+          ) : (
+            <>
+              <ActivityIndicator />
+            </>
+          )}
+        </Box>
+      </ScrollView>
+      <Box backgroundColor="white" padding="s16">
+        <CommonSolidButton
+          title={'Go to home'}
+          onPress={() => RNRestart.Restart()}
+        />
       </Box>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -255,7 +271,6 @@ const styles = StyleSheet.create({
     height: 70,
   },
   headingContainer: {
-    backgroundColor: '#f5f5f5',
     padding: 10,
   },
   headingText: {
