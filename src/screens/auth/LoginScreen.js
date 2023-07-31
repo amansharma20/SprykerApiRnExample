@@ -117,7 +117,12 @@ export default function LoginScreen(props) {
             <ActivityIndicator color={theme.colors.sushiittoRed} />
           </>
         )}
-        {/* <Button title="SignOut" onPress={() => signOut()} /> */}
+      </Box>
+      <Box justifyContent="flex-end" mt="s8">
+        <Button
+          title="Continue as a Guest User"
+          onPress={() => navigation.navigate('Home')}
+        />
       </Box>
       <Box justifyContent="flex-end" flex={1} pb="s16">
         <PoweredBySpryker />

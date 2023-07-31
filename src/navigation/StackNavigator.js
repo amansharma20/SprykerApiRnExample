@@ -33,8 +33,8 @@ import ConfiguredBundleScreen from '../screens/configuredBundle/ConfiguredBundle
 import ConfigurableBundleSlotsScreen from '../screens/configuredBundle/ConfigurableBundleSlotsScreen';
 import BundlesSummaryScreen from '../screens/bundles/BundlesSummaryScreen';
 import {getProductsByWishlistAsyncThunk} from '../redux/wishlist/ProductsWishlistApiAsyncThunk';
-import {getCartDataNew} from '../redux/newCartApi/NewCartApiAsyncThunk';
 import BundlesScreenNew from '../screens/bundles/BundlesScreenNew';
+import GuestCartScreen from '../screens/guestCart/GuestCartScreen';
 
 export const AuthContext = React.createContext();
 
@@ -269,6 +269,7 @@ export default function StackNavigator() {
           name="BundlesSummaryScreen"
           component={BundlesSummaryScreen}
         />
+        <Stack.Screen name="GuestCartScreen" component={GuestCartScreen} />
       </Stack.Navigator>
     </AuthContext.Provider>
   );

@@ -22,6 +22,7 @@ import {AuthContext} from '../../navigation/StackNavigator';
 import CartItem from './CartItem';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {useCartItemsCount} from '../../hooks/useCartItemsCount';
+import GuestCartScreen from '../guestCart/GuestCartScreen';
 
 const CartScreen = () => {
   const {signOut} = useContext(AuthContext);
@@ -30,8 +31,6 @@ const CartScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [cartItemsArray, setCartItemsArray] = useState([]);
-  // const [cartItems, setCartItems] = useState(null);
-  // console.log('cartItems: ', cartItems);
   const {isUserLoggedIn} = useIsUserLoggedIn();
 
   const [allProductAvailableInCarts, setAllProductsAvailableInCarts] =
@@ -58,6 +57,8 @@ const CartScreen = () => {
   const customerCartDataNew = useSelector(
     state => state.getCartDataNewApiSlice?.cartDataNew.data,
   );
+
+  const grandTotal = customerCartDataNew?.attributes?.totals?.grandTotal;
 
   const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
 
@@ -107,48 +108,6 @@ const CartScreen = () => {
   //   }
   // }, [customerCartDataNew]);
 
-  // useEffect(() => {
-  //   const getCartItems = async () => {
-  //     setIsLoading(true);
-  //     let userToken = await Keychain.getGenericPassword();
-  //     let token = userToken.password;
-  //     const res = await axios
-  //       .get(
-  //         `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`,
-  //         {
-  //           headers: {
-  //             Authorization: token,
-  //             'Content-Type': 'application/json',
-  //           },
-  //           validateStatus: () => true,
-  //         },
-  //       )
-  //       .catch(function (error) {
-  //         console.log('error: ', error);
-  //         setIsLoading(false);
-  //         if (error) {
-  //           Alert.alert('Error', 'something went wrong', [
-  //             {
-  //               text: 'OK',
-  //             },
-  //           ]);
-  //         }
-  //       });
-
-  //     setCartItems(res?.data);
-  //     for (const item of res?.data?.normalProduct) {
-  //       const availability =
-  //         item?.['concrete-product-availabilities']?.availability;
-  //       if (!availability) {
-  //         setAllProductsAvailableInCarts(false);
-  //         break;
-  //       }
-  //     }
-  //     setIsLoading(false);
-  //   };
-  //   getCartItems();
-  // }, []);
-
   useEffect(() => {
     if (customerCarts.length === 0) {
       const data = {
@@ -175,9 +134,6 @@ const CartScreen = () => {
         }
       });
     }
-    // dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
-    //   console.log('carts api call successful');
-    // });
   }, []);
 
   const grandTotal = customerCartDataNew?.attributes?.totals?.grandTotal;
@@ -189,19 +145,6 @@ const CartScreen = () => {
       </Box>
     );
   };
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   if (customerCartId) {
-  //     dispatch(
-  //       getCustomerCartItems(
-  //         `carts/${customerCartId}?include=items%2Cbundle-items`,
-  //       ),
-  //     ).then(() => {
-  //       setIsLoading(false);
-  //     });
-  //   }
-  // }, [dispatch, customerCartId, isUserLoggedIn]);
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -295,7 +238,8 @@ const CartScreen = () => {
           </>
         ) : (
           <>
-            <LoginScreen />
+            {/* <LoginScreen /> */}
+            <GuestCartScreen />
           </>
         )}
       </Box>

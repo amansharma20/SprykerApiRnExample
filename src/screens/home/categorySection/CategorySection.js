@@ -174,6 +174,13 @@ const CategorySection = () => {
           )
         }
       />
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('ConfiguredBundleScreen');
+        }}>
+        <Text> Configurable Bundle</Text>
+      </TouchableOpacity>
+
       {/* {!isLoading ? (
         <>
           <FlatList

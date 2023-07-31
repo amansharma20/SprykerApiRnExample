@@ -1,17 +1,28 @@
 /* eslint-disable react-native/no-inline-styles */
 import {SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {Box, Text, theme} from '@atoms';
 import GoBackButton from '../GoBackButton/GoBackButton';
 import {CartIcon} from '../../assets/svgs';
 import {useGoToCart} from '../../hooks/useGoToCart';
-import {useCartItemsCount} from '../../hooks/useCartItemsCount';
+import {useSelector} from 'react-redux';
 // import GoBackButton from './GoBackButton/GoBackButton';
+import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 
 const CommonHeader = ({title, onPress, showCartIcon = false, ...props}) => {
   const {goToCart} = useGoToCart();
-  const {cartItemsCount} = useCartItemsCount();
+  const {isUserLoggedIn} = useIsUserLoggedIn();
 
+  var cartItemsCount = 0;
+  if (isUserLoggedIn) {
+    cartItemsCount = useSelector(
+      state => state.getCustomerCartItemsAliSlice.itemsCount,
+    );
+  } else {
+    // logic for guest cart if exist otherwise 0
+    cartItemsCount = 0;
+  }
   const onPressCart = () => {
     goToCart();
   };

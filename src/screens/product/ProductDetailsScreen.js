@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -29,6 +31,8 @@ import ProductOffer from './ProductOffer';
 import axios from 'axios';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
@@ -88,7 +92,70 @@ const ProductDetailsScreen = props => {
   const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart.id}`;
 
   const onPressAddToCart = () => {
-    isUserLoggedIn ? addToCartHandler() : navigation.navigate('LoginScreen');
+    isUserLoggedIn ? addToCartHandler() : onPressAddToCartGuestUser();
+  };
+
+  const addToCartAsAGuestUser = async guestCartDataReq => {
+    CommonLoading.show();
+    const guestCustomerUniqueId = await AsyncStorage.getItem(
+      'guestCustomerUniqueId',
+    );
+    const url = `https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-cart-items`;
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Anonymous-Customer-Unique-Id': guestCustomerUniqueId,
+    };
+    await axios
+      .post(url, guestCartDataReq, {headers: headers})
+      .then(response => {
+        // if (response?.status === 201) {
+        //   Alert.alert('Added to cart');
+        // } else if (response?.status === 404) {
+        //   Alert.alert('Cart not found');
+        //   return;
+        // } else if (response?.status === 422) {
+        //   Alert.alert('Product not found');
+        //   return;
+        // } else {
+        //   Alert.alert('Bad Request');
+        //   return;
+        // }
+        dispatch(
+          guestCartData({
+            endpoint:
+              'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
+            data: headers,
+          }),
+        );
+        CommonLoading.hide();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        CommonLoading.hide();
+      });
+  };
+
+  const onPressAddToCartGuestUser = async () => {
+    const guestCartDataReq = {
+      data: {
+        type: 'guest-cart-items',
+        attributes: {
+          sku: selectedSkuId,
+          quantity: 1,
+        },
+      },
+    };
+    const guestCustomerUniqueId = await AsyncStorage.getItem(
+      'guestCustomerUniqueId',
+    );
+
+    if (!guestCustomerUniqueId) {
+      const guestUserUniqueId = 'id' + Math.random().toString(16).slice(2);
+      AsyncStorage.setItem('guestCustomerUniqueId', guestUserUniqueId);
+      addToCartAsAGuestUser(guestCartDataReq);
+    } else {
+      addToCartAsAGuestUser(guestCartDataReq);
+    }
   };
 
   const onPressAddToShoppingList = () => {
