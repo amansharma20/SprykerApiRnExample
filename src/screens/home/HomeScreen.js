@@ -14,6 +14,8 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import SelectShippingMethod from '../../components/SelectShippingMethod/SelectShippingMethod';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {useDispatch, useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
 
 const HomeScreen = () => {
   const navigation = useNavigation();

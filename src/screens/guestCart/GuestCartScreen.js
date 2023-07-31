@@ -27,6 +27,7 @@ const GuestCartScreen = () => {
       state.getGuestCartDataApiSlice?.itemTotal?.[0]?.attributes?.totals
         ?.grandTotal,
   );
+  console.log('grandTotal: ', grandTotal);
 
   const configuredBundles = useSelector(
     state => state.getGuestCartDataApiSlice?.configuredBundle,

@@ -59,6 +59,7 @@ const CartScreen = () => {
   );
 
   const grandTotal = customerCartDataNew?.attributes?.totals?.grandTotal;
+  console.log('GRANDTOTAL: ', grandTotal);
 
   const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect, useState} from 'react';
@@ -8,8 +9,13 @@ import ProductItemNew from '../../components/ProductItemNew';
 import Box from '../../atoms/box';
 import HomeShimmers from '../../components/shimmers/HomeShimmers';
 import HomeCartPopUp from './components/HomeCartPopUp';
+import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
+import {useDispatch, useSelector} from 'react-redux';
+import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SushittoHomeScreen = () => {
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   console.log('isLoading: ', isLoading);
 
@@ -34,6 +40,49 @@ const SushittoHomeScreen = () => {
       console.log('error: ', error);
       setIsLoading(false);
     }
+  }, []);
+
+  const customerCartId = useSelector(
+    state =>
+      state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
+  );
+
+  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
+
+  useEffect(() => {
+    if (customerCartId) {
+      dispatch(getCartDataNew(newCartApiUrl)).then(res => {
+        if (res.payload.status === 200) {
+          console.log('carts api call successful');
+        } else {
+          console.log('mulesoft carts api call not successful');
+        }
+      });
+    }
+  }, [customerCartId]);
+
+  useEffect(() => {
+    const guestCart = async () => {
+      const guestCustomerUniqueId = await AsyncStorage.getItem(
+        'guestCustomerUniqueId',
+      );
+
+      if (guestCustomerUniqueId) {
+        const headers = {
+          'X-Anonymous-Customer-Unique-Id': guestCustomerUniqueId,
+        };
+        dispatch(
+          guestCartData({
+            endpoint:
+              'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
+            data: headers,
+          }),
+        ).then(() => {
+          console.log('redux called successfully');
+        });
+      }
+    };
+    guestCart();
   }, []);
 
   const renderHorizontalItem = (

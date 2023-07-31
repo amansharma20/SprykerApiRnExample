@@ -70,7 +70,6 @@ export default function StackNavigator() {
   }, []);
 
   useEffect(() => {
-    console.log('HERE');
     const getTokenExpiry = async () => {
       const token = await AsyncStorage.getItem('tokenExpiry');
       if (token) {
