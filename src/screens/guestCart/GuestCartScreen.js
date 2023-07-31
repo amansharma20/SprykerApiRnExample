@@ -1,7 +1,6 @@
 import {Box, Text, theme} from '@atoms';
 import React, {useState, useEffect, useContext} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import axios from 'axios';
 import {
   FlatList,
   StyleSheet,
@@ -13,11 +12,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import GuestCartItem from './GuestCartItems';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
+import ConfiguredBundleGuestCart from './ConfiguredBundleGuestCartScreen';
 const GuestCartScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const guestCartItems = useSelector(
+  const normalProducts = useSelector(
     state => state.getGuestCartDataApiSlice?.guestCartData,
+  );
+  const configuredBundles = useSelector(
+    state => state.getGuestCartDataApiSlice?.configuredBundle,
   );
 
   useEffect(() => {
@@ -61,10 +64,17 @@ const GuestCartScreen = () => {
               paddingHorizontal: theme.spacing.paddingHorizontal,
             }}>
             <FlatList
-              data={guestCartItems}
+              data={normalProducts}
               renderItem={item => {
                 const data = item?.item;
                 return <GuestCartItem item={data} />;
+              }}
+            />
+            <FlatList
+              data={configuredBundles}
+              renderItem={item => {
+                const data = item?.item;
+                return <ConfiguredBundleGuestCart data={data} />;
               }}
             />
           </ScrollView>

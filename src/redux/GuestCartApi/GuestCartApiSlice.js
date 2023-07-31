@@ -4,6 +4,7 @@ import {guestCartData} from './GuestCartApiAsyncThunk';
 const initialState = {
   itemsCount: null,
   guestCartData: [],
+  configuredBundle: [],
   itemTotal: {},
   status: 'idle',
   error: null,
@@ -19,6 +20,7 @@ const getGuestCartDataApiSlice = createSlice({
     builder.addCase(guestCartData.fulfilled, (state, action) => {
       state.status = 'success';
       state.itemTotal = action.payload.data;
+      const customerCartData = action?.payload?.included;
       if (action?.payload?.included?.length > 0) {
         const concreteProductData = [];
         const image = [];
@@ -47,6 +49,8 @@ const getGuestCartDataApiSlice = createSlice({
                 groupKey: element.attributes.groupKey,
                 itemId: element.id,
                 price: element.attributes.calculations.sumGrossPrice,
+                // configuredBundle: element.attributes.configuredBundle,
+                // configuredBundleItem: element.attributes.configuredBundleItem,
               });
               break;
           }
@@ -74,6 +78,58 @@ const getGuestCartDataApiSlice = createSlice({
             };
           });
         state.guestCartData = guestCartItems();
+        // configured bundle for guest cart
+        const getConfiguredBundle = () => {
+          const uuidsSet = new Set();
+
+          action?.payload?.included?.forEach(items => {
+            if (items?.attributes?.configuredBundle != null) {
+              const uuid = items?.attributes?.configuredBundle?.groupKey;
+              if (uuid) {
+                uuidsSet.add(uuid);
+              }
+            }
+          });
+          const uuids = Array.from(uuidsSet).map(uuid => ({uuid: uuid}));
+
+          const newDataArray = uuids.map(uuidObj => {
+            const templateName = customerCartData.find(
+              item =>
+                item.attributes.configuredBundle?.groupKey === uuidObj.uuid,
+            )?.attributes?.configuredBundle?.template?.name;
+
+            const templateUUID = customerCartData.find(
+              item =>
+                item.attributes.configuredBundle?.groupKey === uuidObj.uuid,
+            )?.attributes?.configuredBundle?.template?.uuid;
+            const slotUUID = customerCartData.find(
+              item =>
+                item.attributes.configuredBundle?.groupKey === uuidObj.uuid,
+            )?.attributes?.configuredBundleItem?.slot?.uuid;
+            const quantity = customerCartData.find(
+              item =>
+                item.attributes.configuredBundle?.groupKey === uuidObj.uuid,
+            )?.attributes?.configuredBundle?.quantity;
+            const data = customerCartData.filter(
+              item =>
+                item.attributes.configuredBundle?.groupKey === uuidObj.uuid,
+            );
+            const groupKey = customerCartData.find(
+              item =>
+                item.attributes.configuredBundle?.groupKey === uuidObj.uuid,
+            )?.attributes?.configuredBundle?.groupKey;
+            return {
+              templateName,
+              quantity,
+              templateUUID,
+              slotUUID,
+              data,
+              groupKey,
+            };
+          });
+          return newDataArray;
+        };
+        state.configuredBundle = getConfiguredBundle();
       }
     });
     builder.addCase(guestCartData.rejected, (state, action) => {
