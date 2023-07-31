@@ -121,7 +121,7 @@ export default function ProductItem({item, includedData, index}) {
             priceMode: 'NET_MODE',
             currency: 'EUR',
             store: 'DE',
-            name: 'new cart',
+            name: 'new',
           },
         };
         dispatch(

@@ -7,20 +7,6 @@ const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
 
   return (
     <Box>
-      <Box mt="s16" flexDirection="row" justifyContent="space-between">
-        <Text style={{fontWeight: 'bold'}}>Item Total</Text>
-        <Text style={{fontWeight: 'bold'}}>
-          ${orderDetail?.totals?.subtotal}
-        </Text>
-      </Box>
-      <Box flexDirection="row" justifyContent="space-between">
-        <Text>Delivery Charge</Text>
-        <Text>${orderDetail?.totals?.expenseTotal}</Text>
-      </Box>
-      <Box flexDirection="row" justifyContent="space-between">
-        <Text>Discount Total</Text>
-        <Text>${orderDetail?.totals?.discountTotal}</Text>
-      </Box>
       {/* <Text style={styles.horizontalLine} /> */}
       {/* <Box flexDirection="row" justifyContent="space-between">
         <Text>Grand Total</Text>
@@ -76,17 +62,35 @@ const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
         <Text>{orderDetail?.billingAddress?.salutation}</Text>
       </Box>
       <Text style={styles.horizontalLine} />
+
       <Text mt="s12" style={styles.headerText}>
         Payment Details
       </Text>
+
+      <Box mt="s16" flexDirection="row" justifyContent="space-between">
+        <Text style={{fontWeight: 'bold'}}>Item Total</Text>
+        <Text style={{fontWeight: 'bold'}}>
+          ${orderDetail?.totals?.subtotal}
+        </Text>
+      </Box>
 
       <Box mt="s6" flexDirection="row" justifyContent="space-between">
         <Text>Payment By</Text>
         <Text>{orderDetail?.payments?.[0]?.paymentMethod}</Text>
       </Box>
+      <Box flexDirection="row" justifyContent="space-between">
+        <Text>Delivery Charge</Text>
+        <Text>${orderDetail?.totals?.expenseTotal}</Text>
+      </Box>
+      <Box flexDirection="row" justifyContent="space-between">
+        <Text>Discount Total</Text>
+        <Text>${orderDetail?.totals?.discountTotal}</Text>
+      </Box>
       <Box mt="s6" mb="s10" flexDirection="row" justifyContent="space-between">
         <Text>Item status : {orderDetail?.itemStates}</Text>
-        <Text>Total Amount : ${orderDetail?.totals?.grandTotal} </Text>
+        <Text fontWeight="bold">
+          Total Amount : ${orderDetail?.totals?.grandTotal}{' '}
+        </Text>
       </Box>
     </Box>
   );

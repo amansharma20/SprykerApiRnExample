@@ -14,6 +14,7 @@ import HomeHeader from '../../../../home/homeHeader/HomeHeader';
 import ContentFullSection from '../../../../home/contentFull/ContentFullSection';
 import SelectShippingMethod from '../../../../../components/SelectShippingMethod/SelectShippingMethod';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import PoweredBySpryker from '../../../../../components/PoweredBySpryker';
 
 const VerticalList = ({
   data,
@@ -199,7 +200,13 @@ const VerticalList = ({
         }
         onScroll={handleScroll}
         ListHeaderComponentStyle={{paddingHorizontal: 0}}
+        ListFooterComponent={
+          <Box paddingVertical="s16">
+            <PoweredBySpryker />
+          </Box>
+        }
       />
+
       {/* <Box flex={1} backgroundColor="white">
         {flattenedData?.length > 0 ? (
           <>

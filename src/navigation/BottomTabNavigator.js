@@ -9,6 +9,7 @@ import {HomeIcon} from '../assets/svgs';
 import {Image} from 'react-native';
 import Icons from '../assets/constants/Icons';
 import SushittoHomeScreen from '../screens/sushittoHomeScreen/SushittoHomeScreen';
+import {theme} from '../atoms/theme';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,7 +21,7 @@ export default function BottomTabNavigator() {
         style={{
           width: 24,
           height: 24,
-          tintColor: focused ? '#4486c6' : color,
+          tintColor: focused ? theme.colors.sushiittoRed : color,
         }}
       />
     );
@@ -28,7 +29,10 @@ export default function BottomTabNavigator() {
 
   return (
     <Tab.Navigator
-      screenOptions={{headerShown: false, tabBarActiveTintColor: '#4486c6'}}>
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: theme.colors.sushiittoRed,
+      }}>
       <Tab.Screen
         name="Home"
         component={SushittoHomeScreen}

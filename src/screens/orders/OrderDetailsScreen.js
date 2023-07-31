@@ -218,10 +218,6 @@ const OrderDetailsScreen = props => {
                     {orderReference}
                   </Text>
                 </Box>
-
-                <Text marginVertical="s16" style={{fontWeight: 'bold'}}>
-                  Your Order -
-                </Text>
                 <FlatList
                   data={configuredBundledOrders}
                   renderItem={({item}) => configuredBundles(item)}
@@ -271,7 +267,7 @@ const styles = StyleSheet.create({
     height: 70,
   },
   headingContainer: {
-    padding: 10,
+    paddingVertical: 10,
   },
   headingText: {
     fontSize: 18,

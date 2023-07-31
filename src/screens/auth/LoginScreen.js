@@ -1,11 +1,20 @@
 import React, {useContext, useState} from 'react';
-import {Box, Text, theme} from '@atoms';
-import {ActivityIndicator, Button, StyleSheet, TextInput} from 'react-native';
+import {Box, FONT, Text, theme} from '@atoms';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import {commonApi} from '../../api/CommanAPI';
 import {AuthContext} from '../../navigation/StackNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import HomeHeader from '../home/homeHeader/HomeHeader';
+import PoweredBySpryker from '../../components/PoweredBySpryker';
+import {CrossIcon} from '../../assets/svgs';
 
 export default function LoginScreen(props) {
   const {signIn} = useContext(AuthContext);
@@ -53,16 +62,25 @@ export default function LoginScreen(props) {
   };
 
   return (
-    <Box
-      style={{paddingTop: insets.top}}
-      flex={1}
-      padding="s16"
-      backgroundColor="white">
-      <Text variant="bold24" mb="s16">
+    <Box flex={1} padding="s16" backgroundColor="white">
+      <Box alignItems="flex-end">
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}>
+          <Box padding="s4">
+            <CrossIcon />
+          </Box>
+        </TouchableOpacity>
+      </Box>
+      <Box paddingVertical="s16" pb="s32">
+        <HomeHeader />
+      </Box>
+      {/* <Text variant="bold24" mb="s16">
         Login to continue
-      </Text>
+      </Text> */}
       <Text variant="regular14" color="lightBlack" mr="s4" mb="s12">
-        Email Address
+        Enter your email to get started
       </Text>
       <TextInput
         style={styles.input}
@@ -91,7 +109,8 @@ export default function LoginScreen(props) {
       <Box mt="s16">
         {!isLoading ? (
           <>
-            <Button title="SUBMIT" onPress={onPressSubmit} />
+            {/* <Button title="SUBMIT" onPress={onPressSubmit} /> */}
+            <CommonSolidButton title="LOGIN" onPress={onPressSubmit} />
           </>
         ) : (
           <>
@@ -99,6 +118,9 @@ export default function LoginScreen(props) {
           </>
         )}
         {/* <Button title="SignOut" onPress={() => signOut()} /> */}
+      </Box>
+      <Box justifyContent="flex-end" flex={1} pb="s16">
+        <PoweredBySpryker />
       </Box>
     </Box>
   );
@@ -112,5 +134,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingLeft: 16,
     fontSize: 16,
+    fontFamily: FONT.Primary,
   },
 });

@@ -124,3 +124,31 @@ export const CheckCircle = props => (
     />
   </Svg>
 );
+
+export const CrossIcon = props => (
+  <Svg
+    width={25}
+    height={24}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}>
+    <Mask
+      id="a"
+      style={{
+        maskType: 'alpha',
+      }}
+      maskUnits="userSpaceOnUse"
+      x={0}
+      y={0}
+      width={25}
+      height={24}>
+      <Path fill="#D9D9D9" d="M.105 0h23.936v24H.105z" />
+    </Mask>
+    <G mask="url(#a)">
+      <Path
+        d="M6.489 18.65 5.44 17.6l5.586-5.6L5.44 6.4 6.49 5.35l5.585 5.6 5.585-5.6 1.047 1.05-5.585 5.6 5.585 5.6-1.047 1.05-5.585-5.6-5.585 5.6Z"
+        fill="#999"
+      />
+    </G>
+  </Svg>
+);

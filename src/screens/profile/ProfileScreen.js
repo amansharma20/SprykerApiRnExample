@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 import LoginScreen from '../auth/LoginScreen';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import PoweredBySpryker from '../../components/PoweredBySpryker';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -37,26 +38,26 @@ export default function ProfileScreen() {
       },
     },
 
-    {
-      name: 'Contact Us',
-      onPress: function () {},
-    },
-    {
-      name: 'Feedback',
-      onPress: function () {},
-    },
+    // {
+    //   name: 'Contact Us',
+    //   onPress: function () {},
+    // },
+    // {
+    //   name: 'Feedback',
+    //   onPress: function () {},
+    // },
     {
       name: 'Language',
       onPress: function () {},
     },
+    // {
+    //   name: 'Sushitto Menu',
+    //   onPress: function () {
+    //     navigation.navigate('SushittoHomeScreen');
+    //   },
+    // },
     {
-      name: 'Sushitto Menu',
-      onPress: function () {
-        navigation.navigate('SushittoHomeScreen');
-      },
-    },
-    {
-      name: 'Configurable Bundle',
+      name: 'Create Your Roll',
       onPress: function () {
         navigation.navigate('ConfiguredBundleScreen');
       },
@@ -92,6 +93,9 @@ export default function ProfileScreen() {
               renderItem={renderItem}
               key={Math.random()}
             />
+            <Box paddingVertical="s16">
+              <PoweredBySpryker />
+            </Box>
           </Box>
         </>
       ) : (
