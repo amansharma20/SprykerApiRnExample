@@ -15,11 +15,14 @@ import HomeHeader from '../home/homeHeader/HomeHeader';
 import PoweredBySpryker from '../../components/PoweredBySpryker';
 import {CrossIcon} from '../../assets/svgs';
 import CommonOutlineButton from '../../components/CommonOutlineButton/CommonOutlineButton';
+import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
 
 export default function LoginScreen(props) {
   const {signIn} = useContext(AuthContext);
   const redirectToScreen = props?.route?.params?.redirectToScreen;
   const hideGuestUserCta = props?.route?.params?.hideGuestUserCta || false;
+  const {isUserLoggedIn} = useIsUserLoggedIn();
+  console.log('isUserLoggedIn: ', isUserLoggedIn);
 
   const navigation = useNavigation();
 
@@ -27,7 +30,7 @@ export default function LoginScreen(props) {
   const [password, setPassword] = useState('change123');
   const [isLoading, setIsLoading] = useState(false);
 
-  const onPressSubmit = async () => {
+  const onPressLogin = async () => {
     setIsLoading(true);
     const apiData = {
       grant_type: 'password',
@@ -55,6 +58,18 @@ export default function LoginScreen(props) {
     } else {
       console.log('response: ', response);
       setIsLoading(false);
+    }
+  };
+
+  const loginGuestUser = async () => {
+    onPressLogin();
+  };
+
+  const onPressSubmit = () => {
+    if (hideGuestUserCta === true && isUserLoggedIn === false) {
+      loginGuestUser();
+    } else {
+      onPressLogin();
     }
   };
 
@@ -106,7 +121,6 @@ export default function LoginScreen(props) {
       <Box mt="s16">
         {!isLoading ? (
           <>
-            {/* <Button title="SUBMIT" onPress={onPressSubmit} /> */}
             <CommonSolidButton title="LOGIN" onPress={onPressSubmit} />
 
             {hideGuestUserCta === true ? (

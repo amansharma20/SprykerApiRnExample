@@ -108,25 +108,27 @@ const ProductDetailsScreen = props => {
     await axios
       .post(url, guestCartDataReq, {headers: headers})
       .then(response => {
-        // if (response?.status === 201) {
-        //   Alert.alert('Added to cart');
-        // } else if (response?.status === 404) {
-        //   Alert.alert('Cart not found');
-        //   return;
-        // } else if (response?.status === 422) {
-        //   Alert.alert('Product not found');
-        //   return;
-        // } else {
-        //   Alert.alert('Bad Request');
-        //   return;
-        // }
-        dispatch(
-          guestCartData({
-            endpoint:
-              'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
-            data: headers,
-          }),
-        );
+        console.log('response: ', response.status);
+        if (response?.status === 201) {
+          Alert.alert('Added to cart');
+          dispatch(
+            guestCartData({
+              endpoint:
+                'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
+              data: headers,
+            }),
+          );
+        } else if (response?.status === 404) {
+          Alert.alert('Cart not found');
+          return;
+        } else if (response?.status === 422) {
+          Alert.alert('Product not found');
+          return;
+        } else {
+          Alert.alert('Bad Request');
+          return;
+        }
+
         CommonLoading.hide();
       })
       .catch(error => {
@@ -189,16 +191,6 @@ const ProductDetailsScreen = props => {
         productData,
       );
       if (response?.data?.status === 201) {
-        // dispatch(
-        //   getCustomerCartItems(
-        //     `carts/${customerCart.id}?include=items%2Cbundle-items`,
-        //   ),
-        // ).then(res => {
-        //   if (res.payload.status === 200) {
-        //     alert('Added to Cart');
-        //   }
-        //   CommonLoading.hide();
-        // });
         dispatch(getCartDataNew(newCartApiUrl)).then(res => {
           if (res.payload.status === 200) {
             console.log('carts api call successful');
