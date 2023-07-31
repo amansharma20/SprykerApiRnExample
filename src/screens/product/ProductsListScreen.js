@@ -72,7 +72,7 @@ const ProductListScreen = props => {
         </>
       ) : (
         <>
-          <ActivityIndicator />
+          <ActivityIndicator color={theme.colors.sushiittoRed} />
         </>
       )}
     </View>

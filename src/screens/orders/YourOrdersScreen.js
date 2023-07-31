@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useDispatch, useSelector} from 'react-redux';
 import {getOrdersData} from '../../redux/ordersApi/OrdersApiAsyncThunk';
@@ -80,7 +80,7 @@ const YourOrdersScreen = () => {
       <CommonHeader title="Your Orders" />
       {isLoading ? (
         <Box flex={1} alignItems="center" justifyContent="center">
-          <ActivityIndicator />
+          <ActivityIndicator color={theme.colors.sushiittoRed} />
         </Box>
       ) : (
         <Box flex={1} padding="paddingHorizontal">

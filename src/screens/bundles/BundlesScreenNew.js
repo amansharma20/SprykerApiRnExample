@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import {api} from '../../api/SecureAPI';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {FlashList} from '@shopify/flash-list';
@@ -173,7 +173,7 @@ const BundlesScreenNew = props => {
         </>
       ) : (
         <>
-          <ActivityIndicator />
+          <ActivityIndicator color={theme.colors.sushiittoRed} />
         </>
       )}
 

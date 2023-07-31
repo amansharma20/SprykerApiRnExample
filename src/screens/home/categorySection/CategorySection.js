@@ -167,7 +167,11 @@ const CategorySection = () => {
         // keyExtractor={item => item.nodeId.toString()}
         contentContainerStyle={styles.flatListContainer}
         ListEmptyComponent={
-          isLoading ? <ActivityIndicator /> : <Text>EMPTY LIST</Text>
+          isLoading ? (
+            <ActivityIndicator color={theme.colors.sushiittoRed} />
+          ) : (
+            <Text>EMPTY LIST</Text>
+          )
         }
       />
       {/* {!isLoading ? (

@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Box} from '@atoms';
+import {Box, theme} from '@atoms';
 import {ActivityIndicator, Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import BundleItem from './BundleItem';
@@ -242,7 +242,7 @@ const BundlesScreen = props => {
           </Box>
         ) : (
           <>
-            <ActivityIndicator />
+            <ActivityIndicator color={theme.colors.sushiittoRed} />
           </>
         )}
       </Box>

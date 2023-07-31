@@ -1,3 +1,6 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import Box from '../../atoms/box';
@@ -177,7 +180,7 @@ const WishlistItemsScreen = props => {
               alignItems="center"
               justifyContent="space-between">
               {isRemoveLoading ? (
-                <ActivityIndicator />
+                <ActivityIndicator color={theme.colors.sushiittoRed} />
               ) : (
                 <TouchableOpacity
                   onPress={() => removeItemFromShoppingList(product.itemId)}>
@@ -215,7 +218,7 @@ const WishlistItemsScreen = props => {
       <CommonHeader title="Items" />
       {isLoading ? (
         <>
-          <ActivityIndicator />
+          <ActivityIndicator color={theme.colors.sushiittoRed} />
         </>
       ) : (
         <>

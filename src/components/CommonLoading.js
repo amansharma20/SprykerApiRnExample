@@ -55,7 +55,7 @@ class CommonLoading extends Component {
             loop
             style={styles.loading}
           /> */}
-          <ActivityIndicator />
+          <ActivityIndicator color={theme.colors.sushiittoRed} />
           {title && <Text style={styles.titleText}>{title}</Text>}
           {subTitle && <Text style={styles.subTitleText}>{subTitle}</Text>}
         </View>

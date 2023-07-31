@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCheckoutData} from '../../redux/checkoutDataApi/CheckoutApiAsyncThunk';
@@ -215,7 +216,13 @@ const CheckoutScreen = props => {
       } else {
         setIsLoading(false);
         // console.log('res.payload.status: ', res.payload.data.errors[0].detail);
-        alert(res?.payload?.data?.errors?.[0]?.detail);
+        // alert(res?.payload?.data?.errors?.[0]?.detail);
+        Alert.alert('', res?.payload?.data?.errors?.[0]?.detail, [
+          {
+            text: 'OK',
+            onPress: () => navigation.goBack(),
+          },
+        ]);
       }
     });
   }, [dispatch, cartId]);
@@ -265,7 +272,7 @@ const CheckoutScreen = props => {
             </>
           ) : (
             <>
-              <ActivityIndicator />
+              <ActivityIndicator color={theme.colors.sushiittoRed} />
             </>
           )}
         </ScrollView>
@@ -275,7 +282,7 @@ const CheckoutScreen = props => {
           </Box>
         ) : (
           <>
-            <ActivityIndicator />
+            <ActivityIndicator color={theme.colors.sushiittoRed} />
           </>
         )}
       </Box>

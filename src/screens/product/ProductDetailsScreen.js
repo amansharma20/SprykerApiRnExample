@@ -338,7 +338,7 @@ const ProductDetailsScreen = props => {
     <SafeAreaView style={styles.container}>
       <CommonHeader title={title} showCartIcon />
       {isLoading ? (
-        <ActivityIndicator />
+        <ActivityIndicator color={theme.colors.sushiittoRed} />
       ) : (
         <>
           <ScrollView
@@ -415,7 +415,10 @@ const ProductDetailsScreen = props => {
                 )}
               </Box>
             ) : (
-              <ActivityIndicator size="large" color="#0064FD" />
+              <ActivityIndicator
+                size="large"
+                color={theme.colors.sushiittoRed}
+              />
             )}
           </ScrollView>
 

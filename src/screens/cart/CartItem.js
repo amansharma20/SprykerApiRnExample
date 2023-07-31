@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {api} from '../../api/SecureAPI';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import {TouchableOpacity, Image} from 'react-native';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {ActivityIndicator, StyleSheet} from 'react-native';
@@ -68,7 +68,7 @@ const CartItem = ({item}) => {
       padding="s8"
       flex={1}>
       {isLoading === true ? (
-        <ActivityIndicator />
+        <ActivityIndicator color={theme.colors.sushiittoRed} />
       ) : (
         <Box flexDirection="row">
           <Box alignItems="center" mr="s8">

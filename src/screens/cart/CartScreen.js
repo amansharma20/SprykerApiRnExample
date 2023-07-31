@@ -211,7 +211,7 @@ const CartScreen = () => {
             <CommonHeader title={'Your Cart'} />
             {isLoading ? (
               <>
-                <ActivityIndicator />
+                <ActivityIndicator color={theme.colors.sushiittoRed} />
               </>
             ) : (
               <>

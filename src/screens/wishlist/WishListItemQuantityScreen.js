@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import {
   TouchableOpacity,
   Image,
@@ -68,10 +68,14 @@ const WishListItemQuantityScreen = ({
         <Text style={styles.quantityText}>-</Text>
       </TouchableOpacity>
       {isloading ? (
-        <ActivityIndicator />
+        <ActivityIndicator color={theme.colors.sushiittoRed} />
       ) : (
         <Text style={styles.quantity}>
-          {isloading ? <ActivityIndicator /> : quantity}
+          {isloading ? (
+            <ActivityIndicator color={theme.colors.sushiittoRed} />
+          ) : (
+            quantity
+          )}
         </Text>
       )}
       <TouchableOpacity

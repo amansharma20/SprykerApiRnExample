@@ -114,7 +114,7 @@ export default function LoginScreen(props) {
           </>
         ) : (
           <>
-            <ActivityIndicator />
+            <ActivityIndicator color={theme.colors.sushiittoRed} />
           </>
         )}
         {/* <Button title="SignOut" onPress={() => signOut()} /> */}

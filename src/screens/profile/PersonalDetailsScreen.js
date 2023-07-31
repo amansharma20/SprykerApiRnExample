@@ -11,6 +11,7 @@ import {getCustomerDetails} from '../../redux/profileApi/ProfileApiAsyncThunk';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {AuthContext} from '../../navigation/StackNavigator';
 import Text from '../../atoms/text';
+import { theme } from '../../atoms/theme';
 
 export default function PersonalDetailsScreen() {
   const {signOut} = useContext(AuthContext);
@@ -38,7 +39,7 @@ export default function PersonalDetailsScreen() {
     <SafeAreaView style={styles.container}>
       {isLoading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator />
+          <ActivityIndicator color={theme.colors.sushiittoRed} />
         </View>
       ) : (
         <>

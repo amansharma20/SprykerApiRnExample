@@ -110,7 +110,7 @@ const WishlistScreen = () => {
               Your Shopping List
             </Text>
             {isLoading ? (
-              <ActivityIndicator />
+              <ActivityIndicator color={theme.colors.sushiittoRed} />
             ) : (
               <FlatList
                 data={customerWishlist}

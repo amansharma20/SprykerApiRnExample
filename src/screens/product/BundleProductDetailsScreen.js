@@ -171,7 +171,7 @@ const BundleProductDetailsScreen = props => {
                 </>
               ) : (
                 <>
-                  <ActivityIndicator />
+                  <ActivityIndicator color={theme.colors.sushiittoRed} />
                 </>
               )}
             </Box>
@@ -187,7 +187,7 @@ const BundleProductDetailsScreen = props => {
             </Box>
           </Box>
         ) : (
-          <ActivityIndicator size="large" color="#0064FD" />
+          <ActivityIndicator size="large" color={theme.colors.sushiittoRed} />
         )}
       </ScrollView>
 

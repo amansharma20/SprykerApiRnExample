@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useEffect, useState} from 'react';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {commonApi} from '../../api/CommanAPI';
 import {api} from '../../api/SecureAPI';
@@ -206,7 +206,11 @@ const ConfigurableBundleSlotsScreen = props => {
   return (
     <Box>
       <CommonHeader title="Back to Bundle" />
-      {isLoading ? <ActivityIndicator /> : <Slots />}
+      {isLoading ? (
+        <ActivityIndicator color={theme.colors.sushiittoRed} />
+      ) : (
+        <Slots />
+      )}
     </Box>
   );
 };

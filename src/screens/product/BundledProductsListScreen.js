@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useEffect, useState} from 'react';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import {
   View,
   StyleSheet,
@@ -103,7 +103,7 @@ const BundledProductsListScreen = props => {
           </>
         ) : (
           <>
-            <ActivityIndicator />
+            <ActivityIndicator color={theme.colors.sushiittoRed} />
           </>
         )}
       </Box>

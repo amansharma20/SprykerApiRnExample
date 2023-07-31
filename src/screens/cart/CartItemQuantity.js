@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {api} from '../../api/SecureAPI';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import {TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {getCustomerCartItems} from '../../redux/CartApi/CartApiAsyncThunk';
 import {ActivityIndicator} from 'react-native';
@@ -78,9 +78,13 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
         <Text style={styles.quantityText}>-</Text>
       </TouchableOpacity>
       {isloading ? (
-        <ActivityIndicator />
+        <Box width={40} alignItems="center">
+          <ActivityIndicator color={theme.colors.sushiittoRed} />
+        </Box>
       ) : (
-        <Text style={styles.quantity}>{quantity}</Text>
+        <Box width={40} alignItems="center">
+          <Text style={styles.quantity}>{quantity}</Text>
+        </Box>
       )}
       <TouchableOpacity
         onPress={() => changeQuantity(itemId, quantity + 1, productSku)}>

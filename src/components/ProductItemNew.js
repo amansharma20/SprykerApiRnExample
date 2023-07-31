@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import Icons from '../assets/constants/Icons';
 import {api} from '../api/SecureAPI';
 import {useDispatch, useSelector} from 'react-redux';
@@ -283,7 +283,7 @@ export default function ProductItem({item, includedData, index}) {
                 <>
                   <ActivityIndicator
                     style={{width: 24, height: 24}}
-                    color={'white'}
+                    color={theme.colors.sushiittoRed}
                   />
                 </>
               ) : (

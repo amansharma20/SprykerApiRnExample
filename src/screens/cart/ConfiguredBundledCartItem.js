@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import {api} from '../../api/SecureAPI';
 import {
   ActivityIndicator,
@@ -127,7 +127,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
           </TouchableOpacity>
 
           {isLoading ? (
-            <ActivityIndicator />
+            <ActivityIndicator color={theme.colors.sushiittoRed} />
           ) : (
             <>
               <TouchableOpacity
