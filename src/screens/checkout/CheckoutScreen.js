@@ -23,6 +23,7 @@ const CheckoutScreen = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const cartId = props.route.params?.cartId;
+  console.log('cartId: ', cartId);
   const cartItemsArray = props.route.params?.cartItemsArray;
 
   const [isLoading, setIsLoading] = useState(false);

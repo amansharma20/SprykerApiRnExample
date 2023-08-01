@@ -21,6 +21,7 @@ const GuestCartScreen = () => {
   const normalProducts = useSelector(
     state => state.getGuestCartDataApiSlice?.guestCartData,
   );
+  console.log('normalProducts: ', normalProducts);
 
   const grandTotal = useSelector(
     state =>
@@ -74,13 +75,18 @@ const GuestCartScreen = () => {
               flexGrow: 1,
               paddingHorizontal: theme.spacing.paddingHorizontal,
             }}>
-            <FlatList
-              data={normalProducts}
-              renderItem={item => {
-                const data = item?.item;
-                return <GuestCartItem item={data} />;
-              }}
-            />
+            {grandTotal !== 0 ? (
+              <FlatList
+                data={normalProducts}
+                renderItem={item => {
+                  const data = item?.item;
+                  return <GuestCartItem item={data} />;
+                }}
+              />
+            ) : (
+              ''
+            )}
+
             <FlatList
               data={configuredBundles}
               renderItem={item => {
@@ -89,14 +95,14 @@ const GuestCartScreen = () => {
               }}
             />
 
-            {guestCartItemsCount ? (
+            {guestCartItemsCount && grandTotal !== 0 ? (
               <>
                 <Box
                   justifyContent="flex-end"
                   flexDirection="row"
                   paddingVertical="s8">
                   <Text>
-                    {guestCartData.length != 0 ? (
+                    {normalProducts.length != 0 ? (
                       <Text variant="bold24">Total : $ {grandTotal}</Text>
                     ) : (
                       ''
@@ -108,7 +114,7 @@ const GuestCartScreen = () => {
               <>{/* <ListEmptyComponent /> */}</>
             )}
 
-            {guestCartItemsCount ? (
+            {guestCartItemsCount && grandTotal !== 0 ? (
               <Box>
                 <CommonSolidButton
                   title="Proceed to Checkout"

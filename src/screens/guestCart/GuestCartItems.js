@@ -38,7 +38,6 @@ const GuestCartItem = ({item}) => {
       await axios
         .delete(url, {headers: headers})
         .then(response => {
-          console.log('response: ', response.status);
           // if (response?.status === 400) {
           //   Alert.alert('Cart Id or Item Id not specified');
           // } else if (response?.status === 404) {

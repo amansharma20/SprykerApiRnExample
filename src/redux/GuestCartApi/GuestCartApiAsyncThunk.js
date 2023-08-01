@@ -5,9 +5,9 @@ export const guestCartData = createAsyncThunk(
   async ({endpoint, data}) => {
     try {
       const response = await axios.get(endpoint, {headers: data});
-      return response.data; // Return the response data explicitly
+      return response.data;
     } catch (error) {
-      throw error; // Rethrow the error to be caught by the rejected state in the slice
+      throw error;
     }
   },
 );

@@ -45,6 +45,7 @@ const CartScreen = () => {
     state =>
       state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
   );
+  console.log('customerCartId: ', customerCartId);
 
   const customerCartData = useSelector(
     state => state.getCustomerCartItemsAliSlice?.customerCart || [],

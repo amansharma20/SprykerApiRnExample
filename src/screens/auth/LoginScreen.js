@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {commonApi} from '../../api/CommanAPI';
+import * as Keychain from 'react-native-keychain';
 import {AuthContext} from '../../navigation/StackNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
@@ -16,14 +17,16 @@ import PoweredBySpryker from '../../components/PoweredBySpryker';
 import {CrossIcon} from '../../assets/svgs';
 import CommonOutlineButton from '../../components/CommonOutlineButton/CommonOutlineButton';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
-
+import {api} from '../../api/SecureAPI';
+import axios from 'axios';
+import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
+import {useDispatch} from 'react-redux';
 export default function LoginScreen(props) {
   const {signIn} = useContext(AuthContext);
   const redirectToScreen = props?.route?.params?.redirectToScreen;
   const hideGuestUserCta = props?.route?.params?.hideGuestUserCta || false;
   const {isUserLoggedIn} = useIsUserLoggedIn();
-  console.log('isUserLoggedIn: ', isUserLoggedIn);
-
+  const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const [userEmail, setUserEmail] = useState('sonia@spryker.com');
@@ -50,6 +53,94 @@ export default function LoginScreen(props) {
       );
       var token = 'Bearer ' + response?.data?.data?.access_token;
       // var token = 'Bearer ' + response?.data?.data?.refresh_token;
+
+      signIn(token);
+      if (redirectToScreen) {
+        navigation.replace(redirectToScreen);
+      }
+      setIsLoading(false);
+    } else {
+      console.log('response: ', response?.data?.data);
+      setIsLoading(false);
+    }
+  };
+
+  const onPressGuestUserLogin = async () => {
+    setIsLoading(true);
+    const apiData = {
+      grant_type: 'password',
+      username: userEmail,
+      password: password,
+    };
+    const response = await commonApi.post('token', apiData, {
+      'Content-Type': 'multipart/form-data',
+    });
+
+    if (response.data?.status === 200) {
+      const getToken = await AsyncStorage.getItem('tokenExpiry');
+      if (!getToken) {
+        await AsyncStorage.setItem(
+          'tokenExpiry',
+          // response?.data?.data.expires_in.toString(),
+          response?.data?.data.access_token,
+        );
+      }
+
+      var token = await AsyncStorage.getItem('tokenExpiry');
+
+      token = 'Bearer ' + token;
+      var token = 'Bearer ' + response?.data?.data?.access_token;
+      let carts = await axios.get(
+        'https://glue.de.faas-suite-prod.cloud.spryker.toys/carts',
+        {
+          headers: {
+            Authorization: token,
+          },
+          validateStatus: () => true,
+        },
+      );
+      var cartId = carts?.data?.data?.[0]?.id;
+      const cartLength = carts?.data?.data;
+      if (cartLength?.length == 0) {
+        const data = {
+          type: 'carts',
+          attributes: {
+            priceMode: 'NET_MODE',
+            currency: 'EUR',
+            store: 'DE',
+            name: 'new',
+          },
+        };
+        let createCustomerCart = await axios.post(
+          'https://glue.de.faas-suite-prod.cloud.spryker.toys/carts',
+          JSON.stringify(data),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          },
+        );
+        console.log('Response Data:', createCustomerCart);
+      }
+
+      const guestCustomerUniqueId = await AsyncStorage.getItem(
+        'guestCustomerUniqueId',
+      );
+      const url = `https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items`;
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-Anonymous-Customer-Unique-Id': guestCustomerUniqueId,
+      };
+      await axios
+        .get(url, {headers: headers})
+        .then(response => {
+          const data = response?.data?.included;
+          addToCart(data, cartId, token);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
       signIn(token);
       if (redirectToScreen) {
         navigation.replace(redirectToScreen);
@@ -60,14 +151,60 @@ export default function LoginScreen(props) {
       setIsLoading(false);
     }
   };
+  // const loginGuestUser = async () => {
+  //   onPressGuestUserLogin();
+  // };
 
-  const loginGuestUser = async () => {
-    onPressLogin();
+  const addToCart = async (data, cartId, token) => {
+    for (const item of data) {
+      const productData = {
+        data: {
+          type: 'items',
+          attributes: {
+            sku: item?.attributes?.sku,
+            quantity: item?.attributes?.quantity,
+            salesUnit: {
+              id: 0,
+              amount: 0,
+            },
+            productOptions: [null],
+          },
+        },
+      };
+      var test = JSON.stringify(productData);
+      try {
+        const response = await axios.post(
+          `https://glue.de.faas-suite-prod.cloud.spryker.toys/carts/${cartId}/items`,
+          productData,
+          {
+            headers: {
+              Authorization: token,
+            },
+            validateStatus: () => true,
+          },
+        );
+        // if (response.status === 201) {
+        //   signIn(token);
+        //   if (redirectToScreen) {
+        //     navigation.replace(redirectToScreen);
+        //   }
+        // }
+        console.log('Success:', response.status);
+      } catch (error) {
+        if (error.response) {
+          console.log('Error Response:', error.response.data);
+          console.log('Status Code:', error.response.status);
+        } else if (error.request) {
+          console.log('No Response Received:', error.request);
+        } else {
+          console.log('Error:', error.message);
+        }
+      }
+    }
   };
-
   const onPressSubmit = () => {
     if (hideGuestUserCta === true && isUserLoggedIn === false) {
-      loginGuestUser();
+      onPressGuestUserLogin();
     } else {
       onPressLogin();
     }
