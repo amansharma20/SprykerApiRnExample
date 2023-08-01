@@ -26,7 +26,6 @@ const HomeScreen = () => {
     state =>
       state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
   );
-
   const ViewData = [
     'HomeHeader',
     'ContentFullSection',

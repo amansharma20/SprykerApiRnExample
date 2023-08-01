@@ -29,7 +29,7 @@ export default function LoginScreen(props) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const [userEmail, setUserEmail] = useState('sonia@spryker.com');
+  const [userEmail, setUserEmail] = useState('henry.tudor@spryker.com');
   const [password, setPassword] = useState('change123');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -163,6 +163,8 @@ export default function LoginScreen(props) {
           attributes: {
             sku: item?.attributes?.sku,
             quantity: item?.attributes?.quantity,
+            productOfferReference: item?.attributes?.productOfferReference,
+            merchantReference: item?.attributes?.merchantReference,
             salesUnit: {
               id: 0,
               amount: 0,

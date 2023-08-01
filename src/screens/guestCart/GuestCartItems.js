@@ -98,6 +98,9 @@ const GuestCartItem = ({item}) => {
               <Text style={{fontWeight: 'bold', marginTop: 4}}>
                 $ {item?.price}
               </Text>
+              <Text style={{color: '#006400'}}>
+                {item?.productOffer != null ? `(Offer Included)` : ''}
+              </Text>
               {item?.availability === false ? (
                 <Text color="red">Not Available</Text>
               ) : (

@@ -41,6 +41,7 @@ const CartScreen = () => {
   const customerCarts = useSelector(
     state => state.customerCartIdApiSlice?.customerCart?.data?.data || [],
   );
+
   const customerCartId = useSelector(
     state =>
       state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
@@ -60,7 +61,12 @@ const CartScreen = () => {
   );
 
   const grandTotal = customerCartDataNew?.attributes?.totals?.grandTotal;
-  console.log('GRANDTOTAL: ', grandTotal);
+  console.log(
+    'customerCartDataNew?.attributes?.totals: ',
+    customerCartDataNew?.attributes?.totals,
+  );
+
+  const discountTotal = customerCartDataNew?.attributes?.totals?.discountTotal;
 
   const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
 
@@ -118,7 +124,7 @@ const CartScreen = () => {
           priceMode: 'NET_MODE',
           currency: 'EUR',
           store: 'DE',
-          name: 'new cart',
+          name: 'new',
         },
       };
       dispatch(
@@ -181,7 +187,6 @@ const CartScreen = () => {
                       data={customerCartDataNew?.normalProduct}
                       renderItem={item => {
                         const data = item?.item;
-
                         return <CartItem item={data} />;
                       }}
                       // ListEmptyComponent={
@@ -195,6 +200,19 @@ const CartScreen = () => {
                     />
                     {cartItemsCount ? (
                       <>
+                        <Box
+                          justifyContent="flex-end"
+                          flexDirection="row"
+                          paddingVertical="s8">
+                          <Text>
+                            Total Discount : $
+                            {discountTotal !== null ||
+                            discountTotal !== undefined ||
+                            discountTotal
+                              ? discountTotal
+                              : ''}
+                          </Text>
+                        </Box>
                         <Box
                           justifyContent="flex-end"
                           flexDirection="row"

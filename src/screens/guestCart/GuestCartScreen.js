@@ -28,7 +28,9 @@ const GuestCartScreen = () => {
       state.getGuestCartDataApiSlice?.itemTotal?.[0]?.attributes?.totals
         ?.grandTotal,
   );
-  console.log('grandTotal: ', grandTotal);
+  const discountTotal = useSelector(
+    state => state.getGuestCartDataApiSlice?.itemTotal?.[0]?.attributes?.totals,
+  );
 
   const configuredBundles = useSelector(
     state => state.getGuestCartDataApiSlice?.configuredBundle,
@@ -40,8 +42,25 @@ const GuestCartScreen = () => {
       const guestCustomerUniqueId = await AsyncStorage.getItem(
         'guestCustomerUniqueId',
       );
-
+      console.log('guestCustomerUniqueId: ', guestCustomerUniqueId);
       if (guestCustomerUniqueId) {
+        const headers = {
+          'X-Anonymous-Customer-Unique-Id': guestCustomerUniqueId,
+        };
+        dispatch(
+          guestCartData({
+            endpoint:
+              'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
+            data: headers,
+          }),
+        ).then(() => {
+          setIsLoading(false);
+          console.log('redux called successfully');
+        });
+        setIsLoading(false);
+      } else {
+        const guestUserUniqueId = 'id' + Math.random().toString(16).slice(2);
+        AsyncStorage.setItem('guestCustomerUniqueId', guestUserUniqueId);
         const headers = {
           'X-Anonymous-Customer-Unique-Id': guestCustomerUniqueId,
         };
@@ -84,7 +103,7 @@ const GuestCartScreen = () => {
                 }}
               />
             ) : (
-              ''
+              'No Items in carts'
             )}
 
             <FlatList
@@ -97,6 +116,19 @@ const GuestCartScreen = () => {
 
             {guestCartItemsCount && grandTotal !== 0 ? (
               <>
+                <Box
+                  justifyContent="flex-end"
+                  flexDirection="row"
+                  paddingVertical="s8">
+                  <Text>
+                    Total Discount : $
+                    {discountTotal?.discountTotal !== null ||
+                    discountTotal?.discountTotal !== undefined ||
+                    discountTotal?.discountTotal
+                      ? discountTotal?.discountTotal
+                      : ''}
+                  </Text>
+                </Box>
                 <Box
                   justifyContent="flex-end"
                   flexDirection="row"

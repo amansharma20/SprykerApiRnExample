@@ -18,6 +18,8 @@ const CartItem = ({item}) => {
   const sku = item?.['concrete-products']?.sku;
   const itemId = item?.itemData?.id;
   var price = item?.itemData?.attributes?.calculations?.sumGrossPrice;
+  const productOffer = item?.itemData?.attributes?.merchantReference;
+  console.log('item?.itemData?.attributes: ', item?.itemData?.attributes);
   if (!price) {
     price = item?.itemData?.attributes?.calculations?.sumPrice;
   }
@@ -88,6 +90,9 @@ const CartItem = ({item}) => {
                 <Text>{name}</Text>
               </Box>
               <Text style={{fontWeight: 'bold', marginTop: 4}}>$ {price}</Text>
+              <Text style={{color: '#006400'}}>
+                {productOffer !== null ? `(Offer Included)` : ''}
+              </Text>
               {availability === false ? (
                 <Text color="red">Not Available</Text>
               ) : (

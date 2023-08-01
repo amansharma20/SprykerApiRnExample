@@ -132,7 +132,7 @@ const OrderDetailsScreen = props => {
               {item?.name}
             </Text>
             <Text mb="s2">Quantity: {item?.quantity}</Text>
-            <Text mb="s2">Price: ${item?.sumSubtotalAggregation}</Text>
+            <Text mb="s2">Price: ${item?.sumGrossPrice * item?.quantity}</Text>
           </Box>
         </Box>
       </Box>

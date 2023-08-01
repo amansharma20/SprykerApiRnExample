@@ -144,6 +144,8 @@ const ProductDetailsScreen = props => {
         attributes: {
           sku: selectedSkuId,
           quantity: 1,
+          productOfferReference: offerForAddToCart?.productOfferReference,
+          merchantReference: offerForAddToCart?.merchantReference,
         },
       },
     };
@@ -442,10 +444,9 @@ const ProductDetailsScreen = props => {
                 </Text>
                 <Text>{description}</Text>
                 <Text mt="s6" variant="regular16" style={{fontWeight: 'bold'}}>
-                  Price -{' '}
                   {productOffer != null
-                    ? 'show here offer price'
-                    : `$${productData?.[selectedVariantIndex]?.price?.attributes?.price}`}
+                    ? ''
+                    : `Price $${productData?.[selectedVariantIndex]?.price?.attributes?.price}`}
                 </Text>
                 {productData?.[selectedVariantIndex]?.availability?.attributes
                   ?.availability !== true ? (

@@ -51,6 +51,7 @@ const getGuestCartDataApiSlice = createSlice({
                   groupKey: element.attributes.groupKey,
                   itemId: element.id,
                   price: element.attributes.calculations.sumGrossPrice,
+                  productOffer: element.attributes.merchantReference,
                   // configuredBundle: element.attributes.configuredBundle,
                   // configuredBundleItem: element.attributes.configuredBundleItem,
                 });
@@ -77,6 +78,7 @@ const getGuestCartDataApiSlice = createSlice({
                 price: matchingQuantity?.price || 0,
                 itemId: matchingQuantity.itemId,
                 groupKey: matchingQuantity.groupKey,
+                productOffer: matchingQuantity.productOffer,
               };
             });
           state.guestCartData = guestCartItems();
