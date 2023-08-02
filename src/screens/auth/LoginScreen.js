@@ -83,15 +83,45 @@ export default function LoginScreen(props) {
       );
       var token = 'Bearer ' + response?.data?.data?.access_token;
       // var token = 'Bearer ' + response?.data?.data?.refresh_token;
-
       signIn(token);
-      if (redirectToScreen) {
-        navigation.replace(redirectToScreen);
-      }
-      setIsLoading(false);
+      dispatch(getCustomerDetails('customers')).then(res => {
+        console.log(
+          'response.data?.data?.attributes?.firstName: ',
+          res.payload?.data?.data?.[0]?.attributes?.firstName,
+        );
+        CommonLoading.hide();
+        Toast.show({
+          type: 'success',
+          text1: `Welcome ${
+            res.payload?.data?.data?.[0]?.attributes?.firstName || ''
+          }!`,
+          text2: 'You are now logged in. 🎉',
+          position: 'top',
+        });
+        if (redirectToScreen) {
+          navigation.replace(redirectToScreen);
+        }
+        setIsLoading(false);
+        const data = {
+          type: 'carts',
+          attributes: {
+            priceMode: 'NET_MODE',
+            currency: 'EUR',
+            store: 'DE',
+            name: 'new',
+          },
+        };
+        const wait = new Promise(resolve => setTimeout(resolve, 1000));
+        wait.then(() => {
+          dispatch(
+            createCustomerCart({endpoint: 'carts', data: JSON.stringify(data)}),
+          );
+        });
+      });
     } else {
-      console.log('response: ', response?.data?.data);
+      Alert.alert(`${response.data?.data?.error_description}`);
       setIsLoading(false);
+      CommonLoading.hide();
     }
   };
 
@@ -241,8 +271,10 @@ export default function LoginScreen(props) {
   };
   const onPressSubmit = () => {
     if (hideGuestUserCta === true && isUserLoggedIn === false) {
+      console.log('HEREEEE');
       onPressGuestUserLogin();
     } else {
+      console.log('HERE');
       onPressLogin();
     }
   };
