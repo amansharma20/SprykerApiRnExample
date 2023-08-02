@@ -1,10 +1,13 @@
-import React, {useContext, useState} from 'react';
+import React, {useCallback, useContext, useRef, useState} from 'react';
 import {Box, FONT, Text, theme} from '@atoms';
 import {
   ActivityIndicator,
+  Alert,
+  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import {commonApi} from '../../api/CommanAPI';
 import * as Keychain from 'react-native-keychain';
@@ -17,24 +20,51 @@ import PoweredBySpryker from '../../components/PoweredBySpryker';
 import {CrossIcon} from '../../assets/svgs';
 import CommonOutlineButton from '../../components/CommonOutlineButton/CommonOutlineButton';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
-import {api} from '../../api/SecureAPI';
-import axios from 'axios';
-import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
+import DynamicSnapPointBottomSheet from '../../components/bottomsheets/DynamicSnapPointBottomSheet';
+import SignUpScreen from './SignUpScreen';
+import SelectAuthMethod from './components/SelectAuthMethod';
 import {useDispatch} from 'react-redux';
+import {getCustomerDetails} from '../../redux/profileApi/ProfileApiAsyncThunk';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import CommonLoading from '../../components/CommonLoading';
+import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
+import axios from 'axios';
+
 export default function LoginScreen(props) {
+  const dispatch = useDispatch();
   const {signIn} = useContext(AuthContext);
   const redirectToScreen = props?.route?.params?.redirectToScreen;
   const hideGuestUserCta = props?.route?.params?.hideGuestUserCta || false;
   const {isUserLoggedIn} = useIsUserLoggedIn();
-  const dispatch = useDispatch();
+
   const navigation = useNavigation();
 
-  const [userEmail, setUserEmail] = useState('henry.tudor@spryker.com');
-  const [password, setPassword] = useState('change123');
+  // SELECTED AUTH METHOD
+
+  const [selectedOption, setSelectedOption] = useState('login');
+
+  const [userEmail, setUserEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  function isValidEmail(email) {
+    // Regular expression for email validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  }
+
+  const getButtonStatus = () => {
+    if (isValidEmail(userEmail) === false || password.length === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const onPressLogin = async () => {
+    console.log('here');
     setIsLoading(true);
+    CommonLoading.show();
     const apiData = {
       grant_type: 'password',
       username: userEmail,
@@ -101,28 +131,6 @@ export default function LoginScreen(props) {
       );
       var cartId = carts?.data?.data?.[0]?.id;
       const cartLength = carts?.data?.data;
-      if (cartLength?.length == 0) {
-        const data = {
-          type: 'carts',
-          attributes: {
-            priceMode: 'NET_MODE',
-            currency: 'EUR',
-            store: 'DE',
-            name: 'new',
-          },
-        };
-        let createCustomerCart = await axios.post(
-          'https://glue.de.faas-suite-prod.cloud.spryker.toys/carts',
-          JSON.stringify(data),
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: token,
-            },
-          },
-        );
-        console.log('Response Data:', createCustomerCart);
-      }
 
       const guestCustomerUniqueId = await AsyncStorage.getItem(
         'guestCustomerUniqueId',
@@ -142,13 +150,40 @@ export default function LoginScreen(props) {
           console.error('Error:', error);
         });
       signIn(token);
-      if (redirectToScreen) {
-        navigation.replace(redirectToScreen);
-      }
-      setIsLoading(false);
+      dispatch(getCustomerDetails('customers')).then(res => {
+        CommonLoading.hide();
+        Toast.show({
+          type: 'success',
+          text1: `Welcome ${
+            res.payload?.data?.data?.[0]?.attributes?.firstName || ''
+          }!`,
+          text2: 'You are now logged in. 🎉',
+          position: 'top',
+        });
+        if (redirectToScreen) {
+          navigation.replace(redirectToScreen);
+        }
+        setIsLoading(false);
+        const data = {
+          type: 'carts',
+          attributes: {
+            priceMode: 'NET_MODE',
+            currency: 'EUR',
+            store: 'DE',
+            name: 'new',
+          },
+        };
+        const wait = new Promise(resolve => setTimeout(resolve, 1000));
+        wait.then(() => {
+          dispatch(
+            createCustomerCart({endpoint: 'carts', data: JSON.stringify(data)}),
+          );
+        });
+      });
     } else {
-      console.log('response: ', response);
+      Alert.alert(`${response.data?.data?.error_description}`);
       setIsLoading(false);
+      CommonLoading.hide();
     }
   };
   // const loginGuestUser = async () => {
@@ -212,80 +247,132 @@ export default function LoginScreen(props) {
     }
   };
 
+  // SIGN UP
+
+  const bottomSheetRef = useRef(null);
+
+  const handleExpandPress = useCallback(() => {
+    bottomSheetRef.current?.expand();
+  }, []);
+  const handleClosePress = useCallback(() => {
+    bottomSheetRef.current?.close();
+  }, []);
+
   return (
-    <Box flex={1} padding="s16" backgroundColor="white">
-      <Box alignItems="flex-end">
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}>
-          <Box padding="s4">
-            <CrossIcon />
-          </Box>
-        </TouchableOpacity>
-      </Box>
-      <Box paddingVertical="s16" pb="s32">
-        <HomeHeader />
-      </Box>
-      {/* <Text variant="bold24" mb="s16">
+    <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
+      <Box flex={1} padding="s16" backgroundColor="white">
+        <Box alignItems="flex-end">
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <Box padding="s4">
+              <CrossIcon />
+            </Box>
+          </TouchableOpacity>
+        </Box>
+        <Box>
+          <HomeHeader />
+        </Box>
+        <Box mt="s4">
+          <SelectAuthMethod
+            selectedOption={selectedOption}
+            setSelectedOption={setSelectedOption}
+          />
+        </Box>
+        {/* <Text variant="bold24" mb="s16">
         Login to continue
       </Text> */}
-      <Text variant="regular14" color="lightBlack" mr="s4" mb="s12">
-        Enter your email to get started
-      </Text>
-      <TextInput
-        style={styles.input}
-        placeholder="john.doe@example.com"
-        value={userEmail}
-        onChangeText={text => {
-          setUserEmail(text);
-        }}
-        autoCapitalize={false}
-        keyboardType="email-address"
-        placeholderTextColor={theme.colors.lightGrey}
-      />
-      <Text variant="regular14" color="lightBlack" mr="s4" marginVertical="s12">
-        Password
-      </Text>
-      <TextInput
-        style={styles.input}
-        placeholder="password"
-        value={password}
-        onChangeText={text => {
-          setPassword(text);
-        }}
-        autoCapitalize={false}
-        placeholderTextColor={theme.colors.lightGrey}
-      />
-      <Box mt="s16">
-        {!isLoading ? (
-          <>
-            <CommonSolidButton title="LOGIN" onPress={onPressSubmit} />
-
-            {hideGuestUserCta === true ? (
-              <></>
-            ) : (
-              <>
-                <Box paddingVertical="s16" alignItems="center">
-                  <Text>OR</Text>
+        {selectedOption === 'login' ? (
+          <Box>
+            <Text variant="regular14" color="lightBlack" mr="s4" mb="s12">
+              Enter your email to get started
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="john.doe@example.com"
+              value={userEmail}
+              onChangeText={text => {
+                setUserEmail(text);
+              }}
+              autoCapitalize={false}
+              keyboardType="email-address"
+              placeholderTextColor={theme.colors.lightGrey}
+            />
+            <Text
+              variant="regular14"
+              color="lightBlack"
+              mr="s4"
+              marginVertical="s12">
+              Password
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="password"
+              value={password}
+              onChangeText={text => {
+                setPassword(text);
+              }}
+              autoCapitalize={false}
+              placeholderTextColor={theme.colors.lightGrey}
+            />
+            <Box mt="s16">
+              {!isLoading ? (
+                <>
+                  <CommonSolidButton
+                    title="LOGIN"
+                    onPress={onPressSubmit}
+                    disabled={getButtonStatus()}
+                  />
+                </>
+              ) : (
+                <Box
+                  backgroundColor="sushiittoRed"
+                  height={40}
+                  borderRadius={theme.spacing.lml}
+                  alignItems="center"
+                  justifyContent="center">
+                  <ActivityIndicator color={'white'} />
                 </Box>
+              )}
+            </Box>
+          </Box>
+        ) : (
+          <>
+            <SignUpScreen setSelectedOption={setSelectedOption} />
+          </>
+        )}
+        <Box mt="s0">
+          {hideGuestUserCta === true ? (
+            <></>
+          ) : (
+            <Box>
+              {/* <Box mt="s16">
+                  <CommonSolidButton title="SIGNUP" onPress={onPressSubmit} />
+                </Box> */}
+              <Box paddingVertical="s16" alignItems="center">
+                <Text>OR</Text>
+              </Box>
+              <Box>
                 <CommonOutlineButton
                   title={'Continue as a Guest User'}
                   onPress={() => navigation.navigate('Home')}
                 />
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <ActivityIndicator color={theme.colors.sushiittoRed} />
-          </>
-        )}
+              </Box>
+            </Box>
+          )}
+        </Box>
+        <Box justifyContent="flex-end" flex={1} paddingVertical="s16">
+          <PoweredBySpryker />
+        </Box>
+
+        {/* <DynamicSnapPointBottomSheet
+          handleExpandPress={handleExpandPress}
+          bottomSheetRef={bottomSheetRef}>
+          <SignUpScreen />
+        </DynamicSnapPointBottomSheet> */}
       </Box>
-      <Box justifyContent="flex-end" flex={1} pb="s16">
-        <PoweredBySpryker />
-      </Box>
-    </Box>
+    </ScrollView>
   );
 }
 

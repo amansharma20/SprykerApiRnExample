@@ -241,7 +241,7 @@ const CartScreen = () => {
                       title="Proceed to Checkout"
                       disabled={!allProductAvailableInCarts}
                       onPress={() =>
-                        navigation.navigate('CheckoutScreen', {
+                        navigation.replace('CheckoutScreen', {
                           cartId: customerCartId,
                           cartItemsArray: cartItemsArray,
                         })
