@@ -42,6 +42,7 @@ export const useCartItemsCount = () => {
 
   const guestCartItemsCount =
     getTotalGuestProductsQuantity(guestCartData) || null;
+  console.log('guestCartItemsCount: ', guestCartItemsCount);
 
   const cartItemsCount =
     getTotalNormalProductsQuantity(customerCartDataNew?.normalProduct) +
@@ -50,6 +51,7 @@ export const useCartItemsCount = () => {
       ) ||
     guestCartItemsCount ||
     null;
+  console.log('cartItemsCount: ', cartItemsCount);
 
   return {cartItemsCount};
 };

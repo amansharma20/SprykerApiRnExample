@@ -21,7 +21,6 @@ const GuestCartScreen = () => {
   const normalProducts = useSelector(
     state => state.getGuestCartDataApiSlice?.guestCartData,
   );
-  console.log('normalProducts: ', normalProducts);
 
   const grandTotal = useSelector(
     state =>
@@ -42,7 +41,6 @@ const GuestCartScreen = () => {
       const guestCustomerUniqueId = await AsyncStorage.getItem(
         'guestCustomerUniqueId',
       );
-      console.log('guestCustomerUniqueId: ', guestCustomerUniqueId);
       if (guestCustomerUniqueId) {
         const headers = {
           'X-Anonymous-Customer-Unique-Id': guestCustomerUniqueId,
@@ -103,16 +101,17 @@ const GuestCartScreen = () => {
                 }}
               />
             ) : (
-              'No Items in carts'
+              <Box alignItems="center">
+                <Text>No Items in carts</Text>
+              </Box>
             )}
-
-            <FlatList
+            {/* <FlatList
               data={configuredBundles}
               renderItem={item => {
                 const data = item?.item;
                 return <ConfiguredBundleGuestCart data={data} />;
               }}
-            />
+            /> */}
 
             {guestCartItemsCount && grandTotal !== 0 ? (
               <>
