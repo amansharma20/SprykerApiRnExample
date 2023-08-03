@@ -17,7 +17,7 @@ const YourOrdersScreen = () => {
   );
 
   const renderItem = ({item}) => {
-    const isDelivered = item.attributes?.itemStates.includes('paid');
+    const isDelivered = item.attributes?.itemStates?.includes('paid');
     const orderDate = new Date(item.attributes?.createdAt).toLocaleDateString();
 
     return (

@@ -29,6 +29,7 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import CommonLoading from '../../components/CommonLoading';
 import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
 import axios from 'axios';
+import {applicationProperties} from '../../utils/application.properties';
 
 export default function LoginScreen(props) {
   const dispatch = useDispatch();
@@ -69,8 +70,8 @@ export default function LoginScreen(props) {
       grant_type: 'password',
       username: userEmail,
       password: password,
-      // client_id: 'frontend',
-      // client_secret: 'qq7NRNQDJbQ8dFq91Swm3pjFmVPmQd6CMfOPtBlp5hIWytMs',
+      client_id: 'frontend',
+      client_secret: applicationProperties.client_secret,
     };
     const response = await commonApi.post('token', apiData, {
       'Content-Type': 'multipart/form-data',
@@ -102,15 +103,7 @@ export default function LoginScreen(props) {
           navigation.replace(redirectToScreen);
         }
         setIsLoading(false);
-        const data = {
-          type: 'carts',
-          attributes: {
-            priceMode: 'NET_MODE',
-            currency: 'EUR',
-            store: 'DE',
-            name: 'new',
-          },
-        };
+        const data = applicationProperties.createCartData;
         const wait = new Promise(resolve => setTimeout(resolve, 1000));
         wait.then(() => {
           dispatch(
@@ -194,15 +187,7 @@ export default function LoginScreen(props) {
           navigation.replace(redirectToScreen);
         }
         setIsLoading(false);
-        const data = {
-          type: 'carts',
-          attributes: {
-            priceMode: 'NET_MODE',
-            currency: 'EUR',
-            store: 'DE',
-            name: 'new',
-          },
-        };
+        const data = applicationProperties.createCartData;
         const wait = new Promise(resolve => setTimeout(resolve, 1000));
         wait.then(() => {
           dispatch(

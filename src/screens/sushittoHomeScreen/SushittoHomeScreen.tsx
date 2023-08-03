@@ -28,7 +28,8 @@ const SushittoHomeScreen = () => {
       const fetchData = async () => {
         await axios
           .get(
-            'https://categoriestree-5g04sc.5sc6y6-2.usa-e2.cloudhub.io/catalogsearch',
+            // 'https://categoriestree-5g04sc.5sc6y6-2.usa-e2.cloudhub.io/catalogsearch',
+            'https://sushiitobff-dzt0m3.5sc6y6-2.usa-e2.cloudhub.io/category-trees',
           )
           .then(response => {
             setApiData(response.data);

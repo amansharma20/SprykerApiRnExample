@@ -24,6 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import CommonLoading from './CommonLoading';
 import {guestCartData} from '../redux/GuestCartApi/GuestCartApiAsyncThunk';
+import {applicationProperties} from '../utils/application.properties';
 
 export default function ProductItem({item, includedData, index}) {
   const navigation = useNavigation();
@@ -119,15 +120,7 @@ export default function ProductItem({item, includedData, index}) {
     } else {
       if (customerCart == undefined) {
         console.log('HERE: ');
-        const data = {
-          type: 'carts',
-          attributes: {
-            priceMode: 'NET_MODE',
-            currency: 'EUR',
-            store: 'DE',
-            name: 'new',
-          },
-        };
+        const data = applicationProperties.createCartData;
         dispatch(
           createCustomerCart({endpoint: 'carts', data: JSON.stringify(data)}),
         );
@@ -303,6 +296,7 @@ export default function ProductItem({item, includedData, index}) {
           <Image
             source={{uri: item?.images[0]?.externalUrlSmall}}
             style={styles.productImage}
+            resizeMode="cover"
           />
         </Box>
         <Text style={styles.productTitle} numberOfLines={1}>
@@ -383,7 +377,7 @@ const styles = StyleSheet.create({
     height: 150,
     marginBottom: 8,
     backgroundColor: 'white',
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   productTitle: {
     fontSize: 16,

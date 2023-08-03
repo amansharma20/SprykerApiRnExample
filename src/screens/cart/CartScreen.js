@@ -23,6 +23,7 @@ import CartItem from './CartItem';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {useCartItemsCount} from '../../hooks/useCartItemsCount';
 import GuestCartScreen from '../guestCart/GuestCartScreen';
+import { applicationProperties } from '../../utils/application.properties';
 
 const CartScreen = () => {
   const {signOut} = useContext(AuthContext);
@@ -118,15 +119,7 @@ const CartScreen = () => {
 
   useEffect(() => {
     if (customerCarts.length === 0) {
-      const data = {
-        type: 'carts',
-        attributes: {
-          priceMode: 'NET_MODE',
-          currency: 'EUR',
-          store: 'DE',
-          name: 'new',
-        },
-      };
+      const data = applicationProperties.createCartData;
       dispatch(
         createCustomerCart({endpoint: 'carts', data: JSON.stringify(data)}),
       ).then(response => {

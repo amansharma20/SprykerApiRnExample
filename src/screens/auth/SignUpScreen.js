@@ -14,6 +14,8 @@ import {api} from '../../api/SecureAPI';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 const SignUpScreen = ({setSelectedOption}) => {
+  const [signUpApiResponse, setSignUpApiResponse] = useState([]);
+
   // GENDER
   const GENDER_DATA = [
     {

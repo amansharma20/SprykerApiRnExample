@@ -1,6 +1,8 @@
 import {useSelector} from 'react-redux';
+import {useIsUserLoggedIn} from './useIsUserLoggedIn';
 
 export const useCartItemsCount = () => {
+  const {isUserLoggedIn} = useIsUserLoggedIn();
   const customerCartDataNew = useSelector(
     state => state.getCartDataNewApiSlice?.cartDataNew.data,
   );
@@ -44,13 +46,12 @@ export const useCartItemsCount = () => {
     getTotalGuestProductsQuantity(guestCartData) || null;
   console.log('guestCartItemsCount: ', guestCartItemsCount);
 
-  const cartItemsCount =
-    getTotalNormalProductsQuantity(customerCartDataNew?.normalProduct) +
-      getTotalConfiguredProductsQuantity(
-        customerCartDataNew?.configureBundle,
-      ) ||
-    guestCartItemsCount ||
-    null;
+  const cartItemsCount = isUserLoggedIn
+    ? getTotalNormalProductsQuantity(customerCartDataNew?.normalProduct) +
+        getTotalConfiguredProductsQuantity(
+          customerCartDataNew?.configureBundle,
+        ) || null
+    : guestCartItemsCount || null;
   console.log('cartItemsCount: ', cartItemsCount);
 
   return {cartItemsCount};

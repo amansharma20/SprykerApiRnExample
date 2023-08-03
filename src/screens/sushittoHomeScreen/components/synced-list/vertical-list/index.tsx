@@ -268,7 +268,7 @@ const VerticalList = ({
 
 const styles = StyleSheet.create({
   contentContainerStyle: {
-    paddingBottom: 0,
+    paddingBottom: 100,
   },
   header: {
     color: 'white',
