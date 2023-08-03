@@ -64,6 +64,12 @@ export default function ProfileScreen() {
         navigation.navigate('ConfiguredBundleScreen');
       },
     },
+    {
+      name: 'Add Address',
+      onPress: function () {
+        navigation.navigate('AddAddressScreen');
+      },
+    },
   ];
 
   const renderItem = ({item}) => {

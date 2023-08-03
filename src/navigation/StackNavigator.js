@@ -35,6 +35,7 @@ import BundlesSummaryScreen from '../screens/bundles/BundlesSummaryScreen';
 import {getProductsByWishlistAsyncThunk} from '../redux/wishlist/ProductsWishlistApiAsyncThunk';
 import BundlesScreenNew from '../screens/bundles/BundlesScreenNew';
 import GuestCartScreen from '../screens/guestCart/GuestCartScreen';
+import AddAddressScreen from '../screens/address/AddAddressScreen';
 
 export const AuthContext = React.createContext();
 
@@ -269,6 +270,7 @@ export default function StackNavigator() {
           component={BundlesSummaryScreen}
         />
         <Stack.Screen name="GuestCartScreen" component={GuestCartScreen} />
+        <Stack.Screen name="AddAddressScreen" component={AddAddressScreen} />
       </Stack.Navigator>
     </AuthContext.Provider>
   );
