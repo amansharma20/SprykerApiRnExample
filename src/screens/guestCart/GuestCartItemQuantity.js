@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
+import {applicationProperties} from '../../utils/application.properties';
 
 const GuestCartItemQuantity = ({cartItem, removeItemTrigger}) => {
   const [isloading, setIsLoading] = useState(false);
@@ -15,7 +16,7 @@ const GuestCartItemQuantity = ({cartItem, removeItemTrigger}) => {
   );
   const changeQuantity = async (groupKey, count, sku) => {
     setIsLoading(true);
-    const url = `https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts/${guestCartId}/guest-cart-items/${groupKey}`;
+    const url = `${applicationProperties.baseUrl}/guest-carts/${guestCartId}/guest-cart-items/${groupKey}`;
     const guestCustomerUniqueId = await AsyncStorage.getItem(
       'guestCustomerUniqueId',
     );
@@ -38,8 +39,7 @@ const GuestCartItemQuantity = ({cartItem, removeItemTrigger}) => {
         if (response?.status == 200) {
           dispatch(
             guestCartData({
-              endpoint:
-                'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
+              endpoint: `${applicationProperties.baseUrl}/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities`,
               data: headers,
             }),
           ).then(res => {

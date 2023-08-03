@@ -6,10 +6,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import GuestCartItem from './GuestCartItems';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
-import ConfiguredBundleGuestCart from './ConfiguredBundleGuestCartScreen';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import {useGuestCartItemsCount} from '../../hooks/useGuestCartItemsCount';
 import {useNavigation} from '@react-navigation/native';
+import {applicationProperties} from '../../utils/application.properties';
 
 const GuestCartScreen = () => {
   const navigation = useNavigation();
@@ -47,8 +47,7 @@ const GuestCartScreen = () => {
         };
         dispatch(
           guestCartData({
-            endpoint:
-              'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
+            endpoint: `${applicationProperties.baseUrl}/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities`,
             data: headers,
           }),
         ).then(() => {
@@ -64,8 +63,7 @@ const GuestCartScreen = () => {
         };
         dispatch(
           guestCartData({
-            endpoint:
-              'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
+            endpoint: `${applicationProperties.baseUrl}/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities`,
             data: headers,
           }),
         ).then(() => {
