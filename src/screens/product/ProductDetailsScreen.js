@@ -525,7 +525,7 @@ const ProductDetailsScreen = props => {
             handleExpandPress={handleExpandPress}
             bottomSheetRef={bottomSheetRef}>
             <Box flex={1} padding="s16">
-              <Text fontSize={18} variant="16" pb="s12">
+              <Text fontSize={18} variant="bold16" pb="s12">
                 Please select the shopping list -
               </Text>
               <FlatList

@@ -17,12 +17,12 @@ const CartItem = ({item}) => {
   const name = item?.['concrete-products']?.name;
   const sku = item?.['concrete-products']?.sku;
   const itemId = item?.itemData?.id;
-  var price = item?.itemData?.attributes?.calculations?.sumGrossPrice;
+
+  const price =
+    item?.itemData?.attributes?.calculations?.sumGrossPrice ||
+    item?.itemData?.attributes?.calculations?.sumPrice;
+
   const productOffer = item?.itemData?.attributes?.merchantReference;
-  console.log('item?.itemData?.attributes: ', item?.itemData?.attributes);
-  if (!price) {
-    price = item?.itemData?.attributes?.calculations?.sumPrice;
-  }
   const availability = item?.['concrete-product-availabilities']?.availability;
 
   const dispatch = useDispatch();
@@ -86,10 +86,11 @@ const CartItem = ({item}) => {
           </Box>
           <Box justifyContent="space-between">
             <Box>
-              <Box flexDirection="row">
-                <Text>{name}</Text>
-              </Box>
-              <Text style={{fontWeight: 'bold', marginTop: 4}}>$ {price}</Text>
+              <Text variant="bold16">{name}</Text>
+
+              <Text variant="bold16" style={{marginTop: 4}}>
+                $ {price}
+              </Text>
               <Text style={{color: '#006400'}}>
                 {productOffer !== null ? `(Offer Included)` : ''}
               </Text>

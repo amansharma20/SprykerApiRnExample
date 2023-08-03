@@ -87,7 +87,6 @@ const CartScreen = () => {
 
   useEffect(() => {
     if (customerCartDataNew?.length !== 0 && customerCartId) {
-      console.log('HERE');
       let tempArr = [];
 
       customerCartDataNew?.normalProduct?.map(item => {
