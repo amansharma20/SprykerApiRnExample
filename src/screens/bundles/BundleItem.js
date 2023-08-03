@@ -94,7 +94,10 @@ const BundleItem = ({
             </Box>
             <Box paddingLeft="s4" justifyContent="space-between">
               <Box flexShrink={1} maxWidth={'80%'}>
-                <Text style={styles.productTitle} numberOfLines={2}>
+                <Text
+                  fontWeight="bold18"
+                  style={styles.productTitle}
+                  numberOfLines={2}>
                   {item?.name}
                 </Text>
                 <Text style={styles.productPrice}>$ {item?.price}</Text>
@@ -186,7 +189,7 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 8,
   },
   productPrice: {

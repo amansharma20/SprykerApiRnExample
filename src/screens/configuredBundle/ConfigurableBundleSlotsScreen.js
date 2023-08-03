@@ -142,7 +142,9 @@ const ConfigurableBundleSlotsScreen = props => {
                 <Box>
                   <Box flex={2} paddingLeft="s4" justifyContent="space-between">
                     <Box>
-                      <Text style={styles.productTitle}>{slot?.slotName}</Text>
+                      <Text variant="bold18" style={styles.productTitle}>
+                        {slot?.slotName}
+                      </Text>
                     </Box>
                   </Box>
                   <Box flex={1} alignItems="center">
@@ -222,7 +224,7 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 8,
   },
   productPrice: {

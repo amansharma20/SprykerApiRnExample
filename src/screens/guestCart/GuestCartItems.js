@@ -94,7 +94,7 @@ const GuestCartItem = ({item}) => {
               <Box flexDirection="row">
                 <Text>{item?.name}</Text>
               </Box>
-              <Text style={{fontWeight: 'bold', marginTop: 4}}>
+              <Text variant="bold18" style={{marginTop: 4}}>
                 $ {item?.price}
               </Text>
               <Text style={{color: '#006400'}}>

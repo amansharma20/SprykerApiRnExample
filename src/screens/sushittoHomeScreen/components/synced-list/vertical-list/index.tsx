@@ -105,7 +105,7 @@ const VerticalList = ({
           paddingHorizontal="s16"
           justifyContent="flex-end"
           paddingVertical="s8">
-          <Text fontSize={18} fontWeight="700">
+          <Text fontSize={18} variant='bold18'>
             {section.title} {`(${section.data.length})`}
           </Text>
         </Box>

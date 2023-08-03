@@ -82,7 +82,10 @@ const BundlesSummaryScreen = props => {
           </Box>
           <Box paddingLeft="s4" justifyContent="space-between">
             <Box flexShrink={1} maxWidth={'100%'}>
-              <Text style={styles.productTitle} numberOfLines={2}>
+              <Text
+                style={styles.productTitle}
+                variant="bold18"
+                numberOfLines={2}>
                 {item?.item?.item?.name}
               </Text>
               <Text style={styles.productPrice}>
@@ -136,7 +139,7 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 8,
   },
   productPrice: {

@@ -35,22 +35,35 @@ const YourOrdersScreen = () => {
           mb="s4"
           borderColor="border">
           <Box flexDirection="row" justifyContent="space-between" mb="s2">
-            <Text fontSize={16} fontWeight="bold">
+            <Text
+              fontSize={16}
+              variant="bold18"
+              // fontWeight="bold"
+            >
               Order Id:
             </Text>
-            <Text fontSize={16} fontWeight="bold">
+            <Text
+              fontSize={16}
+              //  fontWeight="bold"
+              variant="bold18">
               {item.id}
             </Text>
           </Box>
           <Box flexDirection="row" justifyContent="space-between" mb="s2">
             <Text fontSize={14}>Order Date:</Text>
-            <Text fontSize={14} fontWeight="bold">
+            <Text
+              fontSize={14}
+              //  fontWeight="bold"
+              variant="bold18">
               {orderDate}
             </Text>
           </Box>
           <Box flexDirection="row" justifyContent="space-between" mb="s2">
             <Text fontSize={14}>Grand Total:</Text>
-            <Text fontSize={14} fontWeight="bold">
+            <Text
+              fontSize={14}
+              // fontWeight="bold"
+              variant="bold18">
               ${item.attributes?.totals?.grandTotal}
             </Text>
           </Box>
@@ -58,7 +71,8 @@ const YourOrdersScreen = () => {
             <Text fontSize={14}>Status:</Text>
             <Text
               fontSize={14}
-              fontWeight="bold"
+              // fontWeight="bold"
+              variant="bold18"
               color={isDelivered ? 'green' : 'red'}>
               {isDelivered ? 'Delivered' : 'Not Delivered'}
             </Text>

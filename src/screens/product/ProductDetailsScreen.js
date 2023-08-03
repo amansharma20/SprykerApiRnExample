@@ -455,7 +455,11 @@ const ProductDetailsScreen = props => {
                   Description :{' '}
                 </Text>
                 <Text>{description}</Text>
-                <Text mt="s6" variant="regular16" style={{fontWeight: 'bold'}}>
+                <Text
+                  mt="s6"
+                  variant="regular16"
+                  // style={{fontWeight: 'bold'}}
+                >
                   {productOffer != null
                     ? ''
                     : `Price $${productData?.[selectedVariantIndex]?.price?.attributes?.price}`}
@@ -517,7 +521,7 @@ const ProductDetailsScreen = props => {
             handleExpandPress={handleExpandPress}
             bottomSheetRef={bottomSheetRef}>
             <Box flex={1} padding="s16">
-              <Text fontSize={18} fontWeight="600" pb="s12">
+              <Text fontSize={18} variant="16" pb="s12">
                 Please select the shopping list -
               </Text>
               <FlatList

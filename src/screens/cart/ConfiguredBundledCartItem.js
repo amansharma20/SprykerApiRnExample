@@ -116,7 +116,10 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
         alignItems="center"
         justifyContent="space-between"
         mb="s8">
-        <Text fontSize={16} fontWeight="600">
+        <Text
+          fontSize={16}
+          //  fontWeight="600"
+          variant="bold16">
           {data?.groupname}
         </Text>
         <Box flexDirection="row" alignItems="center">

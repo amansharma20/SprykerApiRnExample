@@ -51,7 +51,12 @@ const ConfiguredBundleScreen = () => {
                 uri: img ? img : '',
               }}
             />
-            <Text fontSize={18} fontWeight="600" textAlign="center" pt="s8">
+            <Text
+              fontSize={18}
+              //  fontWeight="600"
+              variant="bold16"
+              textAlign="center"
+              pt="s8">
               {bundle?.attributes?.name}
             </Text>
           </Box>

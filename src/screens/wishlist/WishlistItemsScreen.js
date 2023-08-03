@@ -166,7 +166,10 @@ const WishlistItemsScreen = props => {
           </Box>
           <Box flex={2} paddingLeft="s4" justifyContent="space-between">
             <Box>
-              <Text style={styles.productTitle} numberOfLines={2}>
+              <Text
+                style={styles.productTitle}
+                numberOfLines={2}
+                variant="bold18">
                 {product?.name}
               </Text>
               <Text style={styles.productPrice}>$ {product?.price}</Text>
@@ -246,7 +249,7 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 8,
   },
   productPrice: {

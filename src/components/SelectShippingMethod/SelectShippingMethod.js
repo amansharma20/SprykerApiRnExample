@@ -39,6 +39,7 @@ const SelectShippingMethod = () => {
               resizeMode="contain"
             />
             <Text
+              variant="bold16"
               style={[styles.tabText, IS_DELIVERY && styles.selectedTabText]}>
               Delivery
             </Text>
@@ -57,6 +58,7 @@ const SelectShippingMethod = () => {
               resizeMode="contain"
             />
             <Text
+              variant="bold16"
               style={[styles.tabText, IS_PICK_UP && styles.selectedTabText]}>
               Pick Up
             </Text>
@@ -82,11 +84,11 @@ const styles = StyleSheet.create({
   tabText: {
     color: 'black',
     fontSize: 14,
-    fontWeight: '600',
+    // fontWeight: '600',
   },
   selectedTabText: {
     fontSize: 14,
-    fontWeight: '600',
+    // fontWeight: '600',
     color: theme.colors.sushiittoRed,
   },
   icon: {

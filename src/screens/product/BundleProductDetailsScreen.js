@@ -150,11 +150,17 @@ const BundleProductDetailsScreen = props => {
               }}
             />
             <Box mt="s12">
-              <Text style={{fontWeight: 'bold'}}>
+              <Text
+                // style={{fontWeight: 'bold'}}
+                variant="bold18">
                 {bundleProduct[0]?.data?.attributes?.name}
               </Text>
             </Box>
-            <Text style={{fontWeight: 'bold'}}>Description : </Text>
+            <Text
+              // style={{fontWeight: 'bold'}}
+              variant="bold18">
+              Description :{' '}
+            </Text>
             <Text>{bundleProduct[0]?.data?.attributes?.description}</Text>
             <Box borderTopWidth={1} borderColor="border" mt="s8">
               <Text mt="s8" mb="s8">
@@ -176,7 +182,10 @@ const BundleProductDetailsScreen = props => {
               )}
             </Box>
             <Box borderTopWidth={1} borderColor="border" mt="s8">
-              <Text mt="s6" style={{fontWeight: 'bold'}}>
+              <Text
+                mt="s6"
+                //  style={{fontWeight: 'bold'}}
+                variant="bold18">
                 Price : $ {bundleProductPrice}
               </Text>
               {!productAvailability ? (

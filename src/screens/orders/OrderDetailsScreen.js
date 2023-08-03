@@ -184,7 +184,7 @@ const OrderDetailsScreen = props => {
                     <Box>
                       <Text variant="bold14">{item.name}</Text>
                     </Box>
-                    <Text style={{fontWeight: 'bold', marginTop: 4}}>
+                    <Text variant="bold14" style={{marginTop: 4}}>
                       $ {item.sumPrice}
                     </Text>
                   </Box>
@@ -224,7 +224,9 @@ const OrderDetailsScreen = props => {
                   contentContainerStyle={{flex: 1}}
                 />
                 <Box style={styles.headingContainer}>
-                  <Text style={styles.headingText}>Items</Text>
+                  <Text variant="bold18" style={styles.headingText}>
+                    Items
+                  </Text>
                 </Box>
                 <FlatList
                   data={normalProducts}
@@ -271,7 +273,7 @@ const styles = StyleSheet.create({
   },
   headingText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     color: 'black',
   },
 });

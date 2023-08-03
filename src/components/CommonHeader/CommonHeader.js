@@ -18,7 +18,6 @@ const CommonHeader = ({title, onPress, showCartIcon = false, ...props}) => {
 
   const {cartItemsCount} = useCartItemsCount();
 
-
   const onPressCart = () => {
     // goToCart();
     navigation.navigate('CartScreen');
@@ -53,7 +52,11 @@ const CommonHeader = ({title, onPress, showCartIcon = false, ...props}) => {
                       borderRadius: 100,
                       marginLeft: 16,
                     }}>
-                    <Text fontSize={12} fontWeight="700" ml="s2">
+                    <Text
+                      fontSize={12}
+                      // fontWeight="700"
+                      variant="bold18"
+                      ml="s2">
                       {cartItemsCount ?? 0}
                     </Text>
                   </Box>
