@@ -143,22 +143,19 @@ export default function LoginScreen(props) {
 
       token = 'Bearer ' + token;
       var token = 'Bearer ' + response?.data?.data?.access_token;
-      let carts = await axios.get(
-        'https://glue.de.faas-suite-prod.cloud.spryker.toys/carts',
-        {
-          headers: {
-            Authorization: token,
-          },
-          validateStatus: () => true,
+      let carts = await axios.get(`${applicationProperties.baseUrl}/carts`, {
+        headers: {
+          Authorization: token,
         },
-      );
+        validateStatus: () => true,
+      });
       var cartId = carts?.data?.data?.[0]?.id;
       const cartLength = carts?.data?.data;
 
       const guestCustomerUniqueId = await AsyncStorage.getItem(
         'guestCustomerUniqueId',
       );
-      const url = `https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items`;
+      const url = `${applicationProperties.baseUrl}/guest-carts?include=guest-cart-items`;
       const headers = {
         'Content-Type': 'application/json',
         'X-Anonymous-Customer-Unique-Id': guestCustomerUniqueId,
@@ -226,7 +223,7 @@ export default function LoginScreen(props) {
       var test = JSON.stringify(productData);
       try {
         const response = await axios.post(
-          `https://glue.de.faas-suite-prod.cloud.spryker.toys/carts/${cartId}/items`,
+          `${applicationProperties.baseUrl}/carts/${cartId}/items`,
           productData,
           {
             headers: {

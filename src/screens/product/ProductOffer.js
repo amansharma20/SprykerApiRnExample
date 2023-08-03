@@ -53,10 +53,10 @@ const ProductOffer = ({
           borderColor="border"
           borderRadius={8}
           padding="s8"
-          key={offer.attributes.id}>
+          key={offer?.attributes?.id}>
           <Box paddingLeft="s4" flexDirection="row">
             <Box justifyContent="space-between">
-              <Text>{offer.id}</Text>
+              <Text>{offer?.id}</Text>
               <Text>$ {price?.attributes?.price}</Text>
             </Box>
           </Box>

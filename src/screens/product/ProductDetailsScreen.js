@@ -33,6 +33,7 @@ import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
+import {applicationProperties} from '../../utils/application.properties';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
@@ -100,7 +101,7 @@ const ProductDetailsScreen = props => {
     const guestCustomerUniqueId = await AsyncStorage.getItem(
       'guestCustomerUniqueId',
     );
-    const url = `https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-cart-items`;
+    const url = `${applicationProperties.baseUrl}/guest-cart-items`;
     const headers = {
       'Content-Type': 'application/json',
       'X-Anonymous-Customer-Unique-Id': guestCustomerUniqueId,
@@ -113,8 +114,7 @@ const ProductDetailsScreen = props => {
           Alert.alert('Added to cart');
           dispatch(
             guestCartData({
-              endpoint:
-                'https://glue.de.faas-suite-prod.cloud.spryker.toys/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities',
+              endpoint: `${applicationProperties.baseUrl}/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities`,
               data: headers,
             }),
           );
@@ -136,6 +136,8 @@ const ProductDetailsScreen = props => {
         CommonLoading.hide();
       });
   };
+
+  console.log('productOffers: ', productOffers);
 
   const onPressAddToCartGuestUser = async () => {
     const guestCartDataReq = {
@@ -316,8 +318,16 @@ const ProductDetailsScreen = props => {
         `concrete-products/${selectedSkuId}/product-offers`,
         '',
       );
+      const offerArray = response?.data?.data?.data
+        ? [response?.data?.data?.data[0]]
+        : [];
       if (response.data?.status === 200) {
-        setProductOffers(response?.data?.data?.data);
+        setProductOffers(offerArray);
+        setOfferForAddToCart({
+          productOfferReference: offerArray[0]?.id,
+          merchantReference: offerArray?.[0]?.attributes?.merchantReference,
+          price: null,
+        });
       } else {
       }
     };
@@ -386,15 +396,17 @@ const ProductDetailsScreen = props => {
     );
   };
 
+  // const productOfferDataForAddToCart = (offer, price, index) => {
+  //   setSelectedOfferIndex(index);
+  //   setOfferForAddToCart({
+  //     productOfferReference: offer.id,
+  //     merchantReference: offer.attributes.merchantReference,
+  //     price: price?.attributes?.price,
+  //   });
+  // };
   const productOfferDataForAddToCart = (offer, price, index) => {
     setSelectedOfferIndex(index);
-    setOfferForAddToCart({
-      productOfferReference: offer.id,
-      merchantReference: offer.attributes.merchantReference,
-      price: price?.attributes?.price,
-    });
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <CommonHeader title={title} showCartIcon />

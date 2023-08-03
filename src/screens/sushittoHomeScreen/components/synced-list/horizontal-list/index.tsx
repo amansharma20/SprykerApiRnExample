@@ -55,8 +55,10 @@ const HorizontalList = ({
               : styles.itemContainer
           }>
           <Text
-            fontSize={selected === item.id ? 18 : 14}
-            fontWeight={selected === item.id ? '700' : '500'}>
+            // fontSize={selected === item.id ? 18 : 14}
+            // fontWeight={selected === item.id ? '700' : '500'}
+            variant={selected === item.id ? 'bold18' : 'regular14'}
+            > 
             {item.title}
           </Text>
         </View>

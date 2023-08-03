@@ -12,14 +12,14 @@ import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/Custome
 import {useDispatch, useSelector} from 'react-redux';
 import {RemoveIcon} from '../../assets/svgs';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
-
+import {applicationProperties} from '../../utils/application.properties';
 const ConfiguredBundleGuestCart = ({data}) => {
   console.log('data12312312: ', data?.templateUUID);
   return false;
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
-  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
+  const newCartApiUrl = `${applicationProperties.baseUrl}/cart?cartId=${customerCartId}`;
 
   const changeQuantity = async (templateUUID, data, quantity) => {
     setIsLoading(true);
