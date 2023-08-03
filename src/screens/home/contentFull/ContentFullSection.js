@@ -86,7 +86,8 @@ const ContentFullSection = () => {
           <Text
             fontSize={24}
             color="white"
-            fontWeight="500"
+            // fontWeight="500"
+            variant="bold16"
             position="absolute"
             numberOfLines={2}
             bottom={60}

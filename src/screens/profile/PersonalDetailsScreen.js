@@ -11,7 +11,7 @@ import {getCustomerDetails} from '../../redux/profileApi/ProfileApiAsyncThunk';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {AuthContext} from '../../navigation/StackNavigator';
 import Text from '../../atoms/text';
-import { theme } from '../../atoms/theme';
+import {theme} from '../../atoms/theme';
 
 export default function PersonalDetailsScreen() {
   const {signOut} = useContext(AuthContext);
@@ -73,8 +73,12 @@ export default function PersonalDetailsScreen() {
 const ProfileRow = ({label, value}) => {
   return (
     <View style={styles.profileRow}>
-      <Text style={styles.label}>{label}</Text>
-      <Text style={styles.value}>{value}</Text>
+      <Text variant="bold18" style={styles.label}>
+        {label}
+      </Text>
+      <Text variant="bold18" style={styles.value}>
+        {value}
+      </Text>
     </View>
   );
 };
@@ -103,7 +107,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     color: '#333',
   },
   value: {

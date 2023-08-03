@@ -89,7 +89,7 @@ const HomeCartPopUp = () => {
             justifyContent="space-between"
             alignItems="center"
             width={'100%'}>
-            <Text color="white" fontWeight="700" fontSize={16}>
+            <Text color="white" variant="bold18" fontSize={16}>
               View cart
             </Text>
             <Box
@@ -104,7 +104,7 @@ const HomeCartPopUp = () => {
                 alignItems="center"
                 justifyContent="center"
                 mt="s2">
-                <Text color="white" fontWeight="700">
+                <Text color="white" variant="bold18">
                   {cartItemsCount} · ${grandTotal}
                 </Text>
               </Box>

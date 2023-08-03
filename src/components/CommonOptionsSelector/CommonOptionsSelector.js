@@ -40,7 +40,11 @@ const CommonOptionsSelector = ({
 
         {item.type == 'address' ? (
           <Box borderTopWidth={1} borderColor="border">
-            <Text color="sushiittoRed" mt="s4">
+            <Text
+              //  fontWeight="600"
+              variant="bold16"
+              color="bottomTabActiveColor"
+              mt="s4">
               DELIVERS TO
             </Text>
           </Box>
@@ -77,7 +81,8 @@ const CommonOptionsSelector = ({
                 variant="regular14LightBlack"
                 lineHeight={20}
                 numberOfLines={2}
-                fontWeight="700">
+                // fontWeight="700"
+              >
                 {item.title}
               </Text>
             )}

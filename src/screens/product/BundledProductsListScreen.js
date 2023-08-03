@@ -50,10 +50,10 @@ const BundledProductsListScreen = props => {
           <Box alignItems="center">
             <Image source={{uri: productImage}} style={styles.productImage} />
           </Box>
-          <Text style={styles.productTitle} numberOfLines={1}>
+          <Text style={styles.productTitle} variant="bold18" numberOfLines={1}>
             {productItem[0]?.data?.attributes?.name}
           </Text>
-          {/* 
+          {/*
             <Box>
               <Text style={styles.productPrice}>$ {item.price}</Text>
             </Box> */}
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 4,
     maxWidth: Dimensions.get('screen').width / 2 - 60,
   },

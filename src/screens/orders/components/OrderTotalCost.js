@@ -34,7 +34,10 @@ const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
         {orderShipment?.[0]?.attributes?.shippingAddress?.address1}
       </Text>
       <Text style={styles.horizontalLine} /> */}
-      <Text mt="s16" style={styles.headerText}>
+      <Text
+        mt="s16"
+        //  style={styles.headerText}
+        variant="bold18">
         Billing Address
       </Text>
       <Box flexDirection="row" justifyContent="space-between">
@@ -63,13 +66,22 @@ const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
       </Box>
       <Text style={styles.horizontalLine} />
 
-      <Text mt="s12" style={styles.headerText}>
+      <Text
+        mt="s12"
+        // style={styles.headerText}
+        variant="bold18">
         Payment Details
       </Text>
 
       <Box mt="s16" flexDirection="row" justifyContent="space-between">
-        <Text style={{fontWeight: 'bold'}}>Item Total</Text>
-        <Text style={{fontWeight: 'bold'}}>
+        <Text
+          // style={{fontWeight: 'bold'}}
+          variant="bold18">
+          Item Total
+        </Text>
+        <Text
+          // style={{fontWeight: 'bold'}}
+          variant="bold18">
           ${orderDetail?.totals?.subtotal}
         </Text>
       </Box>
@@ -88,7 +100,9 @@ const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
       </Box>
       <Box mt="s6" mb="s10" flexDirection="row" justifyContent="space-between">
         <Text>Item status : {orderDetail?.itemStates}</Text>
-        <Text fontWeight="bold">
+        <Text
+          // fontWeight="bold"
+          variant="bold18">
           Total Amount : ${orderDetail?.totals?.grandTotal}{' '}
         </Text>
       </Box>

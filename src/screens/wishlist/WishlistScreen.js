@@ -106,7 +106,7 @@ const WishlistScreen = () => {
               title="Add new Shopping list"
               onPress={() => addNewWishlist()}
             />
-            <Text mt="s8" style={styles.title}>
+            <Text mt="s8" variant="bold18" style={styles.title}>
               Your Shopping List
             </Text>
             {isLoading ? (
@@ -128,7 +128,7 @@ const WishlistScreen = () => {
 const styles = StyleSheet.create({
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 8,
   },
   wishlistItemContainer: {

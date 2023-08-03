@@ -298,7 +298,7 @@ export default function ProductItem({item, includedData, index}) {
             resizeMode="cover"
           />
         </Box>
-        <Text style={styles.productTitle} numberOfLines={1}>
+        <Text style={styles.productTitle} variant="bold18" numberOfLines={1}>
           {item.abstractName}
         </Text>
         <Box position="absolute" alignSelf="flex-end">
@@ -313,7 +313,10 @@ export default function ProductItem({item, includedData, index}) {
           alignItems="center"
           paddingVertical="s2">
           <Box>
-            <Text fontSize={14} fontWeight="600">
+            <Text
+              fontSize={14}
+              //  fontWeight="600"
+              variant="bold16">
               $ {item.price}
             </Text>
           </Box>
@@ -341,7 +344,8 @@ export default function ProductItem({item, includedData, index}) {
               <Text
                 fontSize={16}
                 color="white"
-                fontWeight="700"
+                // fontWeight="700"
+                variant="bold18"
                 marginRight="s4">
                 ADD
               </Text>
@@ -380,7 +384,7 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 4,
   },
   productPrice: {

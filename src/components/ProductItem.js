@@ -253,7 +253,7 @@ export default function ProductItem({item, includedData, index}) {
             style={styles.productImage}
           />
         </Box>
-        <Text style={styles.productTitle} numberOfLines={1}>
+        <Text style={styles.productTitle} variant="bold18" numberOfLines={1}>
           {item.abstractName}
         </Text>
         <Box position="absolute" alignSelf="flex-end">
@@ -283,7 +283,8 @@ export default function ProductItem({item, includedData, index}) {
               <Text
                 fontSize={14}
                 color="white"
-                fontWeight="600"
+                // fontWeight="600"
+                variant="bold16"
                 marginRight="s4">
                 Add
               </Text>
@@ -309,7 +310,7 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 4,
   },
   productPrice: {
