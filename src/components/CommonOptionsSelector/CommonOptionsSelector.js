@@ -40,7 +40,7 @@ const CommonOptionsSelector = ({
 
         {item.type == 'address' ? (
           <Box borderTopWidth={1} borderColor="border">
-            <Text fontWeight="600" color="bottomTabActiveColor" mt="s4">
+            <Text color="sushiittoRed" mt="s4">
               DELIVERS TO
             </Text>
           </Box>
@@ -54,9 +54,9 @@ const CommonOptionsSelector = ({
             isChecked={item.isSelected}
             onPress={onPressItem}
             iconStyle={{
-              borderColor: theme.colors.bottomTabActiveColor,
+              borderColor: theme.colors.sushiittoRed,
             }}
-            fillColor={theme.colors.bottomTabActiveColor}
+            fillColor={theme.colors.sushiittoRed}
             size={20}
           />
           <Box width={'100%'} flexShrink={1} justifyContent="center">

@@ -13,6 +13,7 @@ import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { applicationProperties } from '../../utils/application.properties';
 
 const SushittoHomeScreen = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const SushittoHomeScreen = () => {
         await axios
           .get(
             // 'https://categoriestree-5g04sc.5sc6y6-2.usa-e2.cloudhub.io/catalogsearch',
-            'https://sushiitobff-dzt0m3.5sc6y6-2.usa-e2.cloudhub.io/category-trees',
+            `${applicationProperties.bffBaseUrl}category-trees`,
           )
           .then(response => {
             setApiData(response.data);
@@ -48,7 +49,7 @@ const SushittoHomeScreen = () => {
       state.customerCartIdApiSlice?.customerCart?.data?.data?.[0]?.id || '',
   );
 
-  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
+  const newCartApiUrl = `https://sushiitobff-dzt0m3.5sc6y6-2.usa-e2.cloudhub.io/carts?cartId=${customerCartId}`;
 
   useEffect(() => {
     if (customerCartId) {

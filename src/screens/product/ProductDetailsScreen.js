@@ -74,6 +74,7 @@ const ProductDetailsScreen = props => {
   const [productOffers, setProductOffers] = useState([]);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [offerForAddToCart, setOfferForAddToCart] = useState(null);
+  console.log('offerForAddToCart: ', offerForAddToCart);
   const [selectedOfferIndex, setSelectedOfferIndex] = useState(0);
   const [productData, setProductData] = useState([]);
   const [isProductExistInShoppingList, setIsProductExistInShoppingList] =
@@ -90,7 +91,7 @@ const ProductDetailsScreen = props => {
     productData?.[selectedVariantIndex]?.attributes?.description;
   const productOffer = productData?.[selectedVariantIndex]?.productOffers;
 
-  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart.id}`;
+  const newCartApiUrl = `https://sushiitobff-dzt0m3.5sc6y6-2.usa-e2.cloudhub.io/carts?cartId=${customerCart.id}`;
 
   const onPressAddToCart = () => {
     isUserLoggedIn ? addToCartHandler() : onPressAddToCartGuestUser();
@@ -137,8 +138,6 @@ const ProductDetailsScreen = props => {
       });
   };
 
-  console.log('productOffers: ', productOffers);
-
   const onPressAddToCartGuestUser = async () => {
     const guestCartDataReq = {
       data: {
@@ -170,6 +169,10 @@ const ProductDetailsScreen = props => {
       : navigation.navigate('LoginScreen');
   };
 
+  console.log(
+    'offerForAddToCart?.merchantReference: ',
+    offerForAddToCart?.merchantReference,
+  );
   const addToCartHandler = async () => {
     if (selectedSkuId) {
       const productData = {
@@ -188,6 +191,7 @@ const ProductDetailsScreen = props => {
           },
         },
       };
+      console.log('productData: ', productData);
 
       CommonLoading.show();
       const response = await api.post(
@@ -271,7 +275,8 @@ const ProductDetailsScreen = props => {
       setIsLoading(true);
       const res = await axios
         .get(
-          `https://zaynproject-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/abstract-product?pid=${abstractSku}&include=concrete-product-image-sets%2Cconcrete-product-prices%2Cconcrete-product-availabilities%2Cproduct-labels%2Cproduct-options%2Cproduct-reviews%2Cproduct-measurement-units%2Csales-units%2Cbundled-products%2Cproduct-offers`,
+          // `https://zaynproject-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/abstract-product?pid=${abstractSku}&include=concrete-product-image-sets%2Cconcrete-product-prices%2Cconcrete-product-availabilities%2Cproduct-labels%2Cproduct-options%2Cproduct-reviews%2Cproduct-measurement-units%2Csales-units%2Cbundled-products%2Cproduct-offers`,
+          `https://sushiitobff-dzt0m3.5sc6y6-2.usa-e2.cloudhub.io/pdp?pid=${abstractSku}&include=concrete-product-image-sets%2Cconcrete-product-prices%2Cconcrete-product-availabilities%2Cproduct-labels%2Cproduct-options%2Cproduct-reviews%2Cproduct-measurement-units%2Csales-units%2Cbundled-products%2Cproduct-offers`,
         )
         .catch(function (error) {
           setIsLoading(false);
@@ -318,14 +323,13 @@ const ProductDetailsScreen = props => {
         `concrete-products/${selectedSkuId}/product-offers`,
         '',
       );
-      const offerArray = response?.data?.data?.data
-        ? [response?.data?.data?.data[0]]
-        : [];
+      const offerArray = response.data.data.data;
       if (response.data?.status === 200) {
         setProductOffers(offerArray);
         setOfferForAddToCart({
           productOfferReference: offerArray[0]?.id,
-          merchantReference: offerArray?.[0]?.attributes?.merchantReference,
+          merchantReference:
+            response.data.data.data?.[0]?.attributes?.merchantReference,
           price: null,
         });
       } else {
@@ -430,7 +434,7 @@ const ProductDetailsScreen = props => {
                 />
                 <Box>
                   {/* <Text variant="regular18">{name}</Text> */}
-                  <Row title={'Brand : '} value={brand} />
+                  {/* <Row title={'Brand : '} value={brand} /> */}
                   <Box>
                     {productData?.length >= 2 && (
                       <Box>

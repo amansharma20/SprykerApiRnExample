@@ -32,7 +32,7 @@ const CartItem = ({item}) => {
     state => state.customerCartIdApiSlice?.customerCart?.data?.data?.[0] || [],
   );
 
-  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart.id}`;
+  const newCartApiUrl = `https://sushiitobff-dzt0m3.5sc6y6-2.usa-e2.cloudhub.io/carts?cartId=${customerCart.id}`;
 
   const removeItem = async itemId => {
     setIsLoading(true);

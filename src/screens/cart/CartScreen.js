@@ -23,7 +23,7 @@ import CartItem from './CartItem';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {useCartItemsCount} from '../../hooks/useCartItemsCount';
 import GuestCartScreen from '../guestCart/GuestCartScreen';
-import { applicationProperties } from '../../utils/application.properties';
+import {applicationProperties} from '../../utils/application.properties';
 
 const CartScreen = () => {
   const {signOut} = useContext(AuthContext);
@@ -69,7 +69,7 @@ const CartScreen = () => {
 
   const discountTotal = customerCartDataNew?.attributes?.totals?.discountTotal;
 
-  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCartId}`;
+  const newCartApiUrl = `https://sushiitobff-dzt0m3.5sc6y6-2.usa-e2.cloudhub.io/carts?cartId=${customerCartId}`;
 
   useEffect(() => {
     if (customerCartId) {

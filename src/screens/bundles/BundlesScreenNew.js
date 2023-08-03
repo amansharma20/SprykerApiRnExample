@@ -117,7 +117,8 @@ const BundlesScreenNew = props => {
     );
   };
 
-  const url = `https://newconfigure-5g04sc.5sc6y6-3.usa-e2.cloudhub.io/configurable-bundle-templates?bundleId=${configurableBundleId}`;
+  // const url = `https://newconfigure-5g04sc.5sc6y6-3.usa-e2.cloudhub.io/configurable-bundle-templates?bundleId=${configurableBundleId}`;
+  const url = `https://sushiitobff-dzt0m3.5sc6y6-2.usa-e2.cloudhub.io/configurable-bundle-templates?bundleId=${configurableBundleId}`;
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {

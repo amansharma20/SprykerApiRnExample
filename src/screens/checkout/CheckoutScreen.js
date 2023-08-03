@@ -127,7 +127,7 @@ const CheckoutScreen = props => {
           {
             shippingAddress: addresses?.[selectedAddressIndex]?.attributes,
             items: cartItemsArray,
-            idShipmentMethod: 1,
+            idShipmentMethod: 6, // dynamic using shipment methods
             requestedDeliveryDate: '2023-06-23',
           },
         ],

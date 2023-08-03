@@ -33,7 +33,7 @@ export default function ProductItem({item, includedData, index}) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const concreteId = item?.attributeMap?.product_concrete_ids?.[0];
+  const concreteId = item?.attributeMap?.product_concrete_ids?.[0]?.toString();
 
   const productData = {
     data: {
@@ -74,7 +74,7 @@ export default function ProductItem({item, includedData, index}) {
     state => state?.getProductsByWishlistApiSlice?.productsByWishlist?.data,
   );
 
-  const newCartApiUrl = `https://cartapi-5g04sc.5sc6y6-1.usa-e2.cloudhub.io/cart?cartId=${customerCart?.id}`;
+  const newCartApiUrl = `https://sushiitobff-dzt0m3.5sc6y6-2.usa-e2.cloudhub.io/carts?cartId=${customerCart?.id}`;
 
   const onPressAddToCart = async () => {
     setIsLoading(true);
