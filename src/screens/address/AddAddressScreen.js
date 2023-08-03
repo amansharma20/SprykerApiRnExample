@@ -15,6 +15,8 @@ import HomeHeader from '../home/homeHeader/HomeHeader';
 import PoweredBySpryker from '../../components/PoweredBySpryker';
 import CommonChipSelector from '../../components/CommonChipSelector/CommonChipSelector';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import {api} from '../../api/SecureAPI';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 const AddAddressScreen = () => {
   const navigation = useNavigation();
@@ -77,25 +79,34 @@ const AddAddressScreen = () => {
   };
 
   const onPressSignUp = async () => {
-    //    await api.post('customers', apiData).then(response => {
-    //      if (response.data.status === 201) {
-    //        setSignUpApiResponse(response.data?.data);
-    //        Alert.alert(
-    //          'Almost there!',
-    //          'We sent you an email to validate your email address. Please confirm it to be able to log in.',
-    //          [
-    //            {
-    //              text: 'OK',
-    //              onPress: () => {
-    //                setSelectedOption('login');
-    //              },
-    //            },
-    //          ],
-    //        );
-    //      } else {
-    //        Alert.alert(response.data?.data?.errors?.[0]?.detail);
-    //      }
-    //    });
+    setIsLoading(true);
+    await api.post('customers/DE--21/addresses', apiData).then(response => {
+      console.log('response: ', response?.data?.data);
+      if (response.data.status === 201) {
+        setAddress1('');
+        setAddress2('');
+        setCity('');
+        setCountry('');
+        setFirstName('');
+        setLastName('');
+        setIso2Code('');
+        setPhone('');
+        setZipCode('');
+        setIsLoading(false);
+        Toast.show({
+          type: 'success',
+          text1: 'Address Added Successfully 🎉',
+          position: 'top',
+        });
+      } else {
+        setIsLoading(false);
+        Toast.show({
+          type: 'error',
+          text1: 'Something went wrong 🎉',
+          position: 'top',
+        });
+      }
+    });
   };
 
   return (
@@ -114,6 +125,9 @@ const AddAddressScreen = () => {
         <Box>
           <HomeHeader />
         </Box>
+        <Box mt="s10">
+          <Text variant="bold16">Add a new Address</Text>
+        </Box>
         <Box>
           <CommonChipSelector
             title={'Salutation*'}
@@ -121,6 +135,7 @@ const AddAddressScreen = () => {
             selectedIndex={selectedSalutationIndex}
             setSelectedIndex={setSelectedSalutationIndex}
           />
+
           <Text
             variant="regular14"
             color="lightBlack"
@@ -235,6 +250,24 @@ const AddAddressScreen = () => {
             color="lightBlack"
             mr="s4"
             marginVertical="s12">
+            Country*
+          </Text>
+          <TextInput
+            style={styles.input}
+            placeholder=""
+            value={country}
+            onChangeText={text => {
+              setCountry(text);
+            }}
+            keyboardType="default"
+            autoCapitalize={false}
+            placeholderTextColor={theme.colors.lightGrey}
+          />
+          <Text
+            variant="regular14"
+            color="lightBlack"
+            mr="s4"
+            marginVertical="s12">
             Iso2Code*
           </Text>
           <TextInput
@@ -253,7 +286,7 @@ const AddAddressScreen = () => {
             {!isLoading ? (
               <>
                 <CommonSolidButton
-                  title="LOGIN"
+                  title="SUBMIT"
                   onPress={onPressSignUp}
                   //   disabled={getButtonStatus()
                   disabled={false}
