@@ -27,7 +27,7 @@ import {guestCartData} from '../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import {applicationProperties} from '../utils/application.properties';
 
 export default function ProductItem({item, includedData, index}) {
-  console.log('item: ', item);
+  // console.log('item: ', item);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {isUserLoggedIn} = useIsUserLoggedIn();
@@ -113,7 +113,6 @@ export default function ProductItem({item, includedData, index}) {
             setIsLoading(false);
           }
         });
-        dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {});
       } else {
         alert('error', response.data.data.errors?.[0]?.detail);
         // CommonLoading.hide();
@@ -121,11 +120,14 @@ export default function ProductItem({item, includedData, index}) {
       }
     } else {
       if (customerCart == undefined) {
-        console.log('HERE: ');
         const data = applicationProperties.createCartData;
         dispatch(
           createCustomerCart({endpoint: 'carts', data: JSON.stringify(data)}),
-        );
+        ).then(() => {
+          dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+            dispatch(getCartDataNew(newCartApiUrl));
+          });
+        });
         setIsLoading(false);
       }
     }

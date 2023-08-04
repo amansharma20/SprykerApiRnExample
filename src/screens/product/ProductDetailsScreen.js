@@ -505,7 +505,10 @@ const ProductDetailsScreen = props => {
             )}
           </ScrollView>
 
-          <Box paddingVertical="s16" paddingHorizontal="paddingHorizontal">
+          <Box
+            padding="s16"
+            backgroundColor="white"
+            style={theme.cardVariants.bottomButtonShadow}>
             <CommonSolidButton
               title={!isLoading ? 'Add to Cart' : 'Loading...'}
               // onPress={addToCartHandler}

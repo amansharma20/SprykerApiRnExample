@@ -44,9 +44,7 @@ const VerticalList = ({
       const id = viewableItems?.[0]?.section?.id;
       if (id !== selected) {
         setSelected(id);
-        console.log('mapping[id]: ', mapping[id]);
         if (horizontalScrollRef?.current) {
-          console.log('HERE');
           horizontalScrollRef.current.scrollToIndex({
             animated: true,
             index: mapping[id],
@@ -105,7 +103,7 @@ const VerticalList = ({
           paddingHorizontal="s16"
           justifyContent="flex-end"
           paddingVertical="s8">
-          <Text fontSize={18} variant='bold18'>
+          <Text fontSize={18} variant="bold18">
             {section.title} {`(${section.data.length})`}
           </Text>
         </Box>
@@ -162,7 +160,6 @@ const VerticalList = ({
       if (headerPassed) {
         setHeaderPassed(false);
         hideComponentWithAnimation();
-        console.log('AYAY');
       }
     }
   };

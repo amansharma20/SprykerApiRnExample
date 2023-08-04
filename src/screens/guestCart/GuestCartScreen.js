@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import {Box, Text, theme} from '@atoms';
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -88,7 +89,6 @@ const GuestCartScreen = () => {
           <ScrollView
             contentContainerStyle={{
               flexGrow: 1,
-              paddingHorizontal: theme.spacing.paddingHorizontal,
             }}>
             {grandTotal !== 0 ? (
               <FlatList
@@ -96,6 +96,9 @@ const GuestCartScreen = () => {
                 renderItem={item => {
                   const data = item?.item;
                   return <GuestCartItem item={data} />;
+                }}
+                contentContainerStyle={{
+                  paddingHorizontal: theme.spacing.paddingHorizontal,
                 }}
               />
             ) : (
@@ -144,7 +147,10 @@ const GuestCartScreen = () => {
             )}
 
             {guestCartItemsCount && grandTotal !== 0 ? (
-              <Box>
+              <Box
+                padding="s16"
+                backgroundColor="white"
+                style={theme.cardVariants.bottomButtonShadow}>
                 <CommonSolidButton
                   title="Proceed to Checkout"
                   // disabled={!allProductAvailableInCarts}

@@ -37,21 +37,6 @@ const CommonOptionsSelector = ({
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={onPressItem}>
         {/* <Text style={styles.horizontalLine} /> */}
-
-        {item.type == 'address' ? (
-          <Box borderTopWidth={1} borderColor="border">
-            <Text
-              //  fontWeight="600"
-              variant="bold16"
-              color="bottomTabActiveColor"
-              mt="s4">
-              DELIVERS TO
-            </Text>
-          </Box>
-        ) : (
-          ''
-        )}
-
         <Box flex={1} flexDirection="row" mb="s12">
           <BouncyCheckbox
             disableBuiltInState

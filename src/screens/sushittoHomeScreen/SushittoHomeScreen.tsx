@@ -13,12 +13,13 @@ import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { applicationProperties } from '../../utils/application.properties';
+import {applicationProperties} from '../../utils/application.properties';
+import {createCustomerCart} from '../../redux/createCustomerCart/CreateCustomerCartApiAsyncThunk';
+import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 
 const SushittoHomeScreen = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  console.log('isLoading: ', isLoading);
 
   const [apiData, setApiData] = useState([]);
   // console.log('apiData: ', apiData);
@@ -59,6 +60,15 @@ const SushittoHomeScreen = () => {
         } else {
           console.log('mulesoft carts api call not successful');
         }
+      });
+    } else {
+      const data = applicationProperties.createCartData;
+      dispatch(
+        createCustomerCart({endpoint: 'carts', data: JSON.stringify(data)}),
+      ).then(() => {
+        dispatch(CustomerCartIdApiAsyncThunk('carts')).then(() => {
+          dispatch(getCartDataNew(newCartApiUrl));
+        });
       });
     }
   }, [customerCartId]);

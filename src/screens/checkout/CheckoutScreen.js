@@ -6,13 +6,7 @@ import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCheckoutData} from '../../redux/checkoutDataApi/CheckoutApiAsyncThunk';
 import CommonOptionsSelector from '../../components/CommonOptionsSelector/CommonOptionsSelector';
-import {
-  ActivityIndicator,
-  Alert,
-  Button,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
+import {ActivityIndicator, Alert, SafeAreaView, ScrollView} from 'react-native';
 import {api} from '../../api/SecureAPI';
 import {useNavigation} from '@react-navigation/native';
 import CommonLoading from '../../components/CommonLoading';
@@ -120,9 +114,27 @@ const CheckoutScreen = props => {
         billingAddress: addresses?.[selectedAddressIndex]?.attributes,
         payments: [
           {
-            ...paymentMethods?.[selectedPaymentIndex]?.attributes,
+            priority: 2,
+            requiredRequestData: [
+              'paymentMethod',
+              'paymentProvider',
+              'dummyPaymentCreditCard.cardType',
+              'dummyPaymentCreditCard.cardNumber',
+              'dummyPaymentCreditCard.nameOnCard',
+              'dummyPaymentCreditCard.cardExpiresMonth',
+              'dummyPaymentCreditCard.cardExpiresYear',
+              'dummyPaymentCreditCard.cardSecurityCode',
+            ],
+            id: '2',
+            paymentMethodName: 'Credit Card',
+            paymentProviderName: 'DummyPayment',
           },
         ],
+        // [
+        //   {
+        //     ...paymentMethods?.[selectedPaymentIndex]?.attributes,
+        //   },
+        // ],
         shipments: [
           {
             shippingAddress: addresses?.[selectedAddressIndex]?.attributes,
@@ -246,6 +258,15 @@ const CheckoutScreen = props => {
                     setSelectedIndex={setSelectedAddressIndex}
                     hideContinueButton
                   />
+                  {/* <CommonOutlineButton
+                    title={'Add Address'}
+                    onPress={() =>
+                      navigation.navigate('AddAddressScreen', {
+                        cartId: cartId,
+                        redirectToScreen: 'CheckoutScreen',
+                      })
+                    }
+                  /> */}
                 </Box>
                 <Box mb="s16">
                   <Text mb="s16" variant="regular16">
@@ -278,7 +299,10 @@ const CheckoutScreen = props => {
           )}
         </ScrollView>
         {!isOrderConfirmedLoading ? (
-          <Box paddingHorizontal="paddingHorizontal">
+          <Box
+            padding="s16"
+            backgroundColor="white"
+            style={theme.cardVariants.bottomButtonShadow}>
             <CommonSolidButton title="Continue" onPress={orderConfirm} />
           </Box>
         ) : (

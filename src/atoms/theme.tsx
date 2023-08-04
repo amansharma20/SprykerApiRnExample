@@ -409,7 +409,7 @@ export const theme = createTheme({
     },
     bottomButtonShadow: {
       shadowOpacity: 0.1,
-      shadowRadius: 5,
+      shadowRadius: 10,
       elevation: 3,
       shadowOffset: {width: 0, height: -10},
     },

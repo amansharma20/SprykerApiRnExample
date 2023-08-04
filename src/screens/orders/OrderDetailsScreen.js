@@ -210,7 +210,8 @@ const OrderDetailsScreen = props => {
                   backgroundColor="lightBlueBg"
                   padding="s16"
                   borderRadius={8}
-                  alignItems="center">
+                  alignItems="center"
+                  mb="s16">
                   <CheckCircle />
                   <Text textAlign="center" mt="s8" variant="semiBold14">
                     <Text variant="bold16">Thankyou!</Text> {'\n'} Your order
@@ -248,7 +249,10 @@ const OrderDetailsScreen = props => {
           )}
         </Box>
       </ScrollView>
-      <Box backgroundColor="white" padding="s16">
+      <Box
+        backgroundColor="white"
+        padding="s16"
+        style={theme.cardVariants.bottomButtonShadow}>
         <CommonSolidButton
           title={'Go to home'}
           onPress={() => RNRestart.Restart()}
