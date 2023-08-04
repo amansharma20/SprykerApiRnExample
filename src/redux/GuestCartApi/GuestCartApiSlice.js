@@ -29,6 +29,7 @@ const getGuestCartDataApiSlice = createSlice({
           const quantity = [];
           const price = [];
           action?.payload?.included.forEach(element => {
+            console.log('element: ', element);
             switch (element.type) {
               case 'concrete-products':
                 concreteProductData.push({
@@ -50,7 +51,10 @@ const getGuestCartDataApiSlice = createSlice({
                   id: element.attributes.sku,
                   groupKey: element.attributes.groupKey,
                   itemId: element.id,
-                  price: element.attributes.calculations.sumGrossPrice,
+                  price:
+                    element.attributes.calculations.sumGrossPrice != 0
+                      ? element.attributes.calculations.sumGrossPrice
+                      : element.attributes.calculations.sumNetPrice,
                   productOffer: element.attributes.merchantReference,
                   // configuredBundle: element.attributes.configuredBundle,
                   // configuredBundleItem: element.attributes.configuredBundleItem,

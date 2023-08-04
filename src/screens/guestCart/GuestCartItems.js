@@ -18,6 +18,7 @@ import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import GuestCartItemQuantity from './GuestCartItemQuantity';
 import {applicationProperties} from '../../utils/application.properties';
 const GuestCartItem = ({item}) => {
+  console.log('item: ', item);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [removeItemIsLoading, setRemoveItemIsLoading] = useState(false);

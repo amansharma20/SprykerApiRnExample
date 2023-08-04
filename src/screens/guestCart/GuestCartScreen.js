@@ -2,7 +2,12 @@
 import {Box, Text, theme} from '@atoms';
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {FlatList, ActivityIndicator, ScrollView} from 'react-native';
+import {
+  FlatList,
+  ActivityIndicator,
+  ScrollView,
+  SafeAreaView,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GuestCartItem from './GuestCartItems';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
@@ -78,35 +83,36 @@ const GuestCartScreen = () => {
   }, []);
 
   return (
-    <Box flex={1} backgroundColor="white">
-      <CommonHeader title={'Your Cart'} />
-      {isLoading ? (
-        <>
-          <ActivityIndicator />
-        </>
-      ) : (
-        <>
-          <ScrollView
-            contentContainerStyle={{
-              flexGrow: 1,
-            }}>
-            {grandTotal !== 0 ? (
-              <FlatList
-                data={normalProducts}
-                renderItem={item => {
-                  const data = item?.item;
-                  return <GuestCartItem item={data} />;
-                }}
-                contentContainerStyle={{
-                  paddingHorizontal: theme.spacing.paddingHorizontal,
-                }}
-              />
-            ) : (
-              <Box alignItems="center">
-                <Text>No Items in carts</Text>
-              </Box>
-            )}
-            {/* <FlatList
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <Box flex={1} backgroundColor="white">
+        <CommonHeader title={'Your Cart'} />
+        {isLoading ? (
+          <>
+            <ActivityIndicator />
+          </>
+        ) : (
+          <>
+            <ScrollView
+              contentContainerStyle={{
+                flexGrow: 1,
+              }}>
+              {grandTotal !== 0 ? (
+                <FlatList
+                  data={normalProducts}
+                  renderItem={item => {
+                    const data = item?.item;
+                    return <GuestCartItem item={data} />;
+                  }}
+                  contentContainerStyle={{
+                    paddingHorizontal: theme.spacing.paddingHorizontal,
+                  }}
+                />
+              ) : (
+                <Box alignItems="center">
+                  <Text>No Items in carts</Text>
+                </Box>
+              )}
+              {/* <FlatList
               data={configuredBundles}
               renderItem={item => {
                 const data = item?.item;
@@ -114,60 +120,62 @@ const GuestCartScreen = () => {
               }}
             /> */}
 
-            {guestCartItemsCount && grandTotal !== 0 ? (
-              <>
-                <Box
-                  justifyContent="flex-end"
-                  flexDirection="row"
-                  paddingVertical="s8">
-                  <Text>
-                    Total Discount : $
-                    {discountTotal?.discountTotal !== null ||
-                    discountTotal?.discountTotal !== undefined ||
-                    discountTotal?.discountTotal
-                      ? discountTotal?.discountTotal
-                      : ''}
-                  </Text>
-                </Box>
-                <Box
-                  justifyContent="flex-end"
-                  flexDirection="row"
-                  paddingVertical="s8">
-                  <Text>
-                    {normalProducts.length != 0 ? (
-                      <Text variant="bold24">Total : $ {grandTotal}</Text>
-                    ) : (
-                      ''
-                    )}
-                  </Text>
-                </Box>
-              </>
-            ) : (
-              <>{/* <ListEmptyComponent /> */}</>
-            )}
+              {guestCartItemsCount && grandTotal !== 0 ? (
+                <>
+                  <Box
+                    justifyContent="flex-end"
+                    flexDirection="row"
+                    paddingVertical="s8">
+                    <Text paddingHorizontal="s16">
+                      Total Discount : $
+                      {discountTotal?.discountTotal !== null ||
+                      discountTotal?.discountTotal !== undefined ||
+                      discountTotal?.discountTotal
+                        ? discountTotal?.discountTotal
+                        : ''}
+                    </Text>
+                  </Box>
+                  <Box
+                    justifyContent="flex-end"
+                    flexDirection="row"
+                    paddingVertical="s8"
+                    flex={1}>
+                    <Text paddingHorizontal="s16">
+                      {normalProducts.length != 0 ? (
+                        <Text variant="bold24">Total : $ {grandTotal}</Text>
+                      ) : (
+                        ''
+                      )}
+                    </Text>
+                  </Box>
+                </>
+              ) : (
+                <>{/* <ListEmptyComponent /> */}</>
+              )}
 
-            {guestCartItemsCount && grandTotal !== 0 ? (
-              <Box
-                padding="s16"
-                backgroundColor="white"
-                style={theme.cardVariants.bottomButtonShadow}>
-                <CommonSolidButton
-                  title="Proceed to Checkout"
-                  // disabled={!allProductAvailableInCarts}
-                  onPress={() => {
-                    navigation.navigate('LoginScreen', {
-                      hideGuestUserCta: true,
-                    });
-                  }}
-                />
-              </Box>
-            ) : (
-              <></>
-            )}
-          </ScrollView>
-        </>
-      )}
-    </Box>
+              {guestCartItemsCount && grandTotal !== 0 ? (
+                <Box
+                  padding="s16"
+                  backgroundColor="white"
+                  style={theme.cardVariants.bottomButtonShadow}>
+                  <CommonSolidButton
+                    title="Proceed to Checkout"
+                    // disabled={!allProductAvailableInCarts}
+                    onPress={() => {
+                      navigation.navigate('LoginScreen', {
+                        hideGuestUserCta: true,
+                      });
+                    }}
+                  />
+                </Box>
+              ) : (
+                <></>
+              )}
+            </ScrollView>
+          </>
+        )}
+      </Box>
+    </SafeAreaView>
   );
 };
 export default GuestCartScreen;
