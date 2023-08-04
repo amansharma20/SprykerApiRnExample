@@ -33,12 +33,12 @@ export default function ProfileScreen() {
         navigation.navigate('YourOrdersScreen');
       },
     },
-    {
-      name: 'Shopping List',
-      onPress: function () {
-        navigation.navigate('WishlistScreen');
-      },
-    },
+    // {
+    //   name: 'Shopping List',
+    //   onPress: function () {
+    //     navigation.navigate('WishlistScreen');
+    //   },
+    // },
 
     // {
     //   name: 'Contact Us',

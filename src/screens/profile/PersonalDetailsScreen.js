@@ -12,6 +12,7 @@ import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {AuthContext} from '../../navigation/StackNavigator';
 import Text from '../../atoms/text';
 import {theme} from '../../atoms/theme';
+import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 
 export default function PersonalDetailsScreen() {
   const {signOut} = useContext(AuthContext);
@@ -63,8 +64,8 @@ export default function PersonalDetailsScreen() {
           </View>
         </>
       )}
-      <View style={styles.logoutButtonContainer}>
-        <Button title="Logout" onPress={onPressLogout} />
+      <View style={{paddingHorizontal: 20, paddingBottom: 10}}>
+        <CommonSolidButton title="LOGIN" onPress={onPressLogout} />
       </View>
     </SafeAreaView>
   );
