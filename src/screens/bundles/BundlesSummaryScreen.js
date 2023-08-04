@@ -43,8 +43,6 @@ const BundlesSummaryScreen = props => {
       postProductSlotsData,
     );
 
-    console.log('response: ', response?.data?.data);
-
     if (response?.data?.status === 201) {
       console.log('response?.data: success ', response?.data);
       navigation.navigate('CartScreen');

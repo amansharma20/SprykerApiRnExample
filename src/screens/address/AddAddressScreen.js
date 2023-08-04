@@ -15,9 +15,16 @@ import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidBut
 import {api} from '../../api/SecureAPI';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
+import {useDispatch} from 'react-redux';
+import {getCheckoutData} from '../../redux/checkoutDataApi/CheckoutApiAsyncThunk';
 
-const AddAddressScreen = () => {
+const AddAddressScreen = props => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const cartId = props.route.params?.cartId;
+  const redirectToScreen = props.route.params?.redirectToScreen;
+
   const SALUTATION_DATA = [
     {
       title: 'Mr.',
@@ -76,6 +83,16 @@ const AddAddressScreen = () => {
     },
   };
 
+  const checkoutData = {
+    data: {
+      attributes: {
+        idCart: cartId,
+        shipmentMethods: [],
+      },
+      type: 'checkout-data',
+    },
+  };
+
   const onPress = async () => {
     setIsLoading(true);
     await api.post('customers/DE--21/addresses', apiData).then(response => {
@@ -90,13 +107,25 @@ const AddAddressScreen = () => {
         setIso2Code('');
         setPhone('');
         setZipCode('');
-        setIsLoading(false);
-        Toast.show({
-          type: 'success',
-          text1: 'Address Added Successfully 🎉',
-          position: 'top',
+        dispatch(
+          getCheckoutData({
+            endpoint:
+              'checkout-data?include=shipments%2Cshipment-methods%2Caddresses%2Cpayment-methods%2Citems',
+            data: checkoutData,
+          }),
+        ).then(() => {
+          setIsLoading(false);
+          Toast.show({
+            type: 'success',
+            text1: 'Address added successfully 🎉',
+            position: 'top',
+          });
+          if (redirectToScreen) {
+            navigation.navigate(redirectToScreen);
+          } else {
+            navigation.goBack();
+          }
         });
-        navigation.goBack();
       } else {
         setIsLoading(false);
         Alert.alert(`${response.data.data?.errors?.[0]?.detail}`);
@@ -111,7 +140,7 @@ const AddAddressScreen = () => {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-      <CommonHeader title={'Add a new Address'} />
+      <CommonHeader title={'Enter address details'} />
 
       <ScrollView
         style={{flex: 1, backgroundColor: 'white'}}
@@ -295,7 +324,7 @@ const AddAddressScreen = () => {
         {!isLoading ? (
           <>
             <CommonSolidButton
-              title="SUBMIT"
+              title="Save Address"
               onPress={onPress}
               //   disabled={getButtonStatus()
               disabled={false}
