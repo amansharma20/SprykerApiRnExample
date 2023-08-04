@@ -15,7 +15,7 @@ import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidBut
 import {api} from '../../api/SecureAPI';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {getCheckoutData} from '../../redux/checkoutDataApi/CheckoutApiAsyncThunk';
 
 const AddAddressScreen = props => {
@@ -24,6 +24,12 @@ const AddAddressScreen = props => {
 
   const cartId = props.route.params?.cartId;
   const redirectToScreen = props.route.params?.redirectToScreen;
+
+  const profileId = useSelector(
+    state =>
+      state.getCustomerDetailsApiSlice.customerDetails?.data?.data?.[0]?.id ||
+      '',
+  );
 
   const SALUTATION_DATA = [
     {
@@ -66,7 +72,7 @@ const AddAddressScreen = props => {
     data: {
       type: 'addresses',
       attributes: {
-        customer_reference: 'DE--21',
+        customer_reference: `${profileId}`,
         salutation: salutationApiData,
         firstName: firstName,
         lastName: lastName,
@@ -95,47 +101,49 @@ const AddAddressScreen = props => {
 
   const onPress = async () => {
     setIsLoading(true);
-    await api.post('customers/DE--21/addresses', apiData).then(response => {
-      console.log('response: ', response?.data?.data);
-      if (response.data.status === 201) {
-        setAddress1('');
-        setAddress2('');
-        setCity('');
-        setCountry('');
-        setFirstName('');
-        setLastName('');
-        setIso2Code('');
-        setPhone('');
-        setZipCode('');
-        dispatch(
-          getCheckoutData({
-            endpoint:
-              'checkout-data?include=shipments%2Cshipment-methods%2Caddresses%2Cpayment-methods%2Citems',
-            data: checkoutData,
-          }),
-        ).then(() => {
-          setIsLoading(false);
-          Toast.show({
-            type: 'success',
-            text1: 'Address added successfully 🎉',
-            position: 'top',
+    await api
+      .post(`customers/${profileId}/addresses`, apiData)
+      .then(response => {
+        console.log('response: ', response?.data?.data);
+        if (response.data.status === 201) {
+          setAddress1('');
+          setAddress2('');
+          setCity('');
+          setCountry('');
+          setFirstName('');
+          setLastName('');
+          setIso2Code('');
+          setPhone('');
+          setZipCode('');
+          dispatch(
+            getCheckoutData({
+              endpoint:
+                'checkout-data?include=shipments%2Cshipment-methods%2Caddresses%2Cpayment-methods%2Citems',
+              data: checkoutData,
+            }),
+          ).then(() => {
+            setIsLoading(false);
+            Toast.show({
+              type: 'success',
+              text1: 'Address added successfully 🎉',
+              position: 'top',
+            });
+            if (redirectToScreen) {
+              navigation.navigate(redirectToScreen);
+            } else {
+              navigation.goBack();
+            }
           });
-          if (redirectToScreen) {
-            navigation.navigate(redirectToScreen);
-          } else {
-            navigation.goBack();
-          }
-        });
-      } else {
-        setIsLoading(false);
-        Alert.alert(`${response.data.data?.errors?.[0]?.detail}`);
-        // Toast.show({
-        //   type: 'error',
-        //   text1: 'Something went wrong 🎉',
-        //   position: 'top',
-        // });
-      }
-    });
+        } else {
+          setIsLoading(false);
+          Alert.alert(`${response.data.data?.errors?.[0]?.detail}`);
+          // Toast.show({
+          //   type: 'error',
+          //   text1: 'Something went wrong 🎉',
+          //   position: 'top',
+          // });
+        }
+      });
   };
 
   return (

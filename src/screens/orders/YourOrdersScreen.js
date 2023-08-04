@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getOrdersData} from '../../redux/ordersApi/OrdersApiAsyncThunk';
 import {ActivityIndicator, FlatList, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {getCustomerDetails} from '../../redux/profileApi/ProfileApiAsyncThunk';
 
 const YourOrdersScreen = () => {
   const navigation = useNavigation();
@@ -15,6 +16,13 @@ const YourOrdersScreen = () => {
   const ordersData = useSelector(
     state => state.getOrdersDataApiSlice.ordersData?.data?.data || [],
   );
+
+  const profileId = useSelector(
+    state =>
+      state.getCustomerDetailsApiSlice.customerDetails?.data?.data?.[0]?.id ||
+      '',
+  );
+  console.log('profileId: ', profileId);
 
   const renderItem = ({item}) => {
     const isDelivered = item.attributes?.itemStates?.includes('paid');
@@ -84,10 +92,10 @@ const YourOrdersScreen = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    dispatch(getOrdersData('customers/DE--21/orders')).then(res => {
+    dispatch(getOrdersData(`customers/${profileId}/orders`)).then(res => {
       setIsLoading(false);
     });
-  }, [dispatch]);
+  }, [dispatch, profileId]);
 
   return (
     <Box flex={1} bg="white">
