@@ -27,6 +27,7 @@ import {guestCartData} from '../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import {applicationProperties} from '../utils/application.properties';
 
 export default function ProductItem({item, includedData, index}) {
+  console.log('item: ', item);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {isUserLoggedIn} = useIsUserLoggedIn();
@@ -103,6 +104,7 @@ export default function ProductItem({item, includedData, index}) {
               type: 'success',
               text1: 'Added to cart 🎉',
               position: 'top',
+              onPress: () => navigation.navigate('CartScreen'),
             });
             setIsLoading(false);
           } else {

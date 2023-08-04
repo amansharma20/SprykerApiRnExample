@@ -72,43 +72,52 @@ const CartItem = ({item}) => {
       {isLoading === true ? (
         <ActivityIndicator color={theme.colors.sushiittoRed} />
       ) : (
-        <Box flexDirection="row">
-          <Box alignItems="center" mr="s8">
-            <Box height={120} width={120}>
-              <Image
-                style={{height: 120, width: 120, resizeMode: 'contain'}}
-                source={{
-                  uri: image,
-                }}
-              />
+        <>
+          <Box flexDirection="row" backgroundColor="white">
+            <Box alignItems="center" mr="s8">
+              <Box height={120} width={120}>
+                <Image
+                  style={{height: 120, width: 120, resizeMode: 'contain'}}
+                  source={{
+                    uri: image,
+                  }}
+                />
+              </Box>
             </Box>
-            <CartItemQuantity cartItem={item} removeItemTrigger={removeItem} />
+            <Box justifyContent="space-between">
+              <Box>
+                <Text variant="bold16">{name}</Text>
+                <Text variant="bold16" style={{marginTop: 4}}>
+                  $ {price}
+                </Text>
+                <Text style={{color: '#006400'}}>
+                  {productOffer !== null ? `(Offer Included)` : ''}
+                </Text>
+                {availability === false ? (
+                  <Text color="red">Not Available</Text>
+                ) : (
+                  ''
+                )}
+              </Box>
+              <Box>
+                <CartItemQuantity
+                  cartItem={item}
+                  removeItemTrigger={removeItem}
+                />
+              </Box>
+            </Box>
           </Box>
-          <Box justifyContent="space-between">
-            <Box>
-              <Text variant="bold16">{name}</Text>
-
-              <Text variant="bold16" style={{marginTop: 4}}>
-                $ {price}
-              </Text>
-              <Text style={{color: '#006400'}}>
-                {productOffer !== null ? `(Offer Included)` : ''}
-              </Text>
-              {availability === false ? (
-                <Text color="red">Not Available</Text>
-              ) : (
-                ''
-              )}
-            </Box>
-            <Box mb="s8">
+          {/* <Box flexDirection="row" alignItems="center" backgroundColor="white">
+            <Box backgroundColor="white" width={120}></Box>
+            <Box backgroundColor="white">
               <TouchableOpacity onPress={() => removeItem(itemId)}>
                 <Text>
                   <RemoveIcon />
                 </Text>
               </TouchableOpacity>
             </Box>
-          </Box>
-        </Box>
+          </Box> */}
+        </>
       )}
     </Box>
   );

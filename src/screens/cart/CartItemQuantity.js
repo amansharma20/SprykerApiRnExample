@@ -96,12 +96,12 @@ const CartItemQuantity = ({cartItem, removeItemTrigger}) => {
 
 const styles = StyleSheet.create({
   quantityText: {
-    fontSize: 24,
+    fontSize: 20,
     color: 'black',
   },
   quantity: {
-    fontSize: 20,
-    marginHorizontal: 10,
+    fontSize: 16,
+    marginHorizontal: 8,
   },
 });
 

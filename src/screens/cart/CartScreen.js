@@ -228,7 +228,10 @@ const CartScreen = () => {
                   </Box>
                 </ScrollView>
                 {cartItemsCount ? (
-                  <Box padding="s16">
+                  <Box
+                    padding="s16"
+                    style={theme.cardVariants.bottomButtonShadow}
+                    backgroundColor="white">
                     <CommonSolidButton
                       title="Proceed to Checkout"
                       disabled={!allProductAvailableInCarts}

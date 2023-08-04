@@ -207,6 +207,9 @@ const ProductDetailsScreen = props => {
               type: 'success',
               text1: 'Added to cart 🎉',
               position: 'top',
+              onPress: () => {
+                navigation.navigate('CartScreen');
+              },
             });
           } else {
             CommonLoading.hide();

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {Box, FONT, Text, theme} from '@atoms';
 import {
@@ -6,17 +7,14 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {CrossIcon} from '../../assets/svgs';
-import HomeHeader from '../home/homeHeader/HomeHeader';
-import PoweredBySpryker from '../../components/PoweredBySpryker';
 import CommonChipSelector from '../../components/CommonChipSelector/CommonChipSelector';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import {api} from '../../api/SecureAPI';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import CommonHeader from '../../components/CommonHeader/CommonHeader';
 
 const AddAddressScreen = () => {
   const navigation = useNavigation();
@@ -78,7 +76,7 @@ const AddAddressScreen = () => {
     },
   };
 
-  const onPressSignUp = async () => {
+  const onPress = async () => {
     setIsLoading(true);
     await api.post('customers/DE--21/addresses', apiData).then(response => {
       console.log('response: ', response?.data?.data);
@@ -98,217 +96,223 @@ const AddAddressScreen = () => {
           text1: 'Address Added Successfully 🎉',
           position: 'top',
         });
+        navigation.goBack();
       } else {
         setIsLoading(false);
-        Toast.show({
-          type: 'error',
-          text1: 'Something went wrong 🎉',
-          position: 'top',
-        });
+        Alert.alert(`${response.data.data?.errors?.[0]?.detail}`);
+        // Toast.show({
+        //   type: 'error',
+        //   text1: 'Something went wrong 🎉',
+        //   position: 'top',
+        // });
       }
     });
   };
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
-      <Box flex={1} padding="s16" backgroundColor="white">
-        <Box alignItems="flex-end">
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <Box padding="s4">
-              <CrossIcon />
-            </Box>
-          </TouchableOpacity>
-        </Box>
-        <Box>
-          <HomeHeader />
-        </Box>
-        <Box mt="s10">
-          <Text variant="bold16">Add a new Address</Text>
-        </Box>
-        <Box>
-          <CommonChipSelector
-            title={'Salutation*'}
-            DATA={SALUTATION_DATA}
-            selectedIndex={selectedSalutationIndex}
-            setSelectedIndex={setSelectedSalutationIndex}
-          />
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <CommonHeader title={'Add a new Address'} />
 
-          <Text
-            variant="regular14"
-            color="lightBlack"
-            mr="s4"
-            marginVertical="s12">
-            First Name*
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder=""
-            value={firstName}
-            onChangeText={text => {
-              setFirstName(text);
-            }}
-            autoCapitalize={false}
-            keyboardType="default"
-            placeholderTextColor={theme.colors.lightGrey}
-          />
-
-          <Text
-            variant="regular14"
-            color="lightBlack"
-            mr="s4"
-            marginVertical="s12">
-            Last Name*
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder=""
-            value={lastName}
-            onChangeText={text => {
-              setLastName(text);
-            }}
-            keyboardType="default"
-            autoCapitalize={false}
-            placeholderTextColor={theme.colors.lightGrey}
-          />
-          <Text
-            variant="regular14"
-            color="lightBlack"
-            mr="s4"
-            marginVertical="s12">
-            Address1*
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder=""
-            value={address1}
-            onChangeText={text => {
-              setAddress1(text);
-            }}
-            keyboardType="default"
-            autoCapitalize={false}
-            placeholderTextColor={theme.colors.lightGrey}
-          />
-          <Text
-            variant="regular14"
-            color="lightBlack"
-            mr="s4"
-            marginVertical="s12">
-            Address2*
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder=""
-            value={address2}
-            onChangeText={text => {
-              setAddress2(text);
-            }}
-            keyboardType="default"
-            autoCapitalize={false}
-            placeholderTextColor={theme.colors.lightGrey}
-          />
-          <Text
-            variant="regular14"
-            color="lightBlack"
-            mr="s4"
-            marginVertical="s12">
-            Zip Code*
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder=""
-            value={zipCode}
-            onChangeText={text => {
-              setZipCode(text);
-            }}
-            keyboardType="default"
-            autoCapitalize={false}
-            placeholderTextColor={theme.colors.lightGrey}
-          />
-          <Text
-            variant="regular14"
-            color="lightBlack"
-            mr="s4"
-            marginVertical="s12">
-            City*
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder=""
-            value={city}
-            onChangeText={text => {
-              setCity(text);
-            }}
-            keyboardType="default"
-            autoCapitalize={false}
-            placeholderTextColor={theme.colors.lightGrey}
-          />
-          <Text
-            variant="regular14"
-            color="lightBlack"
-            mr="s4"
-            marginVertical="s12">
-            Country*
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder=""
-            value={country}
-            onChangeText={text => {
-              setCountry(text);
-            }}
-            keyboardType="default"
-            autoCapitalize={false}
-            placeholderTextColor={theme.colors.lightGrey}
-          />
-          <Text
-            variant="regular14"
-            color="lightBlack"
-            mr="s4"
-            marginVertical="s12">
-            Iso2Code*
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder=""
-            value={iso2Code}
-            onChangeText={text => {
-              setIso2Code(text);
-            }}
-            keyboardType="default"
-            autoCapitalize={false}
-            placeholderTextColor={theme.colors.lightGrey}
-          />
-
-          <Box mt="s16">
-            {!isLoading ? (
-              <>
-                <CommonSolidButton
-                  title="SUBMIT"
-                  onPress={onPressSignUp}
-                  //   disabled={getButtonStatus()
-                  disabled={false}
-                />
-              </>
-            ) : (
-              <Box
-                backgroundColor="sushiittoRed"
-                height={40}
-                borderRadius={theme.spacing.lml}
-                alignItems="center"
-                justifyContent="center">
-                <ActivityIndicator color={'white'} />
+      <ScrollView
+        style={{flex: 1, backgroundColor: 'white'}}
+        contentContainerStyle={{paddingBottom: 40}}>
+        <Box flex={1} backgroundColor="white">
+          {/* <Box alignItems="flex-end">
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Box padding="s4">
+                <CrossIcon />
               </Box>
-            )}
+            </TouchableOpacity>
+          </Box> */}
+          {/* <Box>
+            <HomeHeader />
+          </Box> */}
+          <Box paddingHorizontal="paddingHorizontal">
+            <Box>
+              <CommonChipSelector
+                title={'Salutation*'}
+                DATA={SALUTATION_DATA}
+                selectedIndex={selectedSalutationIndex}
+                setSelectedIndex={setSelectedSalutationIndex}
+              />
+
+              <Text
+                variant="regular14"
+                color="lightBlack"
+                mr="s4"
+                marginVertical="s12">
+                First Name*
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder=""
+                value={firstName}
+                onChangeText={text => {
+                  setFirstName(text);
+                }}
+                autoCapitalize={false}
+                keyboardType="default"
+                placeholderTextColor={theme.colors.lightGrey}
+              />
+
+              <Text
+                variant="regular14"
+                color="lightBlack"
+                mr="s4"
+                marginVertical="s12">
+                Last Name*
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder=""
+                value={lastName}
+                onChangeText={text => {
+                  setLastName(text);
+                }}
+                keyboardType="default"
+                autoCapitalize={false}
+                placeholderTextColor={theme.colors.lightGrey}
+              />
+              <Text
+                variant="regular14"
+                color="lightBlack"
+                mr="s4"
+                marginVertical="s12">
+                Address1*
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder=""
+                value={address1}
+                onChangeText={text => {
+                  setAddress1(text);
+                }}
+                keyboardType="default"
+                autoCapitalize={false}
+                placeholderTextColor={theme.colors.lightGrey}
+              />
+              <Text
+                variant="regular14"
+                color="lightBlack"
+                mr="s4"
+                marginVertical="s12">
+                Address2*
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder=""
+                value={address2}
+                onChangeText={text => {
+                  setAddress2(text);
+                }}
+                keyboardType="default"
+                autoCapitalize={false}
+                placeholderTextColor={theme.colors.lightGrey}
+              />
+              <Text
+                variant="regular14"
+                color="lightBlack"
+                mr="s4"
+                marginVertical="s12">
+                Zip Code*
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder=""
+                value={zipCode}
+                onChangeText={text => {
+                  setZipCode(text);
+                }}
+                keyboardType="default"
+                autoCapitalize={false}
+                placeholderTextColor={theme.colors.lightGrey}
+              />
+              <Text
+                variant="regular14"
+                color="lightBlack"
+                mr="s4"
+                marginVertical="s12">
+                City*
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder=""
+                value={city}
+                onChangeText={text => {
+                  setCity(text);
+                }}
+                keyboardType="default"
+                autoCapitalize={false}
+                placeholderTextColor={theme.colors.lightGrey}
+              />
+              <Text
+                variant="regular14"
+                color="lightBlack"
+                mr="s4"
+                marginVertical="s12">
+                Country*
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder=""
+                value={country}
+                onChangeText={text => {
+                  setCountry(text);
+                }}
+                keyboardType="default"
+                autoCapitalize={false}
+                placeholderTextColor={theme.colors.lightGrey}
+              />
+              <Text
+                variant="regular14"
+                color="lightBlack"
+                mr="s4"
+                marginVertical="s12">
+                Iso2Code*
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder=""
+                value={iso2Code}
+                onChangeText={text => {
+                  setIso2Code(text);
+                }}
+                keyboardType="default"
+                autoCapitalize={false}
+                placeholderTextColor={theme.colors.lightGrey}
+              />
+            </Box>
           </Box>
         </Box>
-        <Box justifyContent="flex-end" flex={1} paddingVertical="s16">
-          <PoweredBySpryker />
-        </Box>
+      </ScrollView>
+      <Box
+        padding="paddingHorizontal"
+        backgroundColor="white"
+        style={theme.cardVariants.bottomButtonShadow}>
+        {!isLoading ? (
+          <>
+            <CommonSolidButton
+              title="SUBMIT"
+              onPress={onPress}
+              //   disabled={getButtonStatus()
+              disabled={false}
+            />
+          </>
+        ) : (
+          <Box
+            backgroundColor="sushiittoRed"
+            height={40}
+            borderRadius={theme.spacing.lml}
+            alignItems="center"
+            justifyContent="center">
+            <ActivityIndicator color={'white'} />
+          </Box>
+        )}
       </Box>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 export default AddAddressScreen;

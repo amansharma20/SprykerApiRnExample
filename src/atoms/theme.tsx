@@ -407,6 +407,12 @@ export const theme = createTheme({
       borderRadius: 8,
       padding: 's16',
     },
+    bottomButtonShadow: {
+      shadowOpacity: 0.1,
+      shadowRadius: 5,
+      elevation: 3,
+      shadowOffset: {width: 0, height: -10},
+    },
   },
   // fontFamily: FONT,
 });

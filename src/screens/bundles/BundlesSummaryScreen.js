@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Alert, SafeAreaView, StyleSheet} from 'react-native';
 import React, {useEffect} from 'react';
-import {Box, Text} from '@atoms';
+import {Box, Text, theme} from '@atoms';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import {FlashList} from '@shopify/flash-list';
 import FastImage from 'react-native-fast-image';
@@ -102,26 +102,39 @@ const BundlesSummaryScreen = props => {
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <Box flex={1} backgroundColor="white">
         <CommonHeader title={'Bundles Summary'} />
-        <Box flex={1} paddingHorizontal="paddingHorizontal">
+        <Box flex={1}>
           <FlashList
             data={summaryBundleData}
             renderItem={renderItem}
             estimatedItemSize={4}
+            contentContainerStyle={{
+              paddingHorizontal: theme.spacing.s16,
+            }}
           />
           {isUserLoggedIn ? (
-            <CommonSolidButton
-              title={'Add to cart'}
-              onPress={() => {
-                addToCart();
-              }}
-            />
+            <Box
+              padding="s16"
+              backgroundColor="white"
+              style={theme.cardVariants.bottomButtonShadow}>
+              <CommonSolidButton
+                title={'Add to cart'}
+                onPress={() => {
+                  addToCart();
+                }}
+              />
+            </Box>
           ) : (
-            <CommonSolidButton
-              title={'Add to Guest cart '}
-              onPress={() => {
-                addtoCartAsGuestUser();
-              }}
-            />
+            <Box
+              padding="s16"
+              backgroundColor="white"
+              style={theme.cardVariants.bottomButtonShadow}>
+              <CommonSolidButton
+                title={'Add to Guest cart'}
+                onPress={() => {
+                  addtoCartAsGuestUser();
+                }}
+              />
+            </Box>
           )}
         </Box>
       </Box>

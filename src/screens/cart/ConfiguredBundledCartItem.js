@@ -14,6 +14,7 @@ import {RemoveIcon} from '../../assets/svgs';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 
 const ConfiguredBundledCartItem = ({data, customerCartId}) => {
+  console.log('data: ', data.attributes?.[0]?.itemData);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -123,11 +124,13 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
           {data?.groupname}
         </Text>
         <Box flexDirection="row" alignItems="center">
-          <TouchableOpacity onPress={() => removeItem(data?.groupKey)}>
-            <Box mr="s10">
-              <RemoveIcon />
-            </Box>
-          </TouchableOpacity>
+          {/* <Box mr="s10">
+            <TouchableOpacity onPress={() => removeItem(data?.groupKey)}>
+              <Box>
+                <RemoveIcon />
+              </Box>
+            </TouchableOpacity>
+          </Box> */}
 
           {isLoading ? (
             <ActivityIndicator color={theme.colors.sushiittoRed} />
@@ -162,6 +165,10 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
       </Box>
 
       {data?.attributes.map(item => {
+        const price =
+          item?.itemData?.attributes?.calculations?.sumGrossPrice ||
+          item?.itemData?.attributes?.calculations?.sumNetPrice;
+
         // setTemplatePrice(templatePrice + item.price * data.quantity);
         return (
           <Box
@@ -175,7 +182,12 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
             <Box flexDirection="row" flex={1}>
               <Box alignItems="center" mr="s8" height={120} width={120}>
                 <Image
-                  style={{height: 120, width: 120, resizeMode: 'contain'}}
+                  style={{
+                    height: 120,
+                    width: 120,
+                    resizeMode: 'cover',
+                    borderRadius: 8,
+                  }}
                   source={{
                     uri: item?.['concrete-product-image-sets']?.imageSets?.[0]
                       ?.images?.[0]?.externalUrlLarge,
@@ -188,11 +200,7 @@ const ConfiguredBundledCartItem = ({data, customerCartId}) => {
                 </Box>
                 <Box>
                   <Text style={{fontWeight: 'bold', marginTop: 4}}>
-                    $ {item?.itemData?.attributes?.calculations?.sumGrossPrice}{' '}
-                    x {data?.groupquantity} {''}
-                    {''}
-                    {item?.itemData?.attributes?.calculations?.sumGrossPrice *
-                      data?.groupquantity}
+                    $ {price}
                   </Text>
                 </Box>
               </Box>

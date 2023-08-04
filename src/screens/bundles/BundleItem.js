@@ -1,20 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
-import {
-  FlatList,
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {theme, Text, Box} from '@atoms';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {SCREEN_WIDTH} from '@gorhom/bottom-sheet';
 import FastImage from 'react-native-fast-image';
 import {FlashList} from '@shopify/flash-list';
-import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 
 const BundleItem = ({
   BundleData,
@@ -95,7 +88,7 @@ const BundleItem = ({
             <Box paddingLeft="s4" justifyContent="space-between">
               <Box flexShrink={1} maxWidth={'80%'}>
                 <Text
-                  fontWeight="bold18"
+                  variant="bold18"
                   style={styles.productTitle}
                   numberOfLines={2}>
                   {item?.name}

@@ -199,7 +199,10 @@ const BundlesScreenNew = props => {
             </>
           ) : (
             <>
-              <Box paddingHorizontal="paddingHorizontal" paddingVertical="s16">
+              <Box
+                padding="s16"
+                backgroundColor="white"
+                style={theme.cardVariants.bottomButtonShadow}>
                 <CommonSolidButton
                   title={'Continue'}
                   onPress={changeIndexPositive}

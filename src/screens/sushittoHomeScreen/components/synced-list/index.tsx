@@ -28,13 +28,11 @@ IProps) => {
   const [mapping, setMapping] = useState({});
 
   const onSelect = useCallback(id => {
-    console.log('id: ', id);
     setSelected(id);
   }, []);
 
   const slideAnimation = useRef(new Animated.Value(0)).current;
   const [headerPassed, setHeaderPassed] = useState(false);
-  console.log('headerPassed: ', headerPassed);
 
   const hideComponentWithAnimation = () => {
     Animated.timing(slideAnimation, {
