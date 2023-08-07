@@ -36,6 +36,7 @@ const GuestCartScreen = () => {
   const discountTotal = useSelector(
     state => state.getGuestCartDataApiSlice?.itemTotal?.[0]?.attributes?.totals,
   );
+  console.log('discountTotal: ', discountTotal?.taxTotal);
 
   const configuredBundles = useSelector(
     state => state.getGuestCartDataApiSlice?.configuredBundle,
@@ -122,6 +123,19 @@ const GuestCartScreen = () => {
 
               {guestCartItemsCount && grandTotal !== 0 ? (
                 <>
+                  <Box
+                    justifyContent="flex-end"
+                    flexDirection="row"
+                    paddingVertical="s8">
+                    <Text paddingHorizontal="s16">
+                      Tax Included : $
+                      {discountTotal?.taxTotal !== null ||
+                      discountTotal?.taxTotal !== undefined ||
+                      discountTotal?.taxTotal
+                        ? discountTotal?.taxTotal
+                        : ''}
+                    </Text>
+                  </Box>
                   <Box
                     justifyContent="flex-end"
                     flexDirection="row"
