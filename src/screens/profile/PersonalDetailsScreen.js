@@ -65,7 +65,7 @@ export default function PersonalDetailsScreen() {
         </>
       )}
       <View style={{paddingHorizontal: 20, paddingBottom: 10}}>
-        <CommonSolidButton title="LOGIN" onPress={onPressLogout} />
+        <CommonSolidButton title="LOGOUT" onPress={onPressLogout} />
       </View>
     </SafeAreaView>
   );

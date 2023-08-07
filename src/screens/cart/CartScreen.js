@@ -62,10 +62,7 @@ const CartScreen = () => {
   );
 
   const grandTotal = customerCartDataNew?.attributes?.totals?.grandTotal;
-  console.log(
-    'customerCartDataNew?.attributes?.totals: ',
-    customerCartDataNew?.attributes?.totals,
-  );
+  const taxTotal = customerCartDataNew?.attributes?.totals?.taxTotal;
 
   const discountTotal = customerCartDataNew?.attributes?.totals?.discountTotal;
 
@@ -202,6 +199,16 @@ const CartScreen = () => {
                             discountTotal !== undefined ||
                             discountTotal
                               ? discountTotal
+                              : ''}
+                          </Text>
+                        </Box>
+                        <Box justifyContent="flex-end" flexDirection="row">
+                          <Text>
+                            Tax Included : $
+                            {taxTotal !== null ||
+                            taxTotal !== undefined ||
+                            taxTotal
+                              ? taxTotal
                               : ''}
                           </Text>
                         </Box>
