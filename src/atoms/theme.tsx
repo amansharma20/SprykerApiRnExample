@@ -408,9 +408,9 @@ export const theme = createTheme({
       padding: 's16',
     },
     bottomButtonShadow: {
-      shadowOpacity: 0.1,
+      shadowOpacity: 0.05,
       shadowRadius: 10,
-      elevation: 3,
+      elevation: 20,
       shadowOffset: {width: 0, height: -10},
     },
   },
