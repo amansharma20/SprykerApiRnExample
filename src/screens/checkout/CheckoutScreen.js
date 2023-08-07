@@ -12,6 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 import CommonLoading from '../../components/CommonLoading';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
+import SelectShippingMethod from '../../components/SelectShippingMethod/SelectShippingMethod';
 
 const CheckoutScreen = props => {
   const navigation = useNavigation();
@@ -270,14 +271,15 @@ const CheckoutScreen = props => {
                 </Box>
                 <Box mb="s16">
                   <Text mb="s16" variant="regular16">
-                    Select shipment methods
+                    Select shipment method
                   </Text>
-                  <CommonOptionsSelector
+                  <SelectShippingMethod />
+                  {/* <CommonOptionsSelector
                     DATA={SHIPMENTMETHODS_DATA}
                     selectedIndex={selectedShipmentIndex}
                     setSelectedIndex={setSelectedShipmentIndex}
                     hideContinueButton
-                  />
+                  /> */}
                 </Box>
                 <Box mb="s16">
                   <Text mb="s16" variant="regular16">

@@ -10,6 +10,7 @@ import {Image} from 'react-native';
 import Icons from '../assets/constants/Icons';
 import SushittoHomeScreen from '../screens/sushittoHomeScreen/SushittoHomeScreen';
 import {theme} from '../atoms/theme';
+import MapScreen from '../screens/location/MapScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -44,17 +45,17 @@ export default function BottomTabNavigator() {
           },
         }}
       />
-      {/* <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+      <Tab.Screen
+        name="Location"
+        component={MapScreen}
         options={{
           tabBarIcon: ({focused, color}) => {
             return (
-              <Icon source={Icons.homeIcon} focused={focused} color={color} />
+              <Icon source={Icons.mapIcon} focused={focused} color={color} />
             );
           },
         }}
-      /> */}
+      />
       {/* <Tab.Screen name="Search" component={SearchScreen} /> */}
       {/* <Tab.Screen
         name="Cart"

@@ -36,6 +36,8 @@ import {getProductsByWishlistAsyncThunk} from '../redux/wishlist/ProductsWishlis
 import BundlesScreenNew from '../screens/bundles/BundlesScreenNew';
 import GuestCartScreen from '../screens/guestCart/GuestCartScreen';
 import AddAddressScreen from '../screens/address/AddAddressScreen';
+import MapScreen from '../screens/location/MapScreen';
+import {theme} from '../atoms/theme';
 
 export const AuthContext = React.createContext();
 
@@ -271,6 +273,19 @@ export default function StackNavigator() {
         />
         <Stack.Screen name="GuestCartScreen" component={GuestCartScreen} />
         <Stack.Screen name="AddAddressScreen" component={AddAddressScreen} />
+        <Stack.Screen
+          name="MapScreen"
+          component={MapScreen}
+          options={{
+            cardStyleInterpolator:
+              CardStyleInterpolators.forModalPresentationIOS,
+            headerShown: true,
+            headerShadowVisible: true,
+            presentation: 'modal',
+            headerTitle: 'Choose pickup restaurant',
+            headerTitleStyle: theme.textVariants.bold18,
+          }}
+        />
       </Stack.Navigator>
     </AuthContext.Provider>
   );

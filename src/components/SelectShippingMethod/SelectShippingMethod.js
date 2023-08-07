@@ -1,10 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
-import {Image, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {Image, StyleSheet, TouchableOpacity, Button} from 'react-native';
 import {Box, Text, theme} from '@atoms';
 import Icons from '../../assets/constants/Icons';
+import DynamicSnapPointBottomSheet from '../bottomsheets/DynamicSnapPointBottomSheet';
+import MapScreen from '../../screens/location/MapScreen';
+import {useNavigation} from '@react-navigation/native';
 
 const SelectShippingMethod = () => {
+  const navigation = useNavigation();
+
   const [selectedOption, setSelectedOption] = useState('delivery');
 
   const IS_DELIVERY = selectedOption === 'delivery';
@@ -14,9 +19,18 @@ const SelectShippingMethod = () => {
     setSelectedOption(option);
   };
 
+  const bottomSheetRef = useRef(null);
+
+  const handleExpandPress = useCallback(() => {
+    bottomSheetRef.current?.expand();
+  }, []);
+  const handleClosePress = useCallback(() => {
+    bottomSheetRef.current?.close();
+  }, []);
+
   return (
     <Box
-      // flex={1}
+      flex={1}
       justifyContent="center"
       alignItems="center"
       paddingVertical="s16"
@@ -46,7 +60,10 @@ const SelectShippingMethod = () => {
           </Box>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleOptionChange('pickup')}
+          onPress={() => {
+            handleOptionChange('pickup');
+            navigation.navigate('MapScreen');
+          }}
           style={[styles.tabButton, IS_PICK_UP && styles.selectedTabButton]}>
           <Box flexDirection="row" alignItems="center">
             <Image

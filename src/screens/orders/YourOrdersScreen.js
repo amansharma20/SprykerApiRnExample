@@ -22,7 +22,6 @@ const YourOrdersScreen = () => {
       state.getCustomerDetailsApiSlice.customerDetails?.data?.data?.[0]?.id ||
       '',
   );
-  console.log('profileId: ', profileId);
 
   const renderItem = ({item}) => {
     const isDelivered = item.attributes?.itemStates?.includes('paid');
@@ -96,6 +95,10 @@ const YourOrdersScreen = () => {
       setIsLoading(false);
     });
   }, [dispatch, profileId]);
+
+  useEffect(() => {
+    dispatch(getCustomerDetails('customers')).then(() => {});
+  }, []);
 
   return (
     <Box flex={1} bg="white">

@@ -18,6 +18,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@shopify/flash-list": "^1.4.3",
     "@shopify/restyle": "^2.4.2",
+    "add": "^2.0.6",
     "axios": "^1.4.0",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
@@ -28,6 +29,7 @@
     "react-native-gesture-handler": "^2.11.0",
     "react-native-keychain": "^8.1.1",
     "react-native-linear-gradient": "^2.6.2",
+    "react-native-maps": "^1.7.1",
     "react-native-radio-buttons-group": "^3.0.2",
     "react-native-reanimated": "^3.3.0",
     "react-native-restart": "^0.0.27",
@@ -37,7 +39,8 @@
     "react-native-svg": "^13.9.0",
     "react-native-toast-message": "^2.1.6",
     "react-redux": "^8.1.0",
-    "redux-thunk": "^2.4.2"
+    "redux-thunk": "^2.4.2",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
