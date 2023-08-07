@@ -166,6 +166,12 @@ export default function ProductItem({item, includedData, index}) {
           }),
         ).then(() => {
           setIsLoading(false);
+          Toast.show({
+            type: 'success',
+            text1: 'Added to cart 🎉',
+            position: 'top',
+            onPress: () => navigation.navigate('CartScreen'),
+          });
         });
         // CommonLoading.hide();
       })

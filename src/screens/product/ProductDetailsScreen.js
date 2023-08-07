@@ -112,13 +112,21 @@ const ProductDetailsScreen = props => {
       .then(response => {
         console.log('response: ', response.status);
         if (response?.status === 201) {
-          Alert.alert('Added to cart');
+          // Alert.alert('Added to cart');
           dispatch(
             guestCartData({
               endpoint: `${applicationProperties.baseUrl}/guest-carts?include=guest-cart-items%2Cbundle-items%2Cconcrete-products%2Cconcrete-product-image-sets%2Cconcrete-product-availabilities`,
               data: headers,
             }),
           );
+          Toast.show({
+            type: 'success',
+            text1: 'Added to cart 🎉',
+            position: 'top',
+            onPress: () => {
+              navigation.navigate('CartScreen');
+            },
+          });
         } else if (response?.status === 404) {
           Alert.alert('Cart not found');
           return;

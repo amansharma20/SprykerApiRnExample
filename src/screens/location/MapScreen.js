@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import CustomMarker from './components/marker';
@@ -16,7 +17,7 @@ import Icons from '../../assets/constants/Icons';
 import DummyLocaleData from './DummyLocaleData';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 
-export default function MapScreen() {
+const MapScreen = () => {
   const places = DummyLocaleData.chargers;
   const flatlist = useRef();
   const map = useRef();
@@ -34,7 +35,7 @@ export default function MapScreen() {
     if (!selectedPlaceId || !flatlist) {
       return;
     }
-    const index = DummyLocaleData.chargers.findIndex(
+    const index = DummyLocaleData?.chargers?.findIndex(
       place => place.id === selectedPlaceId,
     );
     flatlist.current.scrollToIndex({index});
@@ -46,7 +47,7 @@ export default function MapScreen() {
       latitudeDelta: 0.8,
       longitudeDelta: 0.8,
     };
-    map.current.animateToRegion(region);
+    map?.current?.animateToRegion(region);
   }, [selectedPlaceId]);
 
   const initialRegion = {
@@ -62,40 +63,40 @@ export default function MapScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <MapView
-        ref={map}
-        initialRegion={initialRegion}
-        style={styles.map}
-        showsUserLocation={true}
-        mapType="standard"
-        minZoomLevel={14}
-        maxZoomLevel={10}>
-        <Marker coordinate={myLocation}>
-          <View style={styles.myLocationIconContainer}>
-            <Image
-              source={Icons.myLocationIcon}
-              style={styles.myLocationIcon}
+    <>
+      <View style={styles.container}>
+        <MapView
+          ref={map}
+          initialRegion={initialRegion}
+          style={styles.map}
+          showsUserLocation={true}
+          minZoomLevel={14}>
+          <Marker coordinate={myLocation}>
+            <View style={styles.myLocationIconContainer}>
+              <Image
+                source={Icons.myLocationIcon}
+                style={styles.myLocationIcon}
+              />
+            </View>
+          </Marker>
+          {places.map(place => (
+            <CustomMarker
+              coordinate={{
+                latitude: Number(place.latitude),
+                longitude: Number(place.longitude),
+              }}
+              isSelected={place.id === selectedPlaceId}
+              // onPress={() => {
+              //   console.log('AY');
+              //   setSelectedPlaceId(place.id);
+              // }}
+              id={place.id}
+              setSelectedPlaceId={setSelectedPlaceId}
             />
-          </View>
-        </Marker>
-        {places.map(place => (
-          <CustomMarker
-            coordinate={{
-              latitude: Number(place.latitude),
-              longitude: Number(place.longitude),
-            }}
-            isSelected={place.id === selectedPlaceId}
-            // onPress={() => {
-            //   console.log('AY');
-            //   setSelectedPlaceId(place.id);
-            // }}
-            id={place.id}
-            setSelectedPlaceId={setSelectedPlaceId}
-          />
-        ))}
-      </MapView>
-      {/* <View style={styles.topContainer}>
+          ))}
+        </MapView>
+
+        {/* <View style={styles.topContainer}>
         <TouchableOpacity>
           <Image source={Icons.cartIcon} style={styles.menuIcon} />
         </TouchableOpacity>
@@ -112,25 +113,31 @@ export default function MapScreen() {
         </View>
       </View> */}
 
-      <View style={styles.flatlistContainer}>
-        <FlatList
-          ref={flatlist}
-          data={DummyLocaleData.chargers}
-          renderItem={({item}) => (
-            <FlatlistItem post={item} setSelectedPlaceId={setSelectedPlaceId} />
-          )}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={width - 120}
-          snapToAlignment={'center'}
-          decelerationRate={'fast'}
-          viewabilityConfig={viewConfig.current}
-          onViewableItemsChanged={onViewChanged.current}
-        />
+        <View style={styles.flatlistContainer}>
+          <FlatList
+            ref={flatlist}
+            data={DummyLocaleData.chargers}
+            renderItem={({item}) => (
+              <FlatlistItem
+                post={item}
+                setSelectedPlaceId={setSelectedPlaceId}
+              />
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={width - 120}
+            snapToAlignment={'center'}
+            decelerationRate={'fast'}
+            viewabilityConfig={viewConfig.current}
+            onViewableItemsChanged={onViewChanged.current}
+          />
+        </View>
       </View>
-    </View>
+    </>
   );
-}
+};
+
+export default MapScreen;
 
 const styles = StyleSheet.create({
   container: {
