@@ -16,6 +16,7 @@ import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidBut
 import {useGuestCartItemsCount} from '../../hooks/useGuestCartItemsCount';
 import {useNavigation} from '@react-navigation/native';
 import {applicationProperties} from '../../utils/application.properties';
+import calculatePrice from '../../utils/CommonFunction';
 
 const GuestCartScreen = () => {
   const navigation = useNavigation();
@@ -132,7 +133,7 @@ const GuestCartScreen = () => {
                       {discountTotal?.taxTotal !== null ||
                       discountTotal?.taxTotal !== undefined ||
                       discountTotal?.taxTotal
-                        ? discountTotal?.taxTotal
+                        ? calculatePrice(discountTotal?.taxTotal)
                         : ''}
                     </Text>
                   </Box>
@@ -145,7 +146,7 @@ const GuestCartScreen = () => {
                       {discountTotal?.discountTotal !== null ||
                       discountTotal?.discountTotal !== undefined ||
                       discountTotal?.discountTotal
-                        ? discountTotal?.discountTotal
+                        ? calculatePrice(discountTotal?.discountTotal)
                         : ''}
                     </Text>
                   </Box>
@@ -156,7 +157,9 @@ const GuestCartScreen = () => {
                     flex={1}>
                     <Text paddingHorizontal="s16">
                       {normalProducts.length != 0 ? (
-                        <Text variant="bold24">Total : $ {grandTotal}</Text>
+                        <Text variant="bold24">
+                          Total : $ {calculatePrice(grandTotal)}
+                        </Text>
                       ) : (
                         ''
                       )}

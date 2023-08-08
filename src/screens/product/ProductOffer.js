@@ -4,6 +4,7 @@ import {TouchableOpacity} from 'react-native';
 import {Box, theme, Text} from '@atoms';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {commonApi} from '../../api/CommanAPI';
+import calculatePrice from '../../utils/CommonFunction';
 
 const ProductOffer = ({
   offers,
@@ -57,7 +58,7 @@ const ProductOffer = ({
           <Box paddingLeft="s4" flexDirection="row">
             <Box justifyContent="space-between">
               <Text>{offer?.id}</Text>
-              <Text>$ {price?.attributes?.price}</Text>
+              <Text>$ {calculatePrice(price?.attributes?.price)}</Text>
             </Box>
           </Box>
         </Box>

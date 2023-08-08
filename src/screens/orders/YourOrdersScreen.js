@@ -6,6 +6,7 @@ import {getOrdersData} from '../../redux/ordersApi/OrdersApiAsyncThunk';
 import {ActivityIndicator, FlatList, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {getCustomerDetails} from '../../redux/profileApi/ProfileApiAsyncThunk';
+import calculatePrice from '../../utils/CommonFunction';
 
 const YourOrdersScreen = () => {
   const navigation = useNavigation();
@@ -71,7 +72,7 @@ const YourOrdersScreen = () => {
               fontSize={14}
               // fontWeight="bold"
               variant="bold18">
-              ${item.attributes?.totals?.grandTotal}
+              ${calculatePrice(item.attributes?.totals?.grandTotal)}
             </Text>
           </Box>
           <Box flexDirection="row" justifyContent="space-between">

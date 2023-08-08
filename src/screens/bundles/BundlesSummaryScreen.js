@@ -13,6 +13,7 @@ import {useSelector} from 'react-redux';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import {useDispatch} from 'react-redux';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
+import calculatePrice from '../../utils/CommonFunction';
 const BundlesSummaryScreen = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -87,7 +88,7 @@ const BundlesSummaryScreen = props => {
                 {item?.item?.item?.name}
               </Text>
               <Text style={styles.productPrice}>
-                $ {item?.item?.item?.price}
+                $ {calculatePrice(item?.item?.item?.price)}
               </Text>
             </Box>
           </Box>

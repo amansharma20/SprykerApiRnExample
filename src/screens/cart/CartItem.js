@@ -9,7 +9,7 @@ import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/Custome
 import {RemoveIcon} from '../../assets/svgs';
 import CartItemQuantity from './CartItemQuantity';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
-
+import calculatePrice from '../../utils/CommonFunction';
 const CartItem = ({item}) => {
   const image =
     item?.['concrete-product-image-sets']?.imageSets?.[0]?.images?.[0]
@@ -88,7 +88,7 @@ const CartItem = ({item}) => {
               <Box>
                 <Text variant="bold16">{name}</Text>
                 <Text variant="bold16" style={{marginTop: 4}}>
-                  $ {price}
+                  $ {calculatePrice(price)}
                 </Text>
                 <Text style={{color: '#006400'}}>
                   {productOffer !== null ? `(Offer Included)` : ''}

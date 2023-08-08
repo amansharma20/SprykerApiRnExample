@@ -8,6 +8,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {SCREEN_WIDTH} from '@gorhom/bottom-sheet';
 import FastImage from 'react-native-fast-image';
 import {FlashList} from '@shopify/flash-list';
+import calculatePrice from '../../utils/CommonFunction';
 
 const BundleItem = ({
   BundleData,
@@ -93,7 +94,9 @@ const BundleItem = ({
                   numberOfLines={2}>
                   {item?.name}
                 </Text>
-                <Text style={styles.productPrice}>$ {item?.price}</Text>
+                <Text style={styles.productPrice}>
+                  $ {calculatePrice(item?.price)}
+                </Text>
               </Box>
             </Box>
           </Box>

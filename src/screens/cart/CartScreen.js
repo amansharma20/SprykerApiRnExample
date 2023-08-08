@@ -24,11 +24,10 @@ import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {useCartItemsCount} from '../../hooks/useCartItemsCount';
 import GuestCartScreen from '../guestCart/GuestCartScreen';
 import {applicationProperties} from '../../utils/application.properties';
-
+import calculatePrice from '../../utils/CommonFunction';
 const CartScreen = () => {
   const {signOut} = useContext(AuthContext);
   const {cartItemsCount} = useCartItemsCount();
-
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [cartItemsArray, setCartItemsArray] = useState([]);
@@ -198,7 +197,7 @@ const CartScreen = () => {
                             {discountTotal !== null ||
                             discountTotal !== undefined ||
                             discountTotal
-                              ? discountTotal
+                              ? calculatePrice(discountTotal)
                               : ''}
                           </Text>
                         </Box>
@@ -208,7 +207,7 @@ const CartScreen = () => {
                             {taxTotal !== null ||
                             taxTotal !== undefined ||
                             taxTotal
-                              ? taxTotal
+                              ? calculatePrice(taxTotal)
                               : ''}
                           </Text>
                         </Box>
@@ -219,7 +218,7 @@ const CartScreen = () => {
                           <Text>
                             {customerCartDataNew.length != 0 ? (
                               <Text variant="bold24">
-                                Total : $ {grandTotal}
+                                Total : $ {calculatePrice(grandTotal)}
                               </Text>
                             ) : (
                               ''

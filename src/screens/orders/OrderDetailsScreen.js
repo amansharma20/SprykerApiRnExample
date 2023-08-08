@@ -18,6 +18,7 @@ import OrdertotalCost from './components/OrderTotalCost';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import {CheckCircle} from '../../assets/svgs';
+import calculatePrice from '../../utils/CommonFunction';
 
 const OrderDetailsScreen = props => {
   const dispatch = useDispatch();
@@ -132,7 +133,9 @@ const OrderDetailsScreen = props => {
               {item?.name}
             </Text>
             <Text mb="s2">Quantity: {item?.quantity}</Text>
-            <Text mb="s2">Price: ${item?.sumGrossPrice * item?.quantity}</Text>
+            <Text mb="s2">
+              Price: ${calculatePrice(item?.sumPrice * item?.quantity)}
+            </Text>
           </Box>
         </Box>
       </Box>
@@ -185,7 +188,7 @@ const OrderDetailsScreen = props => {
                       <Text variant="bold14">{item.name}</Text>
                     </Box>
                     <Text variant="bold14" style={{marginTop: 4}}>
-                      $ {item.sumPrice}
+                      $ {calculatePrice(item.sumPrice)}
                     </Text>
                   </Box>
                 </Box>
