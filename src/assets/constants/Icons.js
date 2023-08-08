@@ -11,6 +11,7 @@ export const cartIconSolid = require('../icons/cartIconSolid.png');
 export const myLocationIcon = require('../icons/myLocationIcon.png');
 export const mapIcon = require('../icons/mapIcon.png');
 export const sushiIcon = require('../icons/sushiIcon.png');
+export const createYourRollIcon = require('../icons/createYourRoll.png');
 
 export default {
   homeIcon,
@@ -26,4 +27,5 @@ export default {
   myLocationIcon,
   mapIcon,
   sushiIcon,
+  createYourRollIcon,
 };

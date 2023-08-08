@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Icons from '../../assets/constants/Icons';
 
 const ConfiguredBundleScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,6 +29,7 @@ const ConfiguredBundleScreen = () => {
     return (
       <>
         <TouchableOpacity
+          style={theme.cardVariants.optimizedDark}
           onPress={() =>
             // navigation.navigate('BundlesScreen', {
             //   configurableBundleId: bundle?.id,
@@ -46,10 +48,16 @@ const ConfiguredBundleScreen = () => {
             borderRadius={8}
             padding="s8">
             <Image
-              style={{height: 120, width: '100%', resizeMode: 'contain'}}
-              source={{
-                uri: img ? img : '',
+              style={{
+                height: 200,
+                width: '100%',
+                resizeMode: 'cover',
+                borderRadius: 8,
               }}
+              // source={{
+              //   uri: img ? img : '',
+              // }}
+              source={Icons.createYourRollIcon}
             />
             <Text
               fontSize={18}
@@ -86,7 +94,8 @@ const ConfiguredBundleScreen = () => {
       ) : (
         <Box paddingHorizontal="paddingHorizontal">
           <FlatList
-            data={configuredBundleTemplate?.data}
+            data={[configuredBundleTemplate?.data?.[0]]}
+            // data={configuredBundleTemplate?.data}
             renderItem={item => {
               return <ConfiguredBundles item={item} />;
             }}
