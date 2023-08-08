@@ -327,7 +327,7 @@ export default function ProductItem({item, includedData, index}) {
               fontSize={14}
               //  fontWeight="600"
               variant="bold16">
-              $ {item.price}
+              $ {item.price / 100}
             </Text>
           </Box>
 

@@ -89,6 +89,8 @@ const ProductDetailsScreen = props => {
     productData?.[selectedVariantIndex]?.attributes?.attributes?.brand;
   const description =
     productData?.[selectedVariantIndex]?.attributes?.description;
+  console.log('description: ', description);
+
   const productOffer = productData?.[selectedVariantIndex]?.productOffers;
 
   const newCartApiUrl = `https://sushiitobff-dzt0m3.5sc6y6-2.usa-e2.cloudhub.io/carts?cartId=${customerCart.id}`;
@@ -477,13 +479,18 @@ const ProductDetailsScreen = props => {
                 >
                   {productOffer != null
                     ? ''
-                    : `Price $${productData?.[selectedVariantIndex]?.price?.attributes?.price}`}
+                    : `Price $${
+                        productData?.[selectedVariantIndex]?.price?.attributes
+                          ?.price / 100
+                      }`}
                 </Text>
                 {productData?.[selectedVariantIndex]?.availability?.attributes
                   ?.availability !== true ? (
                   <Text color="red">Product is not available </Text>
                 ) : (
-                  <Text color="green">In stock</Text>
+                  <Text color="green" marginBottom="s6">
+                    In stock
+                  </Text>
                 )}
                 {productData?.[selectedVariantIndex]?.productOffers != null ? (
                   <FlatList

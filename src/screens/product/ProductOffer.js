@@ -57,7 +57,7 @@ const ProductOffer = ({
           <Box paddingLeft="s4" flexDirection="row">
             <Box justifyContent="space-between">
               <Text>{offer?.id}</Text>
-              <Text>$ {price?.attributes?.price}</Text>
+              <Text>$ {price?.attributes?.price / 100}</Text>
             </Box>
           </Box>
         </Box>
