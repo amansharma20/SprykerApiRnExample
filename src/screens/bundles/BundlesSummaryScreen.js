@@ -13,7 +13,7 @@ import {useSelector} from 'react-redux';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import {useDispatch} from 'react-redux';
 import {useIsUserLoggedIn} from '../../hooks/useIsUserLoggedIn';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
 const BundlesSummaryScreen = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();

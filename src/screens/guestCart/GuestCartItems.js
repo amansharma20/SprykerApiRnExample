@@ -17,7 +17,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import GuestCartItemQuantity from './GuestCartItemQuantity';
 import {applicationProperties} from '../../utils/application.properties';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
+
 const GuestCartItem = ({item}) => {
   console.log('item: ', item);
   const dispatch = useDispatch();

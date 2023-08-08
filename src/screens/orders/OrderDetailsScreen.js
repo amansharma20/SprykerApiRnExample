@@ -18,7 +18,7 @@ import OrdertotalCost from './components/OrderTotalCost';
 import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/CustomerCartIdApiAsyncThunk';
 import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidButton';
 import {CheckCircle} from '../../assets/svgs';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
 
 const OrderDetailsScreen = props => {
   const dispatch = useDispatch();

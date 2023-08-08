@@ -4,7 +4,7 @@ import {TouchableOpacity} from 'react-native';
 import {Box, theme, Text} from '@atoms';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {commonApi} from '../../api/CommanAPI';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
 
 const ProductOffer = ({
   offers,

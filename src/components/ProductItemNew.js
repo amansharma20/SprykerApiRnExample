@@ -25,7 +25,7 @@ import axios from 'axios';
 import CommonLoading from './CommonLoading';
 import {guestCartData} from '../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import {applicationProperties} from '../utils/application.properties';
-import calculatePrice from '../utils/CommonFunction';
+import {calculatePrice} from '../utils/CommonFunctions';
 
 export default function ProductItem({item, includedData, index}) {
   // console.log('item: ', item);

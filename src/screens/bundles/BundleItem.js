@@ -8,7 +8,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {SCREEN_WIDTH} from '@gorhom/bottom-sheet';
 import FastImage from 'react-native-fast-image';
 import {FlashList} from '@shopify/flash-list';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
 
 const BundleItem = ({
   BundleData,

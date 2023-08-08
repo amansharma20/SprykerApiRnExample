@@ -12,7 +12,7 @@ import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/Custome
 import {useDispatch} from 'react-redux';
 import {RemoveIcon} from '../../assets/svgs';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
 
 const ConfiguredBundledCartItem = ({data, customerCartId}) => {
   console.log('data: ', data.attributes?.[0]?.itemData);

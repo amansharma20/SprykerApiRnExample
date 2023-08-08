@@ -24,7 +24,7 @@ import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
 import {useCartItemsCount} from '../../hooks/useCartItemsCount';
 import GuestCartScreen from '../guestCart/GuestCartScreen';
 import {applicationProperties} from '../../utils/application.properties';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
 const CartScreen = () => {
   const {signOut} = useContext(AuthContext);
   const {cartItemsCount} = useCartItemsCount();

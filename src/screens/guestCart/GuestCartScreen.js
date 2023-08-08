@@ -16,7 +16,7 @@ import CommonSolidButton from '../../components/CommonSolidButton/CommonSolidBut
 import {useGuestCartItemsCount} from '../../hooks/useGuestCartItemsCount';
 import {useNavigation} from '@react-navigation/native';
 import {applicationProperties} from '../../utils/application.properties';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
 
 const GuestCartScreen = () => {
   const navigation = useNavigation();

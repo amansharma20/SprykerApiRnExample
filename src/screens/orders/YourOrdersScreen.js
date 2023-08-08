@@ -6,7 +6,7 @@ import {getOrdersData} from '../../redux/ordersApi/OrdersApiAsyncThunk';
 import {ActivityIndicator, FlatList, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {getCustomerDetails} from '../../redux/profileApi/ProfileApiAsyncThunk';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
 
 const YourOrdersScreen = () => {
   const navigation = useNavigation();

@@ -34,7 +34,7 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import {applicationProperties} from '../../utils/application.properties';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;

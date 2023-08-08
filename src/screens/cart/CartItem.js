@@ -9,7 +9,7 @@ import {CustomerCartIdApiAsyncThunk} from '../../redux/customerCartIdApi/Custome
 import {RemoveIcon} from '../../assets/svgs';
 import CartItemQuantity from './CartItemQuantity';
 import {getCartDataNew} from '../../redux/newCartApi/NewCartApiAsyncThunk';
-import calculatePrice from '../../utils/CommonFunction';
+import {calculatePrice} from '../../utils/CommonFunctions';
 const CartItem = ({item}) => {
   const image =
     item?.['concrete-product-image-sets']?.imageSets?.[0]?.images?.[0]

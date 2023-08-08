@@ -1,7 +1,7 @@
 import React from 'react';
 import {Box, Text} from '@atoms';
 import {StyleSheet} from 'react-native';
-import calculatePrice from '../../../utils/CommonFunction';
+import {calculatePrice} from '../../../utils/CommonFunctions';
 
 const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
   const tax = orderDetail?.totals?.taxTotal;

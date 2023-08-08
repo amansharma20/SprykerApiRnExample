@@ -8,7 +8,7 @@ import {useCartItemsCount} from '../../../hooks/useCartItemsCount';
 import {useSelector} from 'react-redux';
 import Icons from '../../../assets/constants/Icons';
 import {useNavigation} from '@react-navigation/native';
-import calculatePrice from '../../../utils/CommonFunction';
+import {calculatePrice} from '../../../utils/CommonFunctions';
 
 const HomeCartPopUp = () => {
   const navigation = useNavigation();
