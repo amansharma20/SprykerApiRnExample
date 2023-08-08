@@ -25,6 +25,7 @@ import axios from 'axios';
 import CommonLoading from './CommonLoading';
 import {guestCartData} from '../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import {applicationProperties} from '../utils/application.properties';
+import calculatePrice from '../utils/CommonFunction';
 
 export default function ProductItem({item, includedData, index}) {
   // console.log('item: ', item);
@@ -327,7 +328,7 @@ export default function ProductItem({item, includedData, index}) {
               fontSize={14}
               //  fontWeight="600"
               variant="bold16">
-              $ {item.price / 100}
+              $ {calculatePrice(item.price)}
             </Text>
           </Box>
 

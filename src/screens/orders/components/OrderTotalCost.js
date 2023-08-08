@@ -1,9 +1,10 @@
 import React from 'react';
 import {Box, Text} from '@atoms';
 import {StyleSheet} from 'react-native';
+import calculatePrice from '../../../utils/CommonFunction';
 
 const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
-  // console.log('orderDetail: ', orderDetail);
+  const tax = orderDetail?.totals?.taxTotal;
 
   return (
     <Box>
@@ -82,7 +83,7 @@ const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
         <Text
           // style={{fontWeight: 'bold'}}
           variant="bold18">
-          ${orderDetail?.totals?.subtotal}
+          ${calculatePrice(orderDetail?.totals?.subtotal)}
         </Text>
       </Box>
 
@@ -92,18 +93,22 @@ const OrdertotalCost = ({orderDetail, orderShipment, orderId}) => {
       </Box>
       <Box flexDirection="row" justifyContent="space-between">
         <Text>Delivery Charge</Text>
-        <Text>${orderDetail?.totals?.expenseTotal}</Text>
+        <Text>${calculatePrice(orderDetail?.totals?.expenseTotal)}</Text>
+      </Box>
+      <Box flexDirection="row" justifyContent="space-between">
+        <Text>Tax Included</Text>
+        <Text>${calculatePrice(tax)}</Text>
       </Box>
       <Box flexDirection="row" justifyContent="space-between">
         <Text>Discount Total</Text>
-        <Text>${orderDetail?.totals?.discountTotal}</Text>
+        <Text>${calculatePrice(orderDetail?.totals?.discountTotal)}</Text>
       </Box>
       <Box mt="s6" mb="s10" flexDirection="row" justifyContent="space-between">
         <Text>Item status : {orderDetail?.itemStates}</Text>
         <Text
           // fontWeight="bold"
           variant="bold18">
-          Total Amount : ${orderDetail?.totals?.grandTotal}{' '}
+          Total Amount : ${calculatePrice(orderDetail?.totals?.grandTotal)}{' '}
         </Text>
       </Box>
     </Box>

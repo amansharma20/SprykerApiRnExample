@@ -8,6 +8,7 @@ import {useCartItemsCount} from '../../../hooks/useCartItemsCount';
 import {useSelector} from 'react-redux';
 import Icons from '../../../assets/constants/Icons';
 import {useNavigation} from '@react-navigation/native';
+import calculatePrice from '../../../utils/CommonFunction';
 
 const HomeCartPopUp = () => {
   const navigation = useNavigation();
@@ -105,7 +106,7 @@ const HomeCartPopUp = () => {
                 justifyContent="center"
                 mt="s2">
                 <Text color="white" variant="bold18">
-                  {cartItemsCount} · ${grandTotal}
+                  {cartItemsCount} · ${calculatePrice(grandTotal)}
                 </Text>
               </Box>
               <Image

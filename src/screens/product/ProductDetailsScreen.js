@@ -34,6 +34,7 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {guestCartData} from '../../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import {applicationProperties} from '../../utils/application.properties';
+import calculatePrice from '../../utils/CommonFunction';
 
 const ProductDetailsScreen = props => {
   const propData = props.route.params.product;
@@ -479,10 +480,10 @@ const ProductDetailsScreen = props => {
                 >
                   {productOffer != null
                     ? ''
-                    : `Price $${
+                    : `Price $${calculatePrice(
                         productData?.[selectedVariantIndex]?.price?.attributes
-                          ?.price / 100
-                      }`}
+                          ?.price,
+                      )}`}
                 </Text>
                 {productData?.[selectedVariantIndex]?.availability?.attributes
                   ?.availability !== true ? (
