@@ -100,9 +100,17 @@ const BundlesScreenNew = props => {
   };
 
   const renderBundleItems = ({item, index}) => {
+    console.log(
+      'finalState[index]: ',
+      finalState[index].slotName,
+      index + 1,
+      finalState.length,
+    );
     return (
       <BundleItem
-        title={finalState[index]?.slotName}
+        title={`${finalState[index]?.slotName} (${index + 1}/${
+          finalState.length
+        })`}
         BundleData={finalState[index]?.slotData}
         slotID={finalState[index]?.id}
         finalState={finalState}
@@ -136,7 +144,7 @@ const BundlesScreenNew = props => {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-      <CommonHeader title={'Configure Bundle'} onPress={onPressBack} />
+      <CommonHeader title={'Create your rolls'} onPress={onPressBack} />
       {finalState && finalState?.length > 0 ? (
         <>
           <Box

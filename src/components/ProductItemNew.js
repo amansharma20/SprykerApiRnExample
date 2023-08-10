@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Box, Text, theme} from '@atoms';
 import Icons from '../assets/constants/Icons';
@@ -26,12 +26,14 @@ import CommonLoading from './CommonLoading';
 import {guestCartData} from '../redux/GuestCartApi/GuestCartApiAsyncThunk';
 import {applicationProperties} from '../utils/application.properties';
 import {calculatePrice} from '../utils/CommonFunctions';
+import {AuthContext} from '../navigation/StackNavigator';
 
 export default function ProductItem({item, includedData, index}) {
   // console.log('item: ', item);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {isUserLoggedIn} = useIsUserLoggedIn();
+  const {signOut} = useContext(AuthContext);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -115,7 +117,10 @@ export default function ProductItem({item, includedData, index}) {
           }
         });
       } else {
-        alert('error', response.data.data.errors?.[0]?.detail);
+        if (response?.data?.status === 401) {
+          signOut();
+        }
+        alert(response.data.data.errors?.[0]?.detail);
         // CommonLoading.hide();
         setIsLoading(false);
       }
@@ -295,7 +300,7 @@ export default function ProductItem({item, includedData, index}) {
       borderWidth={1}
       borderColor="border"
       borderRadius={8}
-      padding="s8">
+      padding="s12">
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('ProductDetailsScreen', {
@@ -309,27 +314,21 @@ export default function ProductItem({item, includedData, index}) {
             resizeMode="cover"
           />
         </Box>
-        <Text style={styles.productTitle} variant="bold18" numberOfLines={1}>
-          {item.abstractName}
-        </Text>
-        <Box position="absolute" alignSelf="flex-end">
+
+        {/* <Box position="absolute" alignSelf="flex-end">
           <TouchableOpacity onPress={onPressAddToShoppingList}>
-            {/* <Text>add to wishlist</Text> */}
             {renderWishlistButton()}
           </TouchableOpacity>
-        </Box>
+        </Box> */}
         <Box
           flexDirection="row"
           justifyContent="space-between"
-          alignItems="center"
-          paddingVertical="s2">
+          alignItems="center">
           <Box>
-            <Text
-              fontSize={14}
-              //  fontWeight="600"
-              variant="bold16">
-              $ {calculatePrice(item.price)}
+            <Text variant="bold18" numberOfLines={1} marginVertical="s8">
+              {item.abstractName}
             </Text>
+            <Text variant="bold16">$ {calculatePrice(item.price)}</Text>
           </Box>
 
           {/* ADD BUTTON */}
@@ -396,7 +395,7 @@ const styles = StyleSheet.create({
   productTitle: {
     fontSize: 16,
     // fontWeight: 'bold',
-    marginBottom: 4,
+    // marginBottom: 4,
   },
   productPrice: {
     fontSize: 14,

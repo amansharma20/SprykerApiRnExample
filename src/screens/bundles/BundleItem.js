@@ -21,7 +21,9 @@ const BundleItem = ({
   slotID,
   finalState,
 }) => {
+  // console.log('BundleData: ', BundleData);
   const [productsArray, setProductsArray] = useState([]);
+  // console.log('productsArray: ', productsArray);
 
   const Item = ({item, index}) => {
     const onPressItem = () => {
@@ -64,10 +66,10 @@ const BundleItem = ({
             onPress={onPressItem}
             iconStyle={{
               borderColor: item.isSelected
-                ? theme.colors.blue
+                ? theme.colors.sushiittoRed
                 : theme.colors.border,
             }}
-            fillColor={theme.colors.lightGreen}
+            fillColor={theme.colors.sushiittoRed}
           />
           <Box
             flex={1}
